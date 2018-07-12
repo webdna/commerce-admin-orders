@@ -74,7 +74,7 @@ class CommerceAdminOrders extends Plugin
                 View::EVENT_BEFORE_RENDER_TEMPLATE,
                 function (TemplateEvent $event) {
                     try {
-                        Craft::$app->getView()->registerAssetBundle(OrderNewAsset::class);
+                        Craft::$app->getView()->registerAssetBundle(OrdersNewAsset::class);
                     } catch (InvalidConfigException $e) {
                         Craft::error(
                             'Error registering AssetBundle - '.$e->getMessage(),
