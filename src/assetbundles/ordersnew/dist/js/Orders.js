@@ -61,7 +61,7 @@ Craft.Commerce.OrderCreateModal = Garnish.Modal.extend({
 		var $footer = $('<div class="footer"/>').appendTo($form);
 		var $mainBtnGroup = $('<div class="btngroup right"/>').appendTo($footer);
 		this.$cancelBtn = $('<input type="button" class="btn" value="' + Craft.t('commerce', 'Cancel') + '"/>').appendTo($mainBtnGroup);
-		this.$updateBtn = $('<input type="button" class="btn submit" value="' + Craft.t('commerce', 'Update') + '"/>').appendTo($mainBtnGroup);
+		this.$updateBtn = $('<input type="button" class="btn submit" value="' + Craft.t('commerce', 'Save') + '"/>').appendTo($mainBtnGroup);
 
 		this.$updateBtn.addClass('disabled');
 
@@ -105,7 +105,7 @@ Craft.Commerce.OrderCreateModal = Garnish.Modal.extend({
 			userId: this.$userSelect.find('input').val()
 		};
 
-		Craft.postActionRequest('dsd/orders/save-order', data, function(response) {
+		Craft.postActionRequest('commerce-admin-orders/orders/save-order', data, function(response) {
 			if (response.success) {
 				document.location = '/admin/commerce/orders/' + response.orderId;
 			} else {
