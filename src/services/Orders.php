@@ -39,7 +39,7 @@ class Orders extends Component
 		return $order;
 	}
 
-	public function updateQty(Over $order, array $lineItems)
+	public function updateQty(Order $order, array $lineItems)
 	{
 		foreach($lineItems as $id => $qty)
 		{
