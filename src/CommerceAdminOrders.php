@@ -111,13 +111,13 @@ class CommerceAdminOrders extends Plugin
             }
         );*/
 
-        /*Event::on(
+        Event::on(
             UrlManager::class,
             UrlManager::EVENT_REGISTER_CP_URL_RULES,
             function (RegisterUrlRulesEvent $event) {
-                $event->rules['cpActionTrigger1'] = 'commerce-admin-orders/orders/do-something';
+                $event->rules['commerce-admin-orders/orders/save'] = 'commerce-admin-orders/orders/save-order';
             }
-        );*/
+        );
 
         Event::on(
             Plugins::class,
