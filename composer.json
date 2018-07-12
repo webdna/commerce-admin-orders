@@ -1,0 +1,44 @@
+{
+	"name": "kuriousagency/commerce-admin-orders",
+	"description": "Create a new commerce order from the admin",
+	"type": "craft-plugin",
+	"version": "1.0.0",
+	"keywords": [
+		"craft",
+		"cms",
+		"craftcms",
+		"craft-plugin",
+		"commerce admin orders"
+	],
+	"support": {
+		"docs": "https://github.com/KuriousAgency/commerce-admin-orders/blob/master/README.md",
+		"issues": "https://github.com/KuriousAgency/commerce-admin-orders/issues"
+	},
+	"license": "MIT",
+	"authors": [
+		{
+			"name": "Kurious Agency",
+			"homepage": "https://kurious.agency"
+		}
+	],
+	"require": {
+		"craftcms/cms": "^3.0.0-RC1",
+		"craftcms/commerce": "^2.0.0-beta.6"
+	},
+	"autoload": {
+		"psr-4": {
+			"kuriousagency\\commerce-admin-orders\\": "src/"
+		}
+	},
+	"extra": {
+		"name": "Commerce Admin Orders",
+		"handle": "commerce-admin-orders",
+		"hasCpSettings": false,
+		"hasCpSection": false,
+		"changelogUrl": "https://raw.githubusercontent.com/KuriousAgency/commerce-admin-orders/master/CHANGELOG.md",
+		"components": {
+			"orders": "kuriousagency\\commerce-admin-orders\\services\\Orders"
+		},
+		"class": "kuriousagency\\commerce-admin-orders\\CommerceAdminOrders"
+	}
+}
