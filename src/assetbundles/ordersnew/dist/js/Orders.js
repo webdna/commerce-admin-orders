@@ -119,4 +119,31 @@ $(document).ready(function() {
 	if ($('body').hasClass('commerceordersindex')) {
 		new Craft.Commerce.OrderCreate();
 	}
+	if ($('body').hasClass('commerceordersedit')) {
+		var $tab = $('#orderDetailsTab');
+
+		if ($('#order-completionStatus')[0]) {
+			$tab.append($('<div id="addProduct" class="elementselect"><div class="elements"></div><div class="btn add icon dashed">Add Product</div></div>'));
+
+			new Craft.BaseElementSelectInput({
+				id: 'addProduct',
+				name: 'addProduct',
+				elementType: 'craft\\commerce\\elements\\Variant',
+				sources: null,
+				criteria: null,
+				sourceElementId: null,
+				viewMode: 'list',
+				limit: null,
+				modalStorageKey: null
+			});
+
+			$('.infoRow').each(function() {
+				var $row = $(this),
+					$qty = $row.find('td[data-title="Qty"]'),
+					$input = $('<input type="number" min="0" name="qty[' + $row.attr('data-id') + ']" value="' + Number($qty.text()) + '">');
+
+				$qty.empty().append($input);
+			});
+		}
+	}
 });
