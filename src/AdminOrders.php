@@ -8,10 +8,10 @@
  * @copyright Copyright (c) 2018 Kurious Agency
  */
 
-namespace kuriousagency\commerceadminorders;
+namespace kuriousagency\commerce\adminorders;
 
-use kuriousagency\commerceadminorders\services\Orders as OrdersService;
-use kuriousagency\commerceadminorders\assetbundles\ordersnew\OrdersNewAsset;
+use kuriousagency\commerce\adminorders\services\Orders as OrdersService;
+use kuriousagency\commerce\adminorders\assetbundles\ordersnew\OrdersNewAsset;
 
 use Craft;
 use craft\base\Plugin;
@@ -31,17 +31,17 @@ use yii\base\Event;
  *
  * @author    Kurious Agency
  * @package   CommerceAdminOrders
- * @since     1.0.0
+ * @since     1.1.0
  *
  * @property  OrdersService $orders
  */
-class CommerceAdminOrders extends Plugin
+class AdminOrders extends Plugin
 {
     // Static Properties
     // =========================================================================
 
     /**
-     * @var CommerceAdminOrders
+     * @var AdminOrders
      */
     public static $plugin;
 
@@ -115,7 +115,12 @@ class CommerceAdminOrders extends Plugin
             UrlManager::class,
             UrlManager::EVENT_REGISTER_CP_URL_RULES,
             function (RegisterUrlRulesEvent $event) {
-                $event->rules['commerce-admin-orders/orders/save'] = 'commerce-admin-orders/orders/save-order';
+				$event->rules['commerce-admin-orders/orders/new'] = 'commerce-admin-orders/orders/new-order';
+				$event->rules['commerce-admin-orders/orders/products'] = 'commerce-admin-orders/orders/products';
+				$event->rules['commerce-admin-orders/orders/user'] = 'commerce-admin-orders/orders/user';
+				$event->rules['commerce-admin-orders/orders/address'] = 'commerce-admin-orders/orders/address';
+				$event->rules['commerce-admin-orders/orders/address/new'] = 'commerce-admin-orders/orders/new-address';
+				$event->rules['commerce-admin-orders/orders/save'] = 'commerce-admin-orders/orders/save-order';
             }
         );
 

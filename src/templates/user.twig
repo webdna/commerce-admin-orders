@@ -1,0 +1,42 @@
+{% extends "commerce-admin-orders/_layouts/modal" %}
+{% import "_includes/forms" as forms %}
+
+
+
+{% block content %}
+
+
+<input type="hidden" name="action" value="commerce-admin-orders/orders/update-user">
+<input type="hidden" name="orderNumber" value="{{ order.number }}">
+{{ redirectInput('/admin/commerce-admin-orders/orders/address?orderNumber={number}') }}
+
+<div id="userPicker" class="elementselect">
+    <div class="elements">
+    </div>
+
+    <div class="btn add icon dashed">Choose user</div>
+</div>
+
+<hr>
+<div>
+	<input type="email" class="text" name="guest" value="" placeholder="guest email">
+</div>
+
+{% js %}
+var $form = $('#main-form');
+    new Craft.BaseElementSelectInput({
+		id: 'userPicker',
+		name: 'userId',
+		elementType: 'craft\\elements\\User',
+		sources: null,
+		criteria: null,
+		sourceElementId: null,
+		viewMode: 'list',
+		limit: 1,
+		modalStorageKey: null,
+	});
+{% endjs %}
+</div> 
+{% endblock %}
+
+{% do view.registerAssetBundle("craft\\commerce\\web\\assets\\commercecp\\CommerceCpAsset") %}

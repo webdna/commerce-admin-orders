@@ -1,0 +1,90 @@
+{% extends "commerce-admin-orders/_layouts/modal" %}
+{% import "_includes/forms" as forms %}
+
+{% set continue = '/admin/commerce/orders/'~order.id %}
+
+{% block content %}
+
+
+<input type="hidden" name="action" value="commerce-admin-orders/orders/update-address">
+<input type="hidden" name="orderNumber" value="{{ order.number }}">
+{{ redirectInput('/admin/commerce-admin-orders/orders/address?orderNumber={number}') }}
+
+{% set addresses = order.customer.addresses %}
+
+{# shipping address #}
+{# pick from list #}
+{# or add new => new page, return here #}
+<div class="flex">
+<div id="shippingPane" class="pane flex-grow">
+    
+    <h3>Shipping Address</h3>
+
+            <p class="light">
+			{% if order.shippingAddress %}
+				{{ order.shippingAddress.address1 }},
+				{{ order.shippingAddress.city }},
+				{{ order.shippingAddress.zipCode }}
+			{% else %}
+				No address selected
+			{% endif %}
+			</p>
+    
+
+		<div class="footer">
+            {# <a class="btn" id="make-payment" data-order-id="901">Make Payment</a> #}
+			<div class="select">
+			<select name="shippingAddressSelect">
+				<option value="" disabled selected>Choose address...</option>
+			{% for address in addresses %}
+				<option value="{{ address.id }}">{{ address.address1 }}</option> 
+			{% endfor %}
+				<option value="0">Add new address</option>
+			<select>
+			</div>
+        </div>
+    
+</div>
+
+<div id="billingPane" class="pane flex-grow" style="margin-bottom: 14px!important; margin-top: 0;">
+    
+    <h3>Billing Address</h3>
+
+            <p class="light">
+			{% if order.billingAddress %}
+				{{ order.billingAddress.address1 }},
+				{{ order.billingAddress.city }},
+				{{ order.billingAddress.zipCode }}
+			{% else %}
+				No address selected
+			{% endif %}
+			</p>
+    
+
+		<div class="footer">
+            {# <a class="btn" id="make-payment" data-order-id="901">Make Payment</a> #}
+			<div class="select">
+			<select name="billingAddressSelect">
+				<option value="" disabled selected>Choose address...</option>
+			{% for address in addresses %}
+				<option value="{{ address.id }}">{{ address.address1 }}</option> 
+			{% endfor %}
+				<option value="0">Add new address</option>
+			<select>
+			</div>
+        </div>
+    
+</div>
+</div>
+{% js %}
+	$('select').on('change', function(e){
+		$(this).parents('form').submit();
+	});
+	$('a.submit').on('click', function(e){
+		e.preventDefault();
+		window.parent.document.location = $(this).attr('href');
+	})
+{% endjs %}
+{% endblock %}
+
+{% do view.registerAssetBundle("craft\\commerce\\web\\assets\\commercecp\\CommerceCpAsset") %}

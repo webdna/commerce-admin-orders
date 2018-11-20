@@ -1,0 +1,224 @@
+{% extends "commerce-admin-orders/_layouts/modal" %}
+{% import "_includes/forms" as forms %}
+
+
+{% set continue = '/admin/commerce-admin-orders/orders/user?orderNumber='~order.number %}
+
+{% block content %}
+
+<div id="orderDetailsTab">
+    {% if order.lineItems | length or order.totalPrice > 0 %}
+        <div class="order-details pane">
+            <table id="" class="data fullwidth collapsible">
+                <thead>
+                <tr>
+                    <th scope="col">{{ 'Item'|t('commerce') }}</th>
+                    <th scope="col">{{ 'Note'|t('commerce') }}</span></th>
+                    <th scope="col">{{ 'Price'|t('commerce') }}</span></th>
+                    <th scope="col">{{ 'Quantity'|t('commerce') }}</th>
+                    <th scope="col"></th>
+                    <th scope="col"></th>
+                    <th scope="col" class="thin"></th>
+					<th scope="col" class="thin"></th>
+                </tr>
+                </thead>
+                <tbody>
+
+                {% for lineItem in order.lineItems %}
+
+                    {% set info = [
+                        { label: "Description", value: lineItem.description },
+                        { label: "Tax Category", value: lineItem.taxCategory.name },
+                        { label: "Shipping Category", value: lineItem.shippingCategory.name },
+                        { label: "Price", value: lineItem.price|currency(order.currency) },
+                        { label: "Sale Amount", value: lineItem.saleAmount|currency(order.currency) },
+                        { label: "Sale Price", value: lineItem.salePrice|currency(order.currency) },
+                        { label: "Quantity", value: lineItem.qty },
+                        { label: "Sub-total", value: lineItem.subtotal|currency(order.currency) },
+                        { label: "Total (with adjustments)", value: lineItem.total|currency(order.currency) },
+                    ] %}
+
+                    <tr class="infoRow" data-id="{{ lineItem.id }}" data-info="{{ info|json_encode }}">
+                        <td data-title="{{ 'Item'|t('commerce') }}">
+                            {% if lineItem.purchasable %}
+                                {% if lineItem.purchasable.cpEditUrl %}
+                                    <a class="purchasable-link"
+                                       href="{{ lineItem.purchasable.cpEditUrl }}">{{ lineItem.description }}</a>
+                                {% else %}
+                                    <span class="description">{{ lineItem.description }}</span>
+                                {% endif %}
+                            {% else %}
+                                <span class="description">{{ lineItem.description }}</span>
+                            {% endif %}
+                            <br><span class="code">{{ lineItem.sku }}</span>
+                            {% if lineItem.options|length %}
+                                <a class="fieldtoggle first last"
+                                   data-target="info-{{ lineItem.id }}">{{ "Options"|t('commerce') }}</a>
+                                <span id="info-{{ lineItem.id }}"
+                                      class="hidden">
+                                {% for key, option in lineItem.options %}
+                                    {{ key|t('commerce') }}: {% if option is iterable %}
+                                    <code>{{ option|json_encode|raw }}</code>{% else %}{{ option }}{% endif %}
+                                <br>
+                                {% endfor %}
+                                    </span>
+                            {% endif %}
+                        </td>
+                        <td data-title="{{ 'Note'|t('commerce') }}">
+                            {% if lineItem.note %}{{ lineItem.note|nl2br }}{% endif %}
+                        </td>
+                        <td data-title="{{ 'Price'|t('commerce') }}">
+                            {{ lineItem.salePrice|currency(order.currency) }}
+                        </td>
+                        <td data-title="{{ 'Qty'|t('commerce') }}">
+                            <input type="number" name="lineItems[{{ lineItem.id }}][qty]" min="0" style="width:50px" value="{{ lineItem.qty }}" >
+                        </td>
+                        <td></td>
+                        <td data-title="{{ 'Sub-total'|t('commerce') }}">
+                            <span class="right">{{ lineItem.subtotal|currency(order.currency) }}</span>
+                        </td>
+                        <td class="thin">
+                                <span class="tableRowInfo" data-icon="info"
+                                      href="#"></span>
+                        </td>
+						<td class="thin"><a class="delete icon"
+										data-id="{{ lineItem.id }}"
+                                        title="{{ 'Delete'|t('commerce') }}"
+                                        role="button"></a></td>
+                    </tr>
+                    {% for adjustment in lineItem.adjustments %}
+                        <tr>
+                            <td></td>
+                            <td>
+                                <strong>{{ adjustment.type|title|t('commerce') }} {{ "Adjustment"|t('commerce') }}</strong><br>{{ adjustment.name|title }}
+                                <span class="info"><strong>{{ adjustment.type|title|t('commerce') }} {{ "Adjustment"|t('commerce') }}</strong><br> {{ adjustment.description }}</span>
+                            </td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td>
+                                <span class="right">{{ adjustment.amount|currency(order.currency) }}</span>
+                            </td>
+                            <td></td>
+							<td></td>
+                        </tr>
+                    {% endfor %}
+                {% endfor %}
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td><strong>{{ "Items Total (with adjustments)" }}</strong></td>
+                    <td>
+                        <span class="right">{{ order.itemTotal|currency(order.currency) }}</span>
+                    </td>
+                    <td></td>
+					<td></td>
+                </tr>
+
+                {% for adjustment in order.orderAdjustments %}
+                    <tr>
+                        <td>
+                            <strong>{{ adjustment.type|title|t('commerce') }} {{ "Adjustment"|t('commerce') }}</strong><br>{{ adjustment.name|title }}
+                            <span class="info"><strong>{{ adjustment.type|title|t('commerce') }} {{ "Adjustment"|t('commerce') }}</strong><br> {{ adjustment.description }}</span>
+                        </td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td>
+                            <span class="right">{{ adjustment.amount|currency(order.currency) }}</span>
+                        </td>
+                        <td></td>
+						<td></td>
+                    </tr>
+                {% endfor %}
+                <tr>
+                    <td></td>
+                    <td>
+                        {% if order.isPaid and order.totalPrice > 0 %}
+                            <div class="paidLogo">
+                                <span>{{ 'PAID'|t('commerce') }}</div>
+                        {% endif %}
+                    </td>
+                    <td></td>
+                    <td></td>
+                    <td><h2>{{ "Total Price"|t('commerce') }}</h2></td>
+                    <td>
+                        <h2 class="right">{{ order.totalPrice|currency(order.currency) }}</h2>
+                    </td>
+                    <td></td>
+					<td></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    {% endif %}
+
+
+</div>
+
+<br>
+<input type="hidden" name="action" value="commerce/cart/update-cart">
+<input type="hidden" name="orderNumber" value="{{ order.number }}">
+{{ redirectInput('/admin/commerce-admin-orders/orders/products?orderNumber='~order.number) }}
+
+<div class="flex">
+<div id="productPicker" class="elementselect">
+    <div class="elements">
+    </div>
+
+    <div class="btn add icon dashed">Choose product</div>
+</div>
+<div class="flex-grow"></div>
+<input type="text" name="couponCode" class="text" value="" placeholder="coupon code">
+<div class="select">
+<select name="paymentCurrency">
+{% for currency in craft.commerce.paymentCurrencies.getAllPaymentCurrencies() %}
+	<option value="{{ currency.iso }}" {% if order.paymentCurrency == currency.iso %}selected{% endif %}>{{ currency.name }}</option> 
+{% endfor %}
+<select>
+</div>
+<input type="submit" class="btn submit" value="{{ 'Update'|t('app') }}">
+</div>
+
+{% js %}
+var $form = $('#main-form');
+    new Craft.BaseElementSelectInput({
+		id: 'productPicker',
+		name: 'product',
+		elementType: 'craft\\commerce\\elements\\Variant',
+		sources: null,
+		criteria: {'hasStock':true},
+		sourceElementId: null,
+		viewMode: 'list',
+		limit: 1,
+		modalStorageKey: null,
+		onSelectElements: function(e) {
+			console.log(e)
+			
+			$.each(e, function(i){
+				i++;
+				$('<input type="hidden" name="purchasables['+i+'][id]" value="'+this.id+'">').appendTo($form);
+				$('<input type="hidden" name="purchasables['+i+'][qty]" value="1">').appendTo($form);
+				$('<input type="hidden" name="purchasables['+i+'][note]" value="">').appendTo($form);
+				$('<input type="hidden" name="purchasables['+i+'][options]" value="">').appendTo($form);
+			})
+			$form.submit();
+		}
+	});
+
+	$.each($('.tableRowInfo'), function () {
+            new Craft.Commerce.TableRowAdditionalInfoIcon(this);
+        });
+	$('.infoRow a.delete').on('click', function(e){
+		e.preventDefault();
+		$('<input type="hidden" name="lineItems['+$(this).data('id')+'][remove]" value="1">').appendTo($form);
+		$form.submit();
+	})
+{% endjs %}
+</div> 
+{% endblock %}
+
+{% do view.registerAssetBundle("craft\\commerce\\web\\assets\\commercecp\\CommerceCpAsset") %}

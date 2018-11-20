@@ -8,9 +8,9 @@
  * @copyright Copyright (c) 2018 Kurious Agency
  */
 
-namespace kuriousagency\commerceadminorders\services;
+namespace kuriousagency\commerce\adminorders\services;
 
-use kuriousagency\commerceadminorders\CommerceAdminOrders;
+use kuriousagency\commerce\adminorders\AdminOrders;
 
 use Craft;
 use craft\base\Component;
