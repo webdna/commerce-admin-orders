@@ -2,7 +2,11 @@
 {% import "_includes/forms" as forms %}
 
 
-{% set continue = '/admin/commerce-admin-orders/orders/user?orderNumber='~order.number %}
+{% block actionButton %}
+	{% if fullPageForm %}
+		<a href="/admin/commerce-admin-orders/orders/user?orderNumber={{ order.number }}" class="btn submit {{ order.lineItems|length ?: 'disabled' }}">{{ 'Continue'|t('app') }}</a>
+	{% endif %}
+{% endblock %}
 
 {% block content %}
 
@@ -173,13 +177,17 @@
 </div>
 <div class="flex-grow"></div>
 <input type="text" name="couponCode" class="text" value="" placeholder="coupon code">
+
+{% set currencies = craft.commerce.paymentCurrencies.getAllPaymentCurrencies() %}
+{% if currencies|length > 1 %}
 <div class="select">
 <select name="paymentCurrency">
-{% for currency in craft.commerce.paymentCurrencies.getAllPaymentCurrencies() %}
+{% for currency in currencies %}
 	<option value="{{ currency.iso }}" {% if order.paymentCurrency == currency.iso %}selected{% endif %}>{{ currency.name }}</option> 
 {% endfor %}
 <select>
 </div>
+{% endif %}
 <input type="submit" class="btn submit" value="{{ 'Update'|t('app') }}">
 </div>
 
