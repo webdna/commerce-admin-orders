@@ -89,7 +89,7 @@ class AdminOrders extends Plugin
 			Element::class,
 			Element::EVENT_BEFORE_SAVE,
 			function(ModelEvent $event){
-				if(get_class($event->sender) == 'craft\\commerce\\elements\\Order'){
+				if(Craft::$app->getRequest()->getIsCpRequest() && get_class($event->sender) == 'craft\\commerce\\elements\\Order'){
 					$products = Craft::$app->getRequest()->getBodyParam('addProduct');
 					if($products){
 						$event->sender = $this->orders->addProducts($event->sender, $products);
