@@ -9,3 +9,15 @@
  * @package   CommerceAdminOrders
  * @since     1.0.0
  */
+
+#address {
+	align-items: start;
+}
+#order-extras {
+	align-items: start;
+	justify-content: space-between;
+}
+#main-container #main #header,
+#main-container #main #main-content {
+	width: 100vw;
+}

@@ -15,16 +15,21 @@
 {# shipping address #}
 {# pick from list #}
 {# or add new => new page, return here #}
-<div class="flex">
+<div class="flex" id-"addresses">
 <div id="shippingPane" class="pane flex-grow">
     
     <h3>Shipping Address</h3>
 
             <p class="light">
 			{% if order.shippingAddress %}
-				{{ order.shippingAddress.address1 }},
-				{{ order.shippingAddress.city }},
-				{{ order.shippingAddress.zipCode }}
+				{{ order.shippingAddress.firstName }} {{ order.shippingAddress.lastName }},<br>
+				{{ order.shippingAddress.businessName ? (order.shippingAddress.businessName~',<br>')|raw }}
+				{{ order.shippingAddress.address1 }},<br>
+				{{ order.shippingAddress.address2 ? (order.shippingAddress.address2~',<br>')|raw }}
+				{{ order.shippingAddress.city }},<br>
+				{{ order.shippingAddress.zipCode }},<br>
+				{{ order.shippingAddress.state ? (order.shippingAddress.state~',<br>')|raw }}
+				{{ order.shippingAddress.country }}
 			{% else %}
 				No address selected
 			{% endif %}
@@ -37,7 +42,7 @@
 			<select name="shippingAddressSelect">
 				<option value="" disabled selected>Choose address...</option>
 			{% for address in addresses %}
-				<option value="{{ address.id }}">{{ address.address1 }}</option> 
+				<option value="{{ address.id }}">{{ address.firstName }} {{ address.lastName }}, {{ address.address1 }}, {{ address.zipCode }}</option> 
 			{% endfor %}
 				<option value="0">Add new address</option>
 			<select>
@@ -52,9 +57,14 @@
 
             <p class="light">
 			{% if order.billingAddress %}
-				{{ order.billingAddress.address1 }},
-				{{ order.billingAddress.city }},
-				{{ order.billingAddress.zipCode }}
+				{{ order.billingAddress.firstName }} {{ order.billingAddress.lastName }},<br>
+				{{ order.billingAddress.businessName ? (order.billingAddress.businessName~',<br>')|raw }}
+				{{ order.billingAddress.address1 }},<br>
+				{{ order.billingAddress.address2 ? (order.billingAddress.address2~',<br>')|raw }}
+				{{ order.billingAddress.city }},<br>
+				{{ order.billingAddress.zipCode }},<br>
+				{{ order.billingAddress.state ? (order.billingAddress.state~',<br>')|raw }}
+				{{ order.billingAddress.country }}
 			{% else %}
 				No address selected
 			{% endif %}
@@ -67,7 +77,7 @@
 			<select name="billingAddressSelect">
 				<option value="" disabled selected>Choose address...</option>
 			{% for address in addresses %}
-				<option value="{{ address.id }}">{{ address.address1 }}</option> 
+				<option value="{{ address.id }}">{{ address.firstName }} {{ address.lastName }}, {{ address.address1 }}, {{ address.zipCode }}</option> 
 			{% endfor %}
 				<option value="0">Add new address</option>
 			<select>
@@ -82,7 +92,7 @@
 	});
 	$('a.submit').on('click', function(e){
 		e.preventDefault();
-		window.parent.document.location = $(this).attr('href');
+		window.parent.document.location = $(this).attr('href')+'#transactionsTab';
 	})
 {% endjs %}
 {% endblock %}

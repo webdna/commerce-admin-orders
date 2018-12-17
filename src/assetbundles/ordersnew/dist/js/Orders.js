@@ -261,7 +261,7 @@ $(document).ready(function() {
 		var $tab = $('#orderDetailsTab');
 
 		if ($('#order-completionStatus')[0]) {
-			$tab.append($('<div id="addProduct" class="elementselect"><div class="elements"></div><div class="btn add icon dashed">Add Product</div></div>'));
+			$tab.append($('<div id="order-extras" class="flex"><div id="addProduct" class="elementselect"><div class="elements"></div><div class="btn add icon dashed">Add Product</div></div><div><input type="text" name="couponCode" class="text" value="" placeholder="coupon code"> <a class="btn submit" data-id="update">Update</a></div></div>'));
 
 			new Craft.BaseElementSelectInput({
 				id: 'addProduct',
@@ -273,6 +273,12 @@ $(document).ready(function() {
 				viewMode: 'list',
 				limit: null,
 				modalStorageKey: null
+			});
+			$tab.find('[data-id="update"]').on('click', function(e) {
+				e.preventDefault();
+				$('#main-form')
+					.append($('<input type="hidden" name="redirect" value="' + $('#main-form').attr('data-saveshortcut-redirect') + '">'))
+					.submit();
 			});
 
 			$('.infoRow').each(function() {

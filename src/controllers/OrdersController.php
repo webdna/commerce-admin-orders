@@ -105,7 +105,50 @@ class OrdersController extends Controller
 		return $this->renderTemplate('commerce-admin-orders/address', $variables);
 	}
 
+	public function actionFindAddress()
+	{
+		// ajax request
+		$code = '';
 
+		$rows = (new Query())
+		// ->select([
+		// 	'addresses.id',
+		// 	'addresses.attention',
+		// 	'addresses.title',
+		// 	'addresses.firstName',
+		// 	'addresses.lastName',
+		// 	'addresses.countryId',
+		// 	'addresses.stateId',
+		// 	'addresses.address1',
+		// 	'addresses.address2',
+		// 	'addresses.city',
+		// 	'addresses.zipCode',
+		// 	'addresses.phone',
+		// 	'addresses.alternativePhone',
+		// 	'addresses.businessName',
+		// 	'addresses.businessTaxId',
+		// 	'addresses.businessId',
+		// 	'addresses.stateName'
+		// ])
+		->select(['addresses.*', 'customerAddresses.customerId'])
+		->from(['{{%commerce_addresses}} addresses'])
+		->innerJoin('{{%commerce_customers_addresses}} customerAddresses', '[[customerAddresses.addressId]] = [[addresses.id]]')
+		->where(['LIKE', 'addresses.zipCode' => $code.'%'])
+		->orWhere(['LIKE', 'addresses.zipCode' => str_replace(' ','',$code).'%'])
+		->all();
+
+		//->where(['LIKE', 'address.zipCode', $postcode.'%'])
+		//->orWhere(['LIKE', 'address.zipCode', str_replace(' ','',$postcode).'%'])
+		//->andWhere('orders.isCompleted = 1')
+			
+		$addresses = [];
+
+        foreach ($rows as $row) {
+            $addresses[] = new Address($row);
+		}
+		
+		//return json list of address.
+	}
 
 
 	public function actionUpdateUser()

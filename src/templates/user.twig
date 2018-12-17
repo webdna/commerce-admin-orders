@@ -10,16 +10,18 @@
 <input type="hidden" name="orderNumber" value="{{ order.number }}">
 {{ redirectInput('/admin/commerce-admin-orders/orders/address?orderNumber={number}') }}
 
+<div class="flex" id="order-extras">
 <div id="userPicker" class="elementselect">
     <div class="elements">
     </div>
 
     <div class="btn add icon dashed">Choose user</div>
 </div>
-
+	<input type="email" class="text" name="email" value="" placeholder="guest email">
+</div>
 <hr>
 <div>
-	<input type="email" class="text" name="email" value="" placeholder="guest email">
+	<input type="text" class="text" name="zipCode" value="" placeholder="zipcode">
 </div>
 
 {% js %}
@@ -35,6 +37,8 @@ var $form = $('#main-form');
 		limit: 1,
 		modalStorageKey: null,
 	});
+
+
 {% endjs %}
 </div> 
 {% endblock %}
