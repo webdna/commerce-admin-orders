@@ -161,6 +161,10 @@ class OrdersController extends Controller
 		$email = Craft::$app->getRequest()->getBodyParam('email');
 		//Craft::dump($userId);
 
+		if(Craft::$app->getRequest()->getBodyParam('userSelectId')) {
+			$userId = Craft::$app->getRequest()->getBodyParam('userSelectId');
+		}
+
 		if ($userId) {
 			$user = Craft::$app->users->getUserById($userId);
 			$customer = Commerce::getInstance()->getCustomers()->getCustomerByUserId($user->id);
@@ -226,6 +230,27 @@ class OrdersController extends Controller
         ]);
 
 		return $this->redirectToPostedUrl($order);
+	}
+
+	public function actionGetUsersByZipCode()
+	{
+		$users = [];
+		
+		$zipCode = Craft::$app->getRequest()->getParam('zipCode');
+		$order['number'] = Craft::$app->getRequest()->getParam('orderNumber');
+
+		// $order = Commerce::getInstance()->getOrders()->getOrderByNumber($number);
+		if($zipCode) {
+			$users = AdminOrders::getInstance()->users->findUsersByZipCode($zipCode);
+		}
+
+		$variables = [
+			'zipCode' => $zipCode,
+			'order' => $order,
+			'users' => $users,
+		];
+		return $this->renderTemplate('commerce-admin-orders/user', $variables);
+
 	}
 
 	public function actionUpdateAddress()

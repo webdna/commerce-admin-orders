@@ -205,7 +205,8 @@ var $form = $('#main-form');
 		modalStorageKey: null,
 		onSelectElements: function(e) {
 			console.log(e)
-			
+			$('#main').addClass('loading');
+				
 			$.each(e, function(i){
 				i++;
 				$('<input type="hidden" name="purchasables['+i+'][id]" value="'+this.id+'">').appendTo($form);
@@ -213,6 +214,9 @@ var $form = $('#main-form');
 				$('<input type="hidden" name="purchasables['+i+'][note]" value="">').appendTo($form);
 				$('<input type="hidden" name="purchasables['+i+'][options]" value="">').appendTo($form);
 			})
+
+
+
 			$form.submit();
 		}
 	});

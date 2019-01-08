@@ -11,6 +11,7 @@
 namespace kuriousagency\commerce\adminorders;
 
 use kuriousagency\commerce\adminorders\services\Orders as OrdersService;
+use kuriousagency\commerce\adminorders\services\Users as UsersService;
 use kuriousagency\commerce\adminorders\assetbundles\ordersnew\OrdersNewAsset;
 
 use Craft;
@@ -66,6 +67,7 @@ class AdminOrders extends Plugin
 		
 		$this->setComponents([
 			'orders' => OrdersService::class,
+			'users' => UsersService::class,
 		]);
 
 		if (Craft::$app->getRequest()->getIsCpRequest()) {

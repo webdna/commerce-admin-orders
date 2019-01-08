@@ -5,24 +5,70 @@
 
 {% block content %}
 
+<p>Plesae select an existing user, enter an email address to checkout a guest customer or search for a customer by Postcode/Zip Code</p>
 
 <input type="hidden" name="action" value="commerce-admin-orders/orders/update-user">
 <input type="hidden" name="orderNumber" value="{{ order.number }}">
 {{ redirectInput('/admin/commerce-admin-orders/orders/address?orderNumber={number}') }}
 
+<p><strong>Existing User</strong></p>
 <div class="flex" id="order-extras">
-<div id="userPicker" class="elementselect">
-    <div class="elements">
-    </div>
-
-    <div class="btn add icon dashed">Choose user</div>
-</div>
-	<input type="email" class="text" name="email" value="" placeholder="guest email">
+	
+	<div id="userPicker" class="elementselect">
+		<div class="elements">
+		</div>
+		<div class="btn add icon dashed">Choose user</div>
+	</div>
+	
 </div>
 <hr>
 <div>
-	<input type="text" class="text" name="zipCode" value="" placeholder="zipcode">
+	<p><strong>Guest Customer</strong></p>
+	<input type="email" class="text" name="email" value="" placeholder="Guest Email">
 </div>
+<hr>
+<div>
+	<p><strong>Search for exisiting user by Postcode/Zip Code</strong></p>
+	<input type="text" class="text" name="zipCode" value="{{ zipCode is defined ? zipCode }}" placeholder="Zip Code">
+	<input type="submit" class="btn submit" value="Search" id="zipCodeSearch">
+</div>
+
+{% if users is defined %}
+	<hr>
+	{% if  users|length %}
+	
+	<table class="data fullwidth collapsible">
+		<thead>
+		<tr>
+			<th scope="col">Name</th>
+			<th scope="col">Email</th>
+			<th scope="col">Address</th>
+			<th scope="col">City</th>
+			<th scope="col">Postcode/Zip Code</th>
+			<th scope="col"></th>
+		</tr>
+		</thead>
+		<tbody>
+			{% for user in users %}
+				{# {% for item in 1..20 %} #}
+				<tr>
+					<td>{{ user.firstName ~ ' ' ~ user.lastName }}</td>
+					<td>{{ user.email }}</td>
+					<td>{{ user.address1 }}</td>
+					<td>{{ user.city }}</td>
+					<td>{{ user.zipCode }}</td>
+					<td><input type="submit" class="btn submit" value="Select" data-type="user-select" data-id="{{ user.id }}"></td>
+				</tr>
+				{# {% endfor %} #}
+			{% endfor %}
+		</tbody>
+	</table>
+	<input type="hidden" name="userSelectId" value="">
+	{% else %}
+		<p>Sorry no users found</p>
+	{% endif %}
+{% endif %}
+
 
 {% js %}
 var $form = $('#main-form');
@@ -38,9 +84,19 @@ var $form = $('#main-form');
 		modalStorageKey: null,
 	});
 
+$('#zipCodeSearch').on('click',function(e) {
+	e.preventDefault();
+	$('input[name=action]').val('commerce-admin-orders/orders/get-users-by-zip-code');
+	$('#main-form').submit();
+})
+
+$('[data-type="user-select"]').on('click',function(e) {
+	e.preventDefault();
+	$('input[name=userSelectId]').val($(this).data('id'));
+	$('#main-form').submit();
+})
 
 {% endjs %}
-</div> 
 {% endblock %}
 
 {% do view.registerAssetBundle("craft\\commerce\\web\\assets\\commercecp\\CommerceCpAsset") %}
