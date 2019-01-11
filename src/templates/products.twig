@@ -169,26 +169,30 @@
 {{ redirectInput('/admin/commerce-admin-orders/orders/products?orderNumber='~order.number) }}
 
 <div class="flex">
-<div id="productPicker" class="elementselect">
-    <div class="elements">
-    </div>
 
-    <div class="btn add icon dashed">Choose product</div>
-</div>
-<div class="flex-grow"></div>
-<input type="text" name="couponCode" class="text" value="" placeholder="coupon code">
+	<div id="productPicker" class="elementselect">
+		<div class="elements">
+		</div>		
+		<div class="btn add icon dashed">Choose product</div>
+	</div>
+	
+	{% if order.lineItems|length > 0 %}
+		<div class="flex-grow"></div>
+		<input type="text" name="couponCode" class="text" value="{{ order.couponCode }}" placeholder="Coupon Code">
+	
+		{% set currencies = craft.commerce.paymentCurrencies.getAllPaymentCurrencies() %}
+		{% if currencies|length > 1 %}
+		<div class="select">
+		<select name="paymentCurrency">
+		{% for currency in currencies %}
+			<option value="{{ currency.iso }}" {% if order.paymentCurrency == currency.iso %}selected{% endif %}>{{ currency.name }}</option> 
+		{% endfor %}
+		<select>
+		</div>
+		{% endif %}
+		<input type="submit" class="btn submit" value="{{ 'Update'|t('app') }}">
+	{% endif %}
 
-{% set currencies = craft.commerce.paymentCurrencies.getAllPaymentCurrencies() %}
-{% if currencies|length > 1 %}
-<div class="select">
-<select name="paymentCurrency">
-{% for currency in currencies %}
-	<option value="{{ currency.iso }}" {% if order.paymentCurrency == currency.iso %}selected{% endif %}>{{ currency.name }}</option> 
-{% endfor %}
-<select>
-</div>
-{% endif %}
-<input type="submit" class="btn submit" value="{{ 'Update'|t('app') }}">
 </div>
 
 {% js %}

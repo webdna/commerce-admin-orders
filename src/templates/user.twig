@@ -5,7 +5,8 @@
 
 {% block content %}
 
-<p>Plesae select an existing user, enter an email address to checkout a guest customer or search for a customer by Postcode/Zip Code</p>
+<p>Please select a user using one of the options below:</p>
+<hr>
 
 <input type="hidden" name="action" value="commerce-admin-orders/orders/update-user">
 <input type="hidden" name="orderNumber" value="{{ order.number }}">
@@ -23,12 +24,14 @@
 </div>
 <hr>
 <div>
-	<p><strong>Guest Customer</strong></p>
+	<p><strong>Guest Checkout</strong></p>
+	<p>Enter the guest user's email address<p>
 	<input type="email" class="text" name="email" value="" placeholder="Guest Email">
 </div>
 <hr>
 <div>
-	<p><strong>Search for exisiting user by Postcode/Zip Code</strong></p>
+	<p><strong>Postcode/Zip Code Search</strong></p>
+	<p>Search for an exisiting user by Postcode/Zip Code<p>
 	<input type="text" class="text" name="zipCode" value="{{ zipCode is defined ? zipCode }}" placeholder="Zip Code">
 	<input type="submit" class="btn submit" value="Search" id="zipCodeSearch">
 </div>
