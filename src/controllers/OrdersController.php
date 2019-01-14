@@ -421,6 +421,9 @@ class OrdersController extends Controller
 
 	private function _cloneOrder($order, $email)
 	{
+		//Craft::dd($order);
+		return $order;
+		
 		$clone = new Order();
 		$clone->number = Commerce::getInstance()->getCarts()->generateCartNumber();
 		$clone->lastIp = Craft::$app->getRequest()->userIP;
