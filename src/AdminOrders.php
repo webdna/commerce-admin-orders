@@ -24,6 +24,8 @@ use craft\base\Element;
 use craft\events\ModelEvent;
 use craft\web\View;
 use craft\events\TemplateEvent;
+use craft\events\RegisterUserPermissionsEvent;
+use craft\services\UserPermissions;
 
 use yii\base\Event;
 
@@ -52,7 +54,7 @@ class AdminOrders extends Plugin
     /**
      * @var string
      */
-    public $schemaVersion = '1.0.0';
+	public $schemaVersion = '1.0.0';
 
     // Public Methods
     // =========================================================================
@@ -75,14 +77,16 @@ class AdminOrders extends Plugin
                 View::class,
                 View::EVENT_BEFORE_RENDER_TEMPLATE,
                 function (TemplateEvent $event) {
-                    try {
-                        Craft::$app->getView()->registerAssetBundle(OrdersNewAsset::class);
-                    } catch (InvalidConfigException $e) {
-                        Craft::error(
-                            'Error registering AssetBundle - '.$e->getMessage(),
-                            __METHOD__
-                        );
-                    }
+					if (Craft::$app->user->checkPermission('accessPlugin-commerce-admin-orders')) {
+						try {
+							Craft::$app->getView()->registerAssetBundle(OrdersNewAsset::class);
+						} catch (InvalidConfigException $e) {
+							Craft::error(
+								'Error registering AssetBundle - '.$e->getMessage(),
+								__METHOD__
+							);
+						}
+					}
                 }
             );
 		}
@@ -124,7 +128,13 @@ class AdminOrders extends Plugin
 				$event->rules['commerce-admin-orders/orders/address/new'] = 'commerce-admin-orders/orders/new-address';
 				$event->rules['commerce-admin-orders/orders/save'] = 'commerce-admin-orders/orders/save-order';
             }
-        );
+		);
+		
+		Event::on(UserPermissions::class, UserPermissions::EVENT_REGISTER_PERMISSIONS, function(RegisterUserPermissionsEvent $event) {
+			$event->permissions['Admin Orders'] = [
+				'accessPlugin-commerce-admin-orders' => ['label' => 'Admin Orders'],
+			];
+		});
 
         Event::on(
             Plugins::class,
