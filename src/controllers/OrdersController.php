@@ -71,7 +71,9 @@ class OrdersController extends Controller
 		if ($order->currency != $order->paymentCurrency) {
 			$order->currency = $order->paymentCurrency;
 			Craft::$app->getElements()->saveElement($order, false);
+			$order = Commerce::getInstance()->getOrders()->getOrderByNumber($number);
 		}
+		//$order->getAdjustments('shipping');
 
 		$variables = [
 			'order' => $order,
@@ -85,6 +87,11 @@ class OrdersController extends Controller
 	{
 		$number = Craft::$app->getRequest()->getBodyParam('orderNumber');
 		$order = Commerce::getInstance()->getOrders()->getOrderByNumber($number);
+
+		/*if ($order->currency != $order->paymentCurrency) {
+			$order->currency = $order->paymentCurrency;
+			Craft::$app->getElements()->saveElement($order, false);
+		}*/
 
 		$variables = [
 			'order' => $order,
@@ -192,6 +199,11 @@ class OrdersController extends Controller
 		}
 		//Craft::dump($customer);
 		$order->customerId = $customer->id;
+
+		/*if ($order->currency != $order->paymentCurrency) {
+			$order->currency = $order->paymentCurrency;
+			Craft::$app->getElements()->saveElement($order, false);
+		}*/
 
 		$order = $this->_cloneOrder($order, $email);
 
