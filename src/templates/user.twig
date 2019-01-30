@@ -10,25 +10,9 @@
 
 <input type="hidden" name="action" value="commerce-admin-orders/orders/update-user">
 <input type="hidden" name="orderNumber" value="{{ order.number }}">
-{{ redirectInput('/admin/commerce-admin-orders/orders/address?orderNumber={number}') }}
+{# {{ redirectInput('/admin/commerce-admin-orders/orders/address?orderNumber={number}') }} #}
+{{ redirectInput('/admin/commerce-admin-orders/orders/products?orderNumber={number}') }}
 
-<p><strong>Existing User</strong></p>
-<div class="flex" id="order-extras">
-	
-	<div id="userPicker" class="elementselect">
-		<div class="elements">
-		</div>
-		<div class="btn add icon dashed">Choose user</div>
-	</div>
-	
-</div>
-<hr>
-<div>
-	<p><strong>Guest Checkout</strong></p>
-	<p>Enter the guest user's email address<p>
-	<input type="email" class="text" name="email" value="" placeholder="Guest Email">
-</div>
-<hr>
 <div>
 	<p><strong>Postcode/Zip Code Search</strong></p>
 	<p>Search for an exisiting user by Postcode/Zip Code<p>
@@ -66,12 +50,28 @@
 			{% endfor %}
 		</tbody>
 	</table>
-	<input type="hidden" name="userSelectId" value="">
+	<input type="hidden" name="orderId" value="">
 	{% else %}
 		<p>Sorry no users found</p>
 	{% endif %}
 {% endif %}
 
+<hr>
+<div>
+	<p><strong>Guest Checkout</strong></p>
+	<p>Enter the guest user's email address<p>
+	<input type="email" class="text" name="email" value="" placeholder="Guest Email">
+</div>
+<hr>
+
+<p><strong>Existing User</strong></p>
+<div class="flex" id="order-extras">	
+	<div id="userPicker" class="elementselect">
+		<div class="elements">
+		</div>
+		<div class="btn add icon dashed">Choose user</div>
+	</div>	
+</div>
 
 {% js %}
 var $form = $('#main-form');
@@ -95,7 +95,7 @@ $('#zipCodeSearch').on('click',function(e) {
 
 $('[data-type="user-select"]').on('click',function(e) {
 	e.preventDefault();
-	$('input[name=userSelectId]').val($(this).data('id'));
+	$('input[name=orderId]').val($(this).data('id'));
 	$('#main-form').submit();
 })
 

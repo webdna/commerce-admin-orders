@@ -15,38 +15,38 @@
 {# shipping address #}
 {# pick from list #}
 {# or add new => new page, return here #}
-<div class="flex" id-"addresses">
-<div id="shippingPane" class="pane flex-grow">
-    
-    <h3>Shipping Address</h3>
+<div class="flex" id="addresses">
+	<div id="shippingPane" class="pane flex-grow">
 
-            <p class="light">
-			{% if order.shippingAddress %}
-				{{ order.shippingAddress.firstName }} {{ order.shippingAddress.lastName }},<br>
-				{{ order.shippingAddress.businessName ? (order.shippingAddress.businessName~',<br>')|raw }}
-				{{ order.shippingAddress.address1 }},<br>
-				{{ order.shippingAddress.address2 ? (order.shippingAddress.address2~',<br>')|raw }}
-				{{ order.shippingAddress.city }},<br>
-				{{ order.shippingAddress.zipCode }},<br>
-				{{ order.shippingAddress.state ? (order.shippingAddress.state~',<br>')|raw }}
-				{{ order.shippingAddress.country }}
-			{% else %}
-				No address selected
-			{% endif %}
-			</p>
-    
+		<h3>Shipping Address</h3> 
+
+		<p class="light">
+		{% if order.shippingAddress %}
+			{{ order.shippingAddress.firstName }} {{ order.shippingAddress.lastName }}<br>
+			{{ order.shippingAddress.businessName ? (order.shippingAddress.businessName~'<br>')|raw }}
+			{{ order.shippingAddress.address1 }},<br>
+			{{ order.shippingAddress.address2 ? (order.shippingAddress.address2~'<br>')|raw }}
+			{{ order.shippingAddress.city }}<br>
+			{{ order.shippingAddress.zipCode }}<br>
+			{{ order.shippingAddress.state ? (order.shippingAddress.state~'<br>')|raw }}
+			{{ order.shippingAddress.country }}
+		{% else %}
+			No address selected
+		{% endif %}
+		</p>
 
 		<div class="footer">
             {# <a class="btn" id="make-payment" data-order-id="901">Make Payment</a> #}
 			<div class="select">
-			<select name="shippingAddressSelect">
-				<option value="" disabled selected>Choose address...</option>
-			{% for address in addresses %}
-				<option value="{{ address.id }}">{{ address.firstName }} {{ address.lastName }}, {{ address.address1 }}, {{ address.zipCode }}</option> 
-			{% endfor %}
-				<option value="0">Add new address</option>
-			<select>
+				<select name="shippingAddressSelect">
+					<option value="" disabled selected>Select Existing or Add New Address</option>
+					{% for address in addresses %}
+						<option value="{{ address.id }}">{{ address.firstName }} {{ address.lastName }}, {{ address.address1 }}, {{ address.zipCode }}</option> 
+					{% endfor %}
+					<option value="0">Add New Address</option>
+				<select>
 			</div>
+			{# <a href="/commerce-admin-orders/orders/address/new?type=shipping&amp;orderNumber={{ order.number }}" class="submit btn">Add New Address</a> #}
         </div>
     
 </div>
@@ -57,13 +57,13 @@
 
             <p class="light">
 			{% if order.billingAddress %}
-				{{ order.billingAddress.firstName }} {{ order.billingAddress.lastName }},<br>
-				{{ order.billingAddress.businessName ? (order.billingAddress.businessName~',<br>')|raw }}
-				{{ order.billingAddress.address1 }},<br>
-				{{ order.billingAddress.address2 ? (order.billingAddress.address2~',<br>')|raw }}
-				{{ order.billingAddress.city }},<br>
-				{{ order.billingAddress.zipCode }},<br>
-				{{ order.billingAddress.state ? (order.billingAddress.state~',<br>')|raw }}
+				{{ order.billingAddress.firstName }} {{ order.billingAddress.lastName }}<br>
+				{{ order.billingAddress.businessName ? (order.billingAddress.businessName~'<br>')|raw }}
+				{{ order.billingAddress.address1 }}<br>
+				{{ order.billingAddress.address2 ? (order.billingAddress.address2~'<br>')|raw }}
+				{{ order.billingAddress.city }}<br>
+				{{ order.billingAddress.zipCode }}<br>
+				{{ order.billingAddress.state ? (order.billingAddress.state~'<br>')|raw }}
 				{{ order.billingAddress.country }}
 			{% else %}
 				No address selected
@@ -75,11 +75,11 @@
             {# <a class="btn" id="make-payment" data-order-id="901">Make Payment</a> #}
 			<div class="select">
 			<select name="billingAddressSelect">
-				<option value="" disabled selected>Choose address...</option>
+				<option value="" disabled selected>Select Existing or Add New Address</option>
 			{% for address in addresses %}
 				<option value="{{ address.id }}">{{ address.firstName }} {{ address.lastName }}, {{ address.address1 }}, {{ address.zipCode }}</option> 
 			{% endfor %}
-				<option value="0">Add new address</option>
+				<option value="0">Add New Address</option>
 			<select>
 			</div>
         </div>
@@ -87,7 +87,17 @@
 </div>
 </div>
 {% js %}
-	$('select').on('change', function(e){
+	var $form = $('#main-form'),
+		$headerBtn = $form.find('#header .submit');
+
+	$form.on('click','#header .submit',function(e) {
+		if($(this).hasClass('disabled')) {
+			e.preventDefault();
+		}
+	})
+
+	$('select').on('change', function(e) {
+		$headerBtn.addClass('disabled');
 		$(this).parents('form').submit();
 	});
 	$('a.submit').on('click', function(e){

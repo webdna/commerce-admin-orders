@@ -33,25 +33,44 @@ class Users extends Component
     {
 		$zipCode = str_replace(" ",'',$zipCode);
 		
-		$rows = (new Query())
+		// $rows = (new Query())
+		// 	->select([
+		// 		'users.firstName',
+		// 		'users.lastName',
+		// 		'users.id',
+		// 		'users.email',
+		// 		'addresses.address1',
+		// 		'addresses.city',
+		// 		'addresses.zipCode',
+		// 	])
+		// 	->from(['{{%users}} users'])
+		// 	->innerJoin('{{%commerce_customers}} customers', '[[customers.userId]] = [[users.id]]')
+		// 	->innerJoin('{{%commerce_customers_addresses}} customerAddresses', '[[customerAddresses.customerId]] = [[customers.id]]')
+		// 	->innerJoin('{{%commerce_addresses}} addresses', '[[addresses.id]] = [[customerAddresses.addressId]]')			
+		// 	->where(['REPLACE(addresses.zipCode," ","")' => $zipCode])
+		// 	->orWhere(['LIKE','REPLACE(addresses.zipCode," ","")',$zipCode])
+		// 	->groupBy('users.id')
+		// 	->limit(20)
+		//     ->all();
+		
+			$rows = (new Query())
 			->select([
-				'users.firstName',
-				'users.lastName',
-				'users.id',
-				'users.email',
+				'orders.id',
+				'addresses.firstName',
+				'addresses.lastName',
+				'orders.email',
 				'addresses.address1',
 				'addresses.city',
 				'addresses.zipCode',
 			])
-			->from(['{{%users}} users'])
-			->innerJoin('{{%commerce_customers}} customers', '[[customers.userId]] = [[users.id]]')
-			->innerJoin('{{%commerce_customers_addresses}} customerAddresses', '[[customerAddresses.customerId]] = [[customers.id]]')
-			->innerJoin('{{%commerce_addresses}} addresses', '[[addresses.id]] = [[customerAddresses.addressId]]')			
+			->from('{{%commerce_orders}} orders')
+			// ->innerJoin('{{%commerce_customers_addresses}} customerAddresses', '[[order.customerId]] = [[customers.id]]')
+			->innerJoin('{{%commerce_addresses}} addresses', '[[addresses.id]] = [[orders.shippingAddressId]]')
 			->where(['REPLACE(addresses.zipCode," ","")' => $zipCode])
 			->orWhere(['LIKE','REPLACE(addresses.zipCode," ","")',$zipCode])
-			->groupBy('users.id')
+			->groupBy('orders.email')
 			->limit(20)
-            ->all();
+		    ->all();
 
         $users = [];
 
