@@ -56,16 +56,17 @@ class Users extends Component
 			$rows = (new Query())
 			->select([
 				'orders.id',
+				'orders.email',
 				'addresses.firstName',
 				'addresses.lastName',
-				'orders.email',
 				'addresses.address1',
 				'addresses.city',
 				'addresses.zipCode',
+				'customers.userId'
 			])
 			->from('{{%commerce_orders}} orders')
-			// ->innerJoin('{{%commerce_customers_addresses}} customerAddresses', '[[order.customerId]] = [[customers.id]]')
 			->innerJoin('{{%commerce_addresses}} addresses', '[[addresses.id]] = [[orders.shippingAddressId]]')
+			->innerJoin('{{%commerce_customers}} customers', '[[customers.id]] = [[orders.customerId]]')
 			->where(['REPLACE(addresses.zipCode," ","")' => $zipCode])
 			->orWhere(['LIKE','REPLACE(addresses.zipCode," ","")',$zipCode])
 			->groupBy('orders.email')
