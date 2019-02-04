@@ -261,22 +261,16 @@ $(document).ready(function() {
 		var $tab = $('#orderDetailsTab');
 
 		if ($('#order-completionStatus')[0]) {
-			
-			$tab.append($('<div id="order-extras" class="flex"><div id="addProduct" class="elementselect"><div class="elements"></div><div class="btn add icon dashed">Add Product</div></div><div><input type="text" name="couponCode" class="text" value="" placeholder="Coupon Code"> <a class="btn submit" data-id="update">Update</a></div></div>'));
 
-			new Craft.BaseElementSelectInput({
-				id: 'addProduct',
-				name: 'addProduct',
-				elementType: 'craft\\commerce\\elements\\Variant',
-				sources: null,
-				criteria: null,
-				sourceElementId: null,
-				viewMode: 'list',
-				limit: null,
-				modalStorageKey: null
-			});
+			$('#main-form').removeAttr('data-confirm-unload');
+			
+			$tab.append($('<div id="order-extras" class="flex"><div></div><div><input type="text" name="couponCode" class="text" value="" placeholder="Coupon Code"> <a class="btn submit" data-id="update">Update</a></div></div>'));
+
 			$tab.find('[data-id="update"]').on('click', function(e) {
 				e.preventDefault();
+
+				$('input[name=action]').val('commerce/cart/update-cart');
+				
 				$('#main-form')
 					.append($('<input type="hidden" name="redirect" value="' + $('#main-form').attr('data-saveshortcut-redirect') + '">'))
 					.submit();
@@ -285,10 +279,96 @@ $(document).ready(function() {
 			$('.infoRow').each(function() {
 				var $row = $(this),
 					$qty = $row.find('td[data-title="Qty"]'),
-					$input = $('<input type="number" min="0" name="qty[' + $row.attr('data-id') + ']" value="' + Number($qty.text()) + '">');
+					$input = $('<input type="number" min="0" name="lineItems[' + $row.attr('data-id') + '][qty]" value="' + Number($qty.text()) + '">');
 
 				$qty.empty().append($input);
 			});
+
+			$.ajax({
+				type: "GET",
+				dataType: 'json',
+				url: '',
+				data: {
+					'action' : 'commerce-admin-orders/orders/get-admin-variants',
+				},
+				success: function(data) {
+					$tab.append(data.html);
+
+					Craft.elementIndex = Craft.createElementIndex('kuriousagency\\commerce\\adminorders\\elements\\AdminVariant', $('#admin-variants'), {
+						context:        'index',
+						storageKey:     'elementindex.kuriousagency\\commerce\\adminorders\\elements\\AdminVariant',
+						criteria:       Craft.defaultIndexCriteria
+					});
+				}
+			});
+
+			$.ajax({
+				type: "POST",
+				dataType: 'json',
+				headers: {
+					"X-CSRF-Token" : $('[name="CRAFT_CSRF_TOKEN"]').val(),
+				},
+				url: '',
+				data: {
+					'action' : 'commerce-admin-orders/orders/get-order-number-by-id',
+					'orderId': $('input[name="orderId"]').val(),
+				},
+				success: function(data) {
+					$('#main-form').append($('<input type="hidden" name="orderNumber" value="' + data.orderNumber + '">'));
+				}
+			});
+
+
+			$tab.on('click','.atc',function(e) {
+				e.preventDefault();
+	
+				var $this = $(this);
+					purchasableId = $this.attr('data-id'),
+					qty = $tab.find('[name="adminOrderQty['+purchasableId+']"]').val();
+	
+				$('.order-details').addClass('loading');
+	
+				if(qty > 0) {
+
+					$.ajax({
+						type: "POST",
+						dataType: 'json',
+						headers: {
+							"X-CSRF-Token" : $('[name="CRAFT_CSRF_TOKEN"]').val(),
+						},
+						url: '',
+						data: {
+							'action' : 'commerce-admin-orders/orders/add-to-cart',
+							'purchasableId': purchasableId,
+							'adminOrderQty': qty,
+							'orderId': $('input[name="orderId"]').val(),
+						},
+						success: function(data) {
+							$('.order-details').empty();
+							$('.order-details').html(data.html);
+							$('.order-details').removeClass('loading');
+	
+							var notification = '<div class="notification notice">Product added to cart</div>';
+							$('#notifications-wrapper #notifications').html(notification);
+							$('#notifications-wrapper #notifications .notification').delay(2000).fadeOut(400);
+	
+							$.each($('.tableRowInfo'), function () {
+								new Craft.Commerce.TableRowAdditionalInfoIcon(this);
+							});
+						}
+					});
+				}
+	
+			})
+
+			$tab.on('click','.infoRow a.delete',function(e) {
+				e.preventDefault();
+				console.log($(this).data('id'));
+				$tab.find('[name="lineItems['+$(this).data('id')+'][qty]"]').val('0');
+				// $('<input type="hidden" name="lineItems['+$(this).data('id')+'][qty]" value="0">').appendTo($tab);
+				$('#main-form').append($('<input type="hidden" name="redirect" value="' + $('#main-form').attr('data-saveshortcut-redirect') + '">')).submit();
+			})		
+
 		}
 	}
 });
