@@ -11,13 +11,15 @@
  */
 
 #address,
-#addresses {
+#addresses,
+#summary {
 	align-items: start;
 }
 
 #order-extras {
 	align-items: start;
 	justify-content: space-between;
+
 }
 #main-container #main #header,
 #main-container #main #main-content {
@@ -56,20 +58,20 @@ body.fixed-header #main-container #main #header {
 	right: 0px !important;
 }
 
-#main .elements .adminOrderQty {
+#main #admin-variants .elements .adminOrderQty {
 	width: 70px;
 }
 
-#main .elements .atc {
+#main #admin-variants .elements .atc {
 	margin-left: 10px;
 }
 
-#main .elements .tableview {
+#main #admin-variants .elements .tableview {
 	height: 200px;
 	overflow: auto;
 }
 
-#main .elementindex.products {
+#main .elementindex #admin-variants  {
 	height: 300x;
 	overflow: hidden;
 }
@@ -100,6 +102,10 @@ body.fixed-header #main-container #main #header {
 	z-index: 3;
 }
 
+#admin-variants .toolbar.fixed {
+	position: absolute !important;
+	top: 20px !important;
+}
 
 
 

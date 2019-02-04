@@ -1,0 +1,46 @@
+
+{% set fullPageForm = false %}
+{# {% extends "commerce-admin-orders/_layouts/modal" %} #}
+{% import "_includes/forms" as forms %}
+
+{% set elementType = 'kuriousagency\\commerce\\adminorders\\elements\\AdminVariant' %}
+{# {% set elementType = 'craft\\commerce\\elements\\Variant' %} #}
+{% set elementInstance = craft.app.elements.createElement(elementType) %}
+{% set context = 'index' %}
+
+{% block header %}
+	<h2>Add Products</h2>
+{% endblock %}
+
+{% set sources = craft.app.elementIndexes.getSources(elementType, 'index') %}
+
+
+{% block content %}
+
+<div id="admin-variants">
+	<div class="sidebar hidden">
+		<nav>
+			{% include "_elements/sources" %}
+		</nav>
+	</div>
+
+	<div class="products elementindex pane" id="admin-variants">
+		{% include "_elements/indexcontainer" with {
+			showSiteMenu: false
+		} %}
+	</div>
+</div>
+
+{% endblock %}
+
+{# {% block initJs %}
+
+	Craft.elementIndex = Craft.createElementIndex('{{ elementType|e("js") }}', $('#main'), {
+		context:        '{{ context }}',
+		storageKey:     'elementindex.{{ elementType|e("js") }}',
+		criteria:       Craft.defaultIndexCriteria
+	});
+
+{% endblock %} #}
+
+{# {% js block('initJs') %} #}

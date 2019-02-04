@@ -69,6 +69,7 @@ class Users extends Component
 			->innerJoin('{{%commerce_customers}} customers', '[[customers.id]] = [[orders.customerId]]')
 			->where(['REPLACE(addresses.zipCode," ","")' => $zipCode])
 			->orWhere(['LIKE','REPLACE(addresses.zipCode," ","")',$zipCode])
+			->andWhere(['orders.iscompleted'=>1])
 			->groupBy('orders.email')
 			->limit(20)
 		    ->all();

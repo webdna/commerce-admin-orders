@@ -96,7 +96,7 @@ var $form = $('#main-form'),
 
 	$('#guest-email').on('keyup', function() {
 
-		var valid = /^([\w-\.]+@([\w-]+\.)+[\w-]{2,4})?$/.test(this.value);
+		var valid = /^([\w-\.]+@([\w-]+\.)+[\w-]+)?$/.test(this.value);
 
 		if(valid && (this.value != ''))  {
 			$headerBtn.prop('disabled',false).removeClass('disabled');

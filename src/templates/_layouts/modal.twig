@@ -1,7 +1,10 @@
 {% extends "_layouts/basecp" %}
 {% import "_includes/forms" as forms %}
 
-{% set fullPageForm = true %}
+{% if fullPageForm is not defined %}
+	{% set fullPageForm = true %}
+{% endif %}
+
 
 {% set sidebar = (sidebar ?? block('sidebar') ?? '')|trim %}
 {% set details = (details ?? block('details') ?? '')|trim %}

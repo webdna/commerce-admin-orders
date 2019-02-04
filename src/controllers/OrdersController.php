@@ -19,6 +19,8 @@ use craft\commerce\Plugin as Commerce;
 use craft\commerce\models\Customer;
 use craft\commerce\models\Address;
 
+use craft\elements\User;
+
 /**
  * @author    Kurious Agency
  * @package   CommerceAdminOrders
@@ -345,6 +347,8 @@ class OrdersController extends Controller
 
 		$shippingAddressSelect = Craft::$app->getRequest()->getBodyParam('shippingAddressSelect');
 		$billingAddressSelect = Craft::$app->getRequest()->getBodyParam('billingAddressSelect');
+		$shippingMethod = Craft::$app->getRequest()->getBodyParam('shippingMethod');
+		$shippingMethodHandle = Craft::$app->getRequest()->getParam('shippingMethodHandle');
 
 		//Craft::dump($shippingAddressSelect);
 		//Craft::dd($number);
@@ -360,7 +364,7 @@ class OrdersController extends Controller
 			$order->setBillingAddress($billingAddress);
 			Craft::$app->getElements()->saveElement($order, false);
 		}
-//Craft::dd($shippingAddressSelect);
+		//Craft::dd($shippingAddressSelect);
 		//redirect if value = 0 => new address
 		if ($shippingAddressSelect === '0') {
 			return $this->redirect('commerce-admin-orders/orders/address/new?type=shipping&orderNumber='.$order->number);
@@ -370,9 +374,47 @@ class OrdersController extends Controller
 			return $this->redirect('commerce-admin-orders/orders/address/new?type=billing&orderNumber='.$order->number);
 		}
 
+		// Set Shipping method on cart.
+		if ($shippingMethodHandle) {
+			$order->shippingMethodHandle = $shippingMethodHandle;
+			Craft::$app->getElements()->saveElement($order, false);
+		}
 		
 
+
 		return $this->redirectToPostedUrl($order);
+	}
+
+	public function actionRegisterUser()
+	{	
+		
+		$request = Craft::$app->getRequest();
+		$orderId = $request->getParam('orderId');
+
+		if($request->getParam('registerUser')) {
+
+			$email = $request->getParam('email');
+			
+			$user = Craft::$app->getUsers()->getUserByUsernameOrEmail($email);
+
+			if(!$user) {
+				$user = new User();
+				$user->pending = true;
+				$user->firstName = $request->getParam('firstName');
+				$user->lastName = $request->getParam('lastName');
+				$user->email = $request->getParam('email');
+				$user->username = $request->getParam('email');
+
+				Craft::$app->getElements()->saveElement($user, false);
+
+				Craft::$app->getUsers()->sendActivationEmail($user);
+			}
+
+		}
+
+		return $this->redirect('/admin/commerce/orders/'.$orderId);
+		
+		
 	}
 
 	public function actionNewAddress()
@@ -512,8 +554,11 @@ class OrdersController extends Controller
 
 		if ($purchasableId = $request->getParam('purchasableId')) {
 
-			$number = $request->getParam('number');
-			$cart = Commerce::getInstance()->getOrders()->getOrderByNumber($number);
+			if($number = $request->getParam('number')) {
+				$cart = Commerce::getInstance()->getOrders()->getOrderByNumber($number);
+			} elseif($orderId = $request->getParam('orderId')) {
+				$cart = Commerce::getInstance()->getOrders()->getOrderById($orderId);
+			}
 
             $note = '';
             $options = [];
@@ -548,6 +593,34 @@ class OrdersController extends Controller
 			])
 		]);
 		
+	}
+
+	public function actionGetAdminVariants()
+	{
+		return $this->asJson([
+			'success' => true,
+			'html' => $this->getView()->renderTemplate('commerce-admin-orders/admin-variant')
+		]);
+
+	}
+
+	public function actionGetOrderNumberById()
+	{
+
+		$id = Craft::$app->getRequest()->getParam('orderId');
+		
+		$order = Commerce::getInstance()->getOrders()->getOrderById($id);
+
+		if($order) {
+
+			return $this->asJson([
+				'success' => true,
+				'orderNumber' => $order->number
+			]);
+
+		}
+
+		return false;
 	}
 
 	private function _cloneOrder($order, $email, $previousGuestCustomer)

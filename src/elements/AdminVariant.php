@@ -49,7 +49,7 @@ class AdminVariant extends Variant
 		switch ($attribute) {
 			case 'qty':
 				{
-					if($this->stock > 0) {
+					if($this->stock > 0 || $this->hasUnlimitedStock ) {
 						$html = '<input type="text" name="adminOrderQty['.$this->id.']" class="text adminOrderQty" value="">';
 						$html .= ' <button class="btn submit atc" data-id="'.$this->id.'">Add to cart</button>';
 						
@@ -57,6 +57,18 @@ class AdminVariant extends Variant
 						$html = "OOS";
 					}
 					return $html;
+				}
+
+			case 'stock':
+				{
+					if($this->hasUnlimitedStock) {
+						$stock = "Unlimited ";
+					} else {
+						$stock = $this->stock;
+					}
+
+					return $stock;
+					
 				}
 		
 			default:

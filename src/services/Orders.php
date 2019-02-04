@@ -41,8 +41,11 @@ class Orders extends Component
 
 	public function updateQty(Order $order, array $lineItems)
 	{
-		foreach($lineItems as $id => $qty)
+		foreach($lineItems as $id => $qtyArray)
 		{
+			
+			$qty = $qtyArray['qty'];
+			
 			$lineItem = Commerce::getInstance()->getLineItems()->getLineItemById($id);
 
 			if(!$lineItem || ($order->id != $lineItem->orderId)){
