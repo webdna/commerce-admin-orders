@@ -61,6 +61,7 @@
 				{% if order.billingAddress %}
 					{{ order.billingAddress.firstName }} {{ order.billingAddress.lastName }}<br>
 					{{ order.billingAddress.businessName ? (order.billingAddress.businessName~'<br>')|raw }}
+					{{ order.billingAddress.businessTaxId ? (order.billingAddress.businessTaxId~'<br>')|raw }}
 					{{ order.billingAddress.address1 }}<br>
 					{{ order.billingAddress.address2 ? (order.billingAddress.address2~'<br>')|raw }}
 					{{ order.billingAddress.city }}<br>
