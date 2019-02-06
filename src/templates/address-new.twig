@@ -45,6 +45,14 @@
 			errors: model.getErrors('businessName'),
 		}) }}
 		{{ forms.textField({
+			id: 'businessTaxId',
+			name: type~'[businessTaxId]',
+			label: 'Business Tax Number',
+			required: false,
+			value: model.businessTaxId ?? null,
+			errors: model.getErrors('businessTaxId'),
+		}) }}
+		{{ forms.textField({
 			id: 'phone',
 			name: type~'[phone]',
 			label: 'Phone',
@@ -78,6 +86,14 @@
 			value: model.city ?? null,
 			errors: model.getErrors('city'),
 		}) }}
+		 {{ forms.selectField({
+            label: 'State'|t('commerce'),
+            id: 'stateValue',
+            name: 'stateValue',
+            value: model.stateValue,
+            errors: model.getErrors('stateValue'),
+            class: 'selectize fullwidth'
+        }) }}
 		{{ forms.textField({
 			id: 'zipcode',
 			name: type~'[zipCode]',
@@ -97,6 +113,25 @@
 		}) }}
 	</div>
 </div>
+
+ {% js %}
+        window.states = {{ craft.commerce.states.allStates|values|json_encode|raw }};
+
+        // add any custom state value that could not be in the standard list of states.
+        window.states.push({'name': '{{ model.stateValue }}', 'id': '{{ model.stateValue }}'});
+
+        $('#stateValue-field').find('select').selectize({
+            valueField: 'id',
+            create: true,
+            items: ['{{ model.stateValue }}'],
+            options: window.states,
+            labelField: 'name',
+            searchField: ['name'],
+            dropdownParent: 'body',
+            inputClass: 'selectize-input text',
+            allowEmptyOption: false
+        });
+    {% endjs %}
 
 {% endblock %}
 

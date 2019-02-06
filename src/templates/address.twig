@@ -25,6 +25,7 @@
 		{% if order.shippingAddress %}
 			{{ order.shippingAddress.firstName }} {{ order.shippingAddress.lastName }}<br>
 			{{ order.shippingAddress.businessName ? (order.shippingAddress.businessName~'<br>')|raw }}
+			{{ order.shippingAddress.businessTaxId ? (order.shippingAddress.businessTaxId~'<br>')|raw }}
 			{{ order.shippingAddress.address1 }},<br>
 			{{ order.shippingAddress.address2 ? (order.shippingAddress.address2~'<br>')|raw }}
 			{{ order.shippingAddress.city }}<br>
