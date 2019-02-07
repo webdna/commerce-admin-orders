@@ -585,8 +585,6 @@ class OrdersController extends Controller
 		// $cartHtml = $this->renderTemplate('commerce-admin-orders/cart', [
 		// 	'order' => $cart
 		// ]);
-
-		Craft::$app->session->setFlash('yourVariable', "Something happened yo!");
 		
 		return $this->asJson([
 			'success' => true,
