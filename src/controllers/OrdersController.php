@@ -48,13 +48,6 @@ class OrdersController extends Controller
 		Commerce::getInstance()->getCarts()->forgetCart();
 		Commerce::getInstance()->getCustomers()->forgetCustomer();
 		$order = Commerce::getInstance()->getCarts()->getCart(true);
-		//$order = $this->_createCart();
-		//$order->setEmail(null);
-		//$order->customerId = null;
-		//$order->setShippingAddress(null);
-		//Craft::$app->getElements()->saveElement($order, false);
-		//$cart = Commerce::getInstance()->getCarts()->getCart();
-		//Craft::dd($cart->getErrors());
 		$variables = [
 			'order' => $order,
 			'cart' => $cart
@@ -65,18 +58,15 @@ class OrdersController extends Controller
 	
 	public function actionProducts($cart=null)
 	{
-		//$cart = Commerce::getInstance()->getCarts()->getCart();
+
 		$number = Craft::$app->getRequest()->getParam('orderNumber');
 
-		//Craft::dd($number);
 		$order = Commerce::getInstance()->getOrders()->getOrderByNumber($number);
-		//$order = Commerce::getInstance()->getCarts()->getCart();
 		if ($order->currency != $order->paymentCurrency) {
 			$order->currency = $order->paymentCurrency;
 			Craft::$app->getElements()->saveElement($order, false);
 			$order = Commerce::getInstance()->getOrders()->getOrderByNumber($number);
 		}
-		//$order->getAdjustments('shipping');
 
 		$variables = [
 			'order' => $order,
@@ -90,11 +80,6 @@ class OrdersController extends Controller
 	{
 		$number = Craft::$app->getRequest()->getBodyParam('orderNumber');
 		$order = Commerce::getInstance()->getOrders()->getOrderByNumber($number);
-
-		/*if ($order->currency != $order->paymentCurrency) {
-			$order->currency = $order->paymentCurrency;
-			Craft::$app->getElements()->saveElement($order, false);
-		}*/
 
 		$variables = [
 			'order' => $order,
@@ -115,61 +100,13 @@ class OrdersController extends Controller
 		return $this->renderTemplate('commerce-admin-orders/address', $variables);
 	}
 
-	public function actionFindAddress()
-	{
-		// ajax request
-		$code = '';
-
-		$rows = (new Query())
-		// ->select([
-		// 	'addresses.id',
-		// 	'addresses.attention',
-		// 	'addresses.title',
-		// 	'addresses.firstName',
-		// 	'addresses.lastName',
-		// 	'addresses.countryId',
-		// 	'addresses.stateId',
-		// 	'addresses.address1',
-		// 	'addresses.address2',
-		// 	'addresses.city',
-		// 	'addresses.zipCode',
-		// 	'addresses.phone',
-		// 	'addresses.alternativePhone',
-		// 	'addresses.businessName',
-		// 	'addresses.businessTaxId',
-		// 	'addresses.businessId',
-		// 	'addresses.stateName'
-		// ])
-		->select(['addresses.*', 'customerAddresses.customerId'])
-		->from(['{{%commerce_addresses}} addresses'])
-		->innerJoin('{{%commerce_customers_addresses}} customerAddresses', '[[customerAddresses.addressId]] = [[addresses.id]]')
-		->where(['LIKE', 'addresses.zipCode' => $code.'%'])
-		->orWhere(['LIKE', 'addresses.zipCode' => str_replace(' ','',$code).'%'])
-		->all();
-
-		//->where(['LIKE', 'address.zipCode', $postcode.'%'])
-		//->orWhere(['LIKE', 'address.zipCode', str_replace(' ','',$postcode).'%'])
-		//->andWhere('orders.isCompleted = 1')
-			
-		$addresses = [];
-
-        foreach ($rows as $row) {
-            $addresses[] = new Address($row);
-		}
-		
-		//return json list of address.
-	}
-
-
 	public function actionUpdateUser()
 	{
-		//todo: clone cart with new details!!!
 		$number = Craft::$app->getRequest()->getParam('orderNumber');
 		$order = Commerce::getInstance()->getOrders()->getOrderByNumber($number);
 
 		$userId = Craft::$app->getRequest()->getBodyParam('userId')[0];
 		$email = Craft::$app->getRequest()->getBodyParam('email');
-		//Craft::dump($userId);
 
 		$previousGuestCustomer = false;
 
@@ -270,47 +207,14 @@ class OrdersController extends Controller
 			Commerce::getInstance()->getCustomers()->saveCustomer($customer);
 			$order->setEmail($email);
 
-			// Craft::dd($order);
 		}
-		//Craft::dump($customer);
+
 		$order->customerId = $customer->id;
-
-		/*if ($order->currency != $order->paymentCurrency) {
-			$order->currency = $order->paymentCurrency;
-			Craft::$app->getElements()->saveElement($order, false);
-		}*/
-
 		$order = $this->_cloneOrder($order,$email,$previousGuestCustomer);
-
-
-
-		//$order->customerId = $customer->id;
-		//$order->billingAddressId = null;
-		//$order->shippingAddressId = null;
-		//$order->currency = $order->paymentCurrency;
-
-		//Craft::dump($order->currency);
-		//Craft::$app->getElements()->saveElement($order);
-		//Craft::dd($order);
-
-		/*if (!Craft::$app->getElements()->saveElement($order, false)) {
-			Craft::$app->getUrlManager()->setRouteParams([
-                'order' => $order
-            ]);
-
-			$error = Craft::t('commerce', 'Unable to update cart.');
-            Craft::$app->getSession()->setError($error);
-
-            return null;
-		}*/
 
 		$variables = [
 			'order' => $order,
 		];
-
-
-		//return $this->renderTemplate('commerce-admin-orders/address', $variables);
-
 
 		Craft::$app->getUrlManager()->setRouteParams([
             'order' => $order
@@ -326,7 +230,6 @@ class OrdersController extends Controller
 		$zipCode = Craft::$app->getRequest()->getParam('zipCode');
 		$order['number'] = Craft::$app->getRequest()->getParam('orderNumber');
 
-		// $order = Commerce::getInstance()->getOrders()->getOrderByNumber($number);
 		if($zipCode) {
 			$users = AdminOrders::getInstance()->users->findUsersByZipCode($zipCode);
 		}
@@ -350,9 +253,6 @@ class OrdersController extends Controller
 		$shippingMethod = Craft::$app->getRequest()->getBodyParam('shippingMethod');
 		$shippingMethodHandle = Craft::$app->getRequest()->getParam('shippingMethodHandle');
 
-		//Craft::dump($shippingAddressSelect);
-		//Craft::dd($number);
-
 		if ($shippingAddressSelect > 0) {
 			$shippingAddress = Commerce::getInstance()->getAddresses()->getAddressByIdAndCustomerId($shippingAddressSelect, $order->customerId);
 			$order->setShippingAddress($shippingAddress);
@@ -364,7 +264,7 @@ class OrdersController extends Controller
 			$order->setBillingAddress($billingAddress);
 			Craft::$app->getElements()->saveElement($order, false);
 		}
-		//Craft::dd($shippingAddressSelect);
+
 		//redirect if value = 0 => new address
 		if ($shippingAddressSelect === '0') {
 			return $this->redirect('commerce-admin-orders/orders/address/new?type=shipping&orderNumber='.$order->number);
@@ -414,7 +314,6 @@ class OrdersController extends Controller
 
 		return $this->redirect('/admin/commerce/orders/'.$orderId);
 		
-		
 	}
 
 	public function actionNewAddress()
@@ -454,10 +353,8 @@ class OrdersController extends Controller
 		
 		if ($shippingAddress) {
 			$order->setShippingAddress($shippingAddress);
-			//$order->validate();
-			//Craft::dd($order->shippingAddress->getErrors('firstName'));
+	
 			if (!$order->validate() || !Craft::$app->getElements()->saveElement($order, false)) {
-				//Craft::dd($order->shippingAddress->getErrors('firstName'));
 				Craft::$app->getUrlManager()->setRouteParams([
 					'order' => $order,
 					'model' => $order->shippingAddress,
@@ -487,11 +384,6 @@ class OrdersController extends Controller
 		
 		$email = Craft::$app->getRequest()->getParam('email');
 		$userId = Craft::$app->getRequest()->getParam('userId');
-		/*$users = Craft::$app->getRequest()->getParam('users');
-		if($users){
-			$userId = $users[0];
-		}*/
-		
 		$createNewAddress = true;
 
 		$order = new Order();
@@ -500,8 +392,6 @@ class OrdersController extends Controller
         $order->orderLanguage = Craft::$app->language;
 		$order->currency = Commerce::getInstance()->getPaymentCurrencies()->getPrimaryPaymentCurrencyIso();
 
-		//$orderStatus = Commerce::getInstance()->getOrderStatuses()->getOrderStatusByHandle('incomplete');
-		//$order->orderStatusId = $orderStatus->id;
 		if($userId){
 			$user = Craft::$app->users->getUserById($userId);
 			$customer = Commerce::getInstance()->getCustomers()->getCustomerByUserId($user->id);
@@ -581,10 +471,6 @@ class OrdersController extends Controller
 		Craft::$app->getElements()->saveElement($cart, false);
 		// save again so lineitems have ids so adjustment can be correctly shown against them
 		Craft::$app->getElements()->saveElement($cart, false);
-
-		// $cartHtml = $this->renderTemplate('commerce-admin-orders/cart', [
-		// 	'order' => $cart
-		// ]);
 		
 		return $this->asJson([
 			'success' => true,
@@ -625,21 +511,16 @@ class OrdersController extends Controller
 
 	private function _cloneOrder($order, $email, $previousGuestCustomer)
 	{
-		//Craft::dd($order);
-		// return $order;
 		
 		$clone = new Order();
 		$clone->number = Commerce::getInstance()->getCarts()->generateCartNumber();
 		$clone->lastIp = Craft::$app->getRequest()->userIP;
         $clone->orderLanguage = Craft::$app->language;
-		//$order->currency = Commerce::getInstance()->getPaymentCurrencies()->getPrimaryPaymentCurrencyIso();
 		$clone->currency = $order->paymentCurrency;
 		$clone->paymentCurrency = $order->paymentCurrency;
 		$clone->couponCode = $order->couponCode;
 		$clone->gatewayId = $order->gatewayId;
 		$clone->customerId = $order->customerId;
-		//Craft::dump($order->customerId);
-		//$clone->email = $email;
 		$clone->setEmail($email);
 
 		if($previousGuestCustomer) {
@@ -656,18 +537,8 @@ class OrdersController extends Controller
 		}
 
 		Craft::$app->getElements()->saveElement($clone, false);
-		//Craft::dd($clone);
-		//Craft::dd($clone->getErrors());
-
-		
 		Commerce::getInstance()->getCarts()->forgetCart();
-
-		//$session = Craft::$app->getSession();
-		//$session->set('commerce_cart', $clone->number);
-
 		Craft::$app->getElements()->deleteElement($order);
-
-		//Craft::dd($clone);
 
 		return $clone;
 	}
