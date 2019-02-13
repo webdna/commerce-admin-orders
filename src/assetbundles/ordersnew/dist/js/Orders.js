@@ -366,7 +366,7 @@ $(document).ready(function() {
 				console.log($(this).data('id'));
 				$('.order-details').addClass('loading');
 				$tab.find('[name="lineItems[' + $(this).data('id') + '][qty]"]').val('0');
-				// $('<input type="hidden" name="lineItems['+$(this).data('id')+'][qty]" value="0">').appendTo($tab);
+				$('input[name=action]').val('commerce/cart/update-cart');
 				$('#main-form')
 					.append($('<input type="hidden" name="redirect" value="' + $('#main-form').attr('data-saveshortcut-redirect') + '">'))
 					.submit();
