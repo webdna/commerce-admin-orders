@@ -28,6 +28,8 @@ To install the plugin, follow these instructions.
 
 Click Commerce in the sidebar and click "New Order" in the top right.
 
+![New Order](resources/screenshots/new-order.png)
+
 **2. Users**
 
 Select a user using one of the following options:
@@ -35,17 +37,27 @@ Select a user using one of the following options:
 * Guest Checkout – enter an email address and click continue
 * Existing User - select existing user and click continue
 
+![Users](resources/screenshots/users.png)
+
 **3. Products**
 
-a.	Select or search for a product, enter the required quantity and click "Add to cart" (repeat for each required product). 
-b.	Enter any required coupon codes and/or select a different payment currency and click update
-c.	Click continue
+* Select or search for a product, enter the required quantity and click "Add to cart" (repeat for each required product). 
+* Enter any required coupon codes and/or select a different payment currency and click update
+* Click continue
+
+![Products](resources/screenshots/add-products-empty-cart.png)
+
+![Products and cart](resources/screenshots/add-products-cart.png)
 
 **4. Address and Summary**
 
 Select an existing address or the "Add new address" option. Any shipping options can also be selected on this page.
 
+![Address and summary](resources/screenshots/summary.png)
+
 For Guest Checkouts, a "Create User Account" option is given. If this option is selected, once the continue button is clicked a user account is created and an activation email is sent to the order email address.
+
+![Address and summary guest](resources/screenshots/summary-new-user.png)
 
 **5. Payment**
 
@@ -55,6 +67,8 @@ Finally, a payment can be processed for the order by clicking "Make Payment" and
 
 Incomplete orders now have extra options to add/remove products, update quantities or add a coupon code.
 
+![Update order](resources/screenshots/update-order.png)
+
 Search for the incomplete order (the best way to do this is to use Craft Commerce’s predefined "Active Carts" and "Inactive Carts" filters) and select.
 
 To add a new product simply select or search for a product, enter the required quantity and click "Add to cart". 
@@ -62,9 +76,5 @@ To add a new product simply select or search for a product, enter the required q
 To update the quantity of a product, change the line item quantity and click the update button. Likewise, to add a coupon code, enter the code and click the Update button.
 
 Products can be removed by either clicking the X on right of the line item or by entering a quantity of 0 and clicking the Update button.
-
-
-
-
 
 Brought to you by [Kurious Agency](https://kurious.agency)

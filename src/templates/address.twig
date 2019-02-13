@@ -26,7 +26,7 @@
 			{{ order.shippingAddress.firstName }} {{ order.shippingAddress.lastName }}<br>
 			{{ order.shippingAddress.businessName ? (order.shippingAddress.businessName~'<br>')|raw }}
 			{{ order.shippingAddress.businessTaxId ? (order.shippingAddress.businessTaxId~'<br>')|raw }}
-			{{ order.shippingAddress.address1 }},<br>
+			{{ order.shippingAddress.address1 }}<br>
 			{{ order.shippingAddress.address2 ? (order.shippingAddress.address2~'<br>')|raw }}
 			{{ order.shippingAddress.city }}<br>
 			{{ order.shippingAddress.zipCode }}<br>
@@ -91,12 +91,10 @@
 </div>
 
 {% if order.shippingAddress %}
-
 	<div class="flex" id="summary">
 		
-		{% if order.availableShippingMethods|length %}
-			<div class="flex-grow">
-
+		<div class="flex-grow">
+			{% if order.availableShippingMethods|length %}
 				<div class="pane">
 					<h3>Shipping Options</h3>
 					<div class="select">
@@ -108,49 +106,49 @@
 						</select>
 					</div>
 				</div>
-				
-				{% if order.customer.userId is null and craft.users().email(order.email).one() is null %}
-					<div class="pane">
-						<h3>Create User Account</h3>
-						
-						{{ forms.textField({
-							id: 'firstname',
-							name: 'firstName',
-							label: 'Firstname',
-							required: true,
-							value: order.shippingAddress.firstName ?? null,
-						}) }}
+			{% endif %}
+			
+			{% if order.customer.userId is null and craft.users().email(order.email).one() is null %}
+				<div class="pane">
+					<h3>Create User Account</h3>
+					
+					{{ forms.textField({
+						id: 'firstname',
+						name: 'firstName',
+						label: 'Firstname',
+						required: true,
+						value: order.shippingAddress.firstName ?? null,
+					}) }}
 
-						{{ forms.textField({
-							id: 'lastname',
-							name: 'lastName',
-							label: 'Lastname',
-							required: true,
-							value: order.shippingAddress.lastName ?? null,
-						}) }}
+					{{ forms.textField({
+						id: 'lastname',
+						name: 'lastName',
+						label: 'Lastname',
+						required: true,
+						value: order.shippingAddress.lastName ?? null,
+					}) }}
 
-						{{ forms.checkboxField({
-							id: 'register-user',
-							fieldLabel: 'Please tick to confirm you would like to create a user account for ' ~ order.email,
-							name: 'registerUser',
-						}) }}
+					{{ forms.checkboxField({
+						id: 'register-user',
+						fieldLabel: 'Please tick to confirm you would like to create a user account for ' ~ order.email,
+						name: 'registerUser',
+					}) }}
 
-						{{ forms.hidden({
-							name: "email",
-							value: order.email
-						}) }}
+					{{ forms.hidden({
+						name: "email",
+						value: order.email
+					}) }}
 
-						{{ forms.hidden({
-							name: "orderId",
-							value: order.id
-						}) }}
+					{{ forms.hidden({
+						name: "orderId",
+						value: order.id
+					}) }}
 
-					</div>
-				{% endif %}
+				</div>
+			{% endif %}
 
-			</div>
-		{% endif %}
-
+		</div>
+		
 		<div class="pane flex-grow" style="margin-bottom: 14px!important; margin-top: 0;">
 			<h3>Summary</h3>
 				<div class="order-details">
