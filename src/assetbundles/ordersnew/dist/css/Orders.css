@@ -19,7 +19,6 @@
 #order-extras {
 	align-items: start;
 	justify-content: space-between;
-
 }
 #main-container #main #header,
 #main-container #main #main-content {
@@ -31,20 +30,20 @@
 	position: fixed;
 	width: 100%;
 	height: 100%;
-	top: 0; 
+	top: 0;
 	left: 0;
 	right: 0;
 	bottom: 0;
-	background-color:#fff;
+	background-color: #fff;
 	z-index: 2;
-} 
+}
 
 #main.loading:after {
 	content: '.';
 	font-size: 0;
 	position: absolute;
 	top: calc(50% - 44px);
-	left: calc(50% - 12px); 
+	left: calc(50% - 12px);
 	bottom: 0;
 	width: 48px;
 	background: url(../img/spinner_big.gif) no-repeat 50% 50%;
@@ -62,8 +61,12 @@ body.fixed-header #main-container #main #header {
 	width: 70px;
 }
 
+#main #admin-variants .elements .qty {
+	display: flex;
+}
+
 #main #admin-variants .elements .atc {
-	margin-left: 10px;
+	margin-left: 5px;
 }
 
 #main #admin-variants .elements .tableview {
@@ -71,7 +74,7 @@ body.fixed-header #main-container #main #header {
 	overflow: auto;
 }
 
-#main .elementindex #admin-variants  {
+#main .elementindex #admin-variants {
 	height: 300x;
 	overflow: hidden;
 }
@@ -81,20 +84,20 @@ body.fixed-header #main-container #main #header {
 	position: absolute;
 	width: 100%;
 	height: 100%;
-	top: 0; 
+	top: 0;
 	left: 0;
 	right: 0;
 	bottom: 0;
-	background-color:#fff;
+	background-color: #fff;
 	z-index: 2;
-} 
+}
 
 .order-details.loading:after {
 	content: '.';
 	font-size: 0;
 	position: absolute;
 	top: calc(50% - 44px);
-	left: calc(50% - 12px); 
+	left: calc(50% - 12px);
 	bottom: 0;
 	width: 48px;
 	background: url(../img/spinner_big.gif) no-repeat 50% 50%;
@@ -106,6 +109,3 @@ body.fixed-header #main-container #main #header {
 	position: absolute !important;
 	top: 20px !important;
 }
-
-
-

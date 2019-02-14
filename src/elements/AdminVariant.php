@@ -50,8 +50,8 @@ class AdminVariant extends Variant
 			case 'qty':
 				{
 					if($this->stock > 0 || $this->hasUnlimitedStock ) {
-						$html = '<input type="text" name="adminOrderQty['.$this->id.']" class="text adminOrderQty" value="">';
-						$html .= ' <button class="btn submit atc" data-id="'.$this->id.'">Add to cart</button>';
+						$html = '<div class="qty"><input type="text" name="adminOrderQty['.$this->id.']" class="text adminOrderQty" value="">';
+						$html .= ' <button class="btn submit atc" data-id="'.$this->id.'">Add</button></div>';
 						
 					} else {
 						$html = "OOS";
