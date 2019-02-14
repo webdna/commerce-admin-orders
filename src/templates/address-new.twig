@@ -117,7 +117,6 @@
  {% js %}
         window.states = {{ craft.commerce.states.allStates|values|json_encode|raw }};
 
-        // add any custom state value that could not be in the standard list of states.
         window.states.push({'name': '{{ model.stateValue }}', 'id': '{{ model.stateValue }}'});
 
         $('#stateValue-field').find('select').selectize({

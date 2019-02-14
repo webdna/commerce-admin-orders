@@ -1,9 +1,7 @@
 {% extends "commerce-admin-orders/_layouts/modal" %}
 {% import "_includes/forms" as forms %}
 
-{# element index #}
 {% set elementType = 'kuriousagency\\commerce\\adminorders\\elements\\AdminVariant' %}
-{# {% set elementType = 'craft\\commerce\\elements\\Variant' %} #}
 {% set elementInstance = craft.app.elements.createElement(elementType) %}
 {% set context = 'index' %}
 
@@ -193,23 +191,21 @@
 
 	<div class="flex {{ order.lineItems|length > 0 ? '' : 'hidden' }}" id="cartControls">
 		
-		{# {% if order.lineItems|length > 0 %} #}
-			<div class="flex-grow"></div>
-			<input type="text" name="couponCode" class="text" value="{{ order.couponCode }}" placeholder="Coupon Code">
+		<div class="flex-grow"></div>
+		<input type="text" name="couponCode" class="text" value="{{ order.couponCode }}" placeholder="Coupon Code">
+	
+		{% set currencies = craft.commerce.paymentCurrencies.getAllPaymentCurrencies() %}
+		{% if currencies|length > 1 %}
+		<div class="select">
+		<select name="paymentCurrency">
+		{% for currency in currencies %}
+			<option value="{{ currency.iso }}" {% if order.paymentCurrency == currency.iso %}selected{% endif %}>{{ currency.name }}</option> 
+		{% endfor %}
+		<select>
+		</div>
+		{% endif %}
+		<input type="submit" class="btn submit" value="{{ 'Update'|t('app') }}">
 		
-			{% set currencies = craft.commerce.paymentCurrencies.getAllPaymentCurrencies() %}
-			{% if currencies|length > 1 %}
-			<div class="select">
-			<select name="paymentCurrency">
-			{% for currency in currencies %}
-				<option value="{{ currency.iso }}" {% if order.paymentCurrency == currency.iso %}selected{% endif %}>{{ currency.name }}</option> 
-			{% endfor %}
-			<select>
-			</div>
-			{% endif %}
-			<input type="submit" class="btn submit" value="{{ 'Update'|t('app') }}">
-		{# {% endif %} #}
-
 	</div>
 
 	{% js %}

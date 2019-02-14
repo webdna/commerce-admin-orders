@@ -91,36 +91,6 @@ class AdminOrders extends Plugin
             );
 		}
 
-		// Event::on(
-		// 	Element::class,
-		// 	Element::EVENT_BEFORE_SAVE,
-		// 	function(ModelEvent $event){
-		// 		if(Craft::$app->getRequest()->getIsCpRequest() && get_class($event->sender) == 'craft\\commerce\\elements\\Order'){
-		// 			// $products = Craft::$app->getRequest()->getBodyParam('addProduct');
-		// 			// if($products){
-		// 			// 	$event->sender = $this->orders->addProducts($event->sender, $products);
-		// 			// }
-
-		// 			$lineItems = Craft::$app->getRequest()->getBodyParam('lineItems');
-
-		// 			echo $event->sender->id;
-		// 			exit("bob");
-
-		// 			if($lineItems){
-		// 				$event->sender = $this->orders->updateQty($event->sender, $lineItems);
-		// 			}
-		// 		}
-		// 	}
-		// );
-
-        /*Event::on(
-            UrlManager::class,
-            UrlManager::EVENT_REGISTER_SITE_URL_RULES,
-            function (RegisterUrlRulesEvent $event) {
-                $event->rules['siteActionTrigger1'] = 'commerce-admin-orders/orders';
-            }
-        );*/
-
         Event::on(
             UrlManager::class,
             UrlManager::EVENT_REGISTER_CP_URL_RULES,
