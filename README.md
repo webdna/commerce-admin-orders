@@ -51,7 +51,7 @@ Select a user using one of the following options:
 
 **4. Address and Summary**
 
-Select an existing address or chhose the option to add a new address. Any shipping options can also be selected on this page.
+Select an existing address or choose the option to add a new address. Any shipping options can also be selected on this page.
 
 ![Address and summary](resources/screenshots/summary.png)
 
