@@ -236,9 +236,9 @@
 				purchasableId = $this.attr('data-id'),
 				qty = $form.find('[name="adminOrderQty['+purchasableId+']"]').val();
 
-			$('.order-details').addClass('loading');
-
 			if(qty > 0) {
+				$('.order-details').addClass('loading');
+
 				$.ajax({
 					type: "POST",
 					dataType: 'json',
