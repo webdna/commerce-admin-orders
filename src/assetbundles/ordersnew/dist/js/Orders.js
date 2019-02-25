@@ -53,7 +53,7 @@ Craft.Commerce.OrderCreateModal = Garnish.Modal.extend({
 		var self = this;
 
 		var $container = $('<div class="modal "></div>').appendTo(Garnish.$bod);
-		var $iframe = $('<iframe src="/admin/commerce-admin-orders/orders/new" style="width:100%; height:100%;"></iframe>').appendTo($container);
+		var $iframe = $('<iframe src="' + Craft.getCpUrl('commerce-admin-orders/orders/new') + '" style="width:100%; height:100%;"></iframe>').appendTo($container);
 
 		this.base($container, settings);
 	},
