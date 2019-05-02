@@ -12,7 +12,7 @@
 
 <input type="hidden" name="action" value="commerce-admin-orders/orders/update-user">
 <input type="hidden" name="orderNumber" value="{{ order.number }}">
-{{ redirectInput('/admin/commerce-admin-orders/orders/products?orderNumber={number}') }}
+{{ redirectInput(cpUrl('commerce-admin-orders/orders/products?orderNumber={number}')) }}
 
 <div>
 	<p><strong>Postcode/Zip Code Search</strong></p>

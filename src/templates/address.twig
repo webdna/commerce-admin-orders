@@ -1,14 +1,14 @@
 {% extends "commerce-admin-orders/_layouts/modal" %}
 {% import "_includes/forms" as forms %}
 
-{% set continue = '/admin/commerce/orders/'~order.id %}
+{% set continue = cpUrl('commerce/orders/'~order.id) %}
 
 {% block content %}
 
 
 <input type="hidden" name="action" value="commerce-admin-orders/orders/update-address">
 <input type="hidden" name="orderNumber" value="{{ order.number }}">
-{{ redirectInput('/admin/commerce-admin-orders/orders/address?orderNumber={number}') }}
+{{ redirectInput(cpUrl('commerce-admin-orders/orders/address?orderNumber={number}')) }}
 
 {% set addresses = order.customer.addresses %}
 
