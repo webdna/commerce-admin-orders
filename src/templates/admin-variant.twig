@@ -2,31 +2,40 @@
 {% set fullPageForm = false %}
 {% import "_includes/forms" as forms %}
 
-{% set elementType = 'kuriousagency\\commerce\\adminorders\\elements\\AdminVariant' %}
-{% set elementInstance = craft.app.elements.createElement(elementType) %}
-{% set context = 'index' %}
+{% set tabs = {
+	'products': {url:'#productsTab', label:'Products', elementType:'kuriousagency\\commerce\\adminorders\\elements\\Variant'},
+} %}
 
-{% block header %}
-	<h2>Add Products</h2>
-{% endblock %}
-
-{% set sources = craft.app.elementIndexes.getSources(elementType, 'index') %}
-
+{% set bundles = craft.app.plugins.isPluginInstalled('bundles') and craft.app.plugins.isPluginEnabled('bundles') %}
+{% if bundles %}
+{% set tabs = tabs|merge({'bundles': {url:'#bundlesTab', label:'Bundles', elementType:'kuriousagency\\commerce\\adminorders\\elements\\Bundle'}}) %}
+{% endif %}
 
 {% block content %}
+<div id="adminOrders" class="pane">
 
-<div id="admin-variants">
-	<div class="sidebar hidden">
-		<nav>
-			{% include "_elements/sources" %}
-		</nav>
-	</div>
+{% if showTabs is defined and showTabs %}
+{% include "_includes/tabs" %}
+{% endif %}
 
-	<div class="products elementindex pane" id="admin-variants">
-		{% include "_elements/indexcontainer" with {
-			showSiteMenu: false
-		} %}
+
+{% for tab in tabs %}
+	<div id="{{ tab.url|replace('#','') }}" class="tab {{ not loop.first ? 'hidden' }}">
+		{# <h2>{{ tab.label }}</h2> #}
+		<div class="sidebar hidden">
+			<nav>
+				{% include "_elements/sources" with {
+					sources: craft.app.elementIndexes.getSources(tab.elementType, 'index')
+				} %}
+			</nav>
+		</div>
+		<div class="products elementindex {{ showTabs is defined and showTabs ? 'inline' }}" data-type="{{ tab.elementType }}">
+			{% include "_elements/indexcontainer" with {
+				showSiteMenu: false,
+				elementType: tab.elementType,
+			} %}
+		</div>
 	</div>
+	{% endfor %}
 </div>
-
 {% endblock %}

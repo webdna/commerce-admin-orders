@@ -8,7 +8,7 @@
  * @copyright Copyright (c) 2018 Kurious Agency
  */
 
-namespace kuriousagency\commerce\adminorders\assetbundles\ordersnew;
+namespace kuriousagency\commerce\adminorders\assetbundles\neworder;
 
 use Craft;
 use craft\web\AssetBundle;
@@ -19,7 +19,7 @@ use craft\web\assets\cp\CpAsset;
  * @package   CommerceAdminOrders
  * @since     1.0.0
  */
-class OrdersNewAsset extends AssetBundle
+class NewOrder extends AssetBundle
 {
     // Public Methods
     // =========================================================================
@@ -29,18 +29,20 @@ class OrdersNewAsset extends AssetBundle
      */
     public function init()
     {
-        $this->sourcePath = "@kuriousagency/commerce/adminorders/assetbundles/ordersnew/dist";
+        $this->sourcePath = "@kuriousagency/commerce/adminorders/assetbundles/neworder/dist";
 
         $this->depends = [
             CpAsset::class,
         ];
 
         $this->js = [
-            'js/Orders.js',
+			'js/Modal.js',
+			'js/Edit.js',
         ];
 
         $this->css = [
-            'css/Orders.css',
+			'css/Modal.css',
+			//'css/Edit.css',
         ];
 
         parent::init();
