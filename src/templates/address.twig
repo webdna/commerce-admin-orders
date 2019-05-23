@@ -99,9 +99,9 @@
 					<h3>Shipping Options</h3>
 					<div class="select">
 						<select name="shippingMethodHandle" id="shippingMethod">
+							<option value="" disabled  {% if order.shippingMethodHandle is empty %} {% endif %}>Please select a shippng method</option>
 							{% for handle, method in order.availableShippingMethods	 %}
-								<option value="" disabled  {% if order.shippingMethodHandle is empty %} {% endif %}>Please select a shippng method</option>
-								<option value="{{ handle }}" {% if handle == order.shippingMethodHandle or loop.first %} "selected" {% endif %}>{{ method.name}} {{ method.amount ? method.amount|commerceCurrency(cart.currency) : 'Free' }}</option>
+								<option value="{{ handle }}" {{ handle == order.shippingMethodHandle ? "selected" : loop.first ? "selected" : '' }}>{{ method.name}} {{ method.priceForOrder(order) ? method.priceForOrder(order)|currency(order.currency) : 'Free' }}</option>
 							{% endfor %}
 						</select>
 					</div>
