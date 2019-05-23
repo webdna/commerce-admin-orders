@@ -4,7 +4,7 @@
 {% block actionButton %}
 	{% if fullPageForm %}
 
-		<a href="/admin/commerce-admin-orders/orders/address?orderNumber={{ order.number }}" class="btn" style="margin-right:7px">{{ 'Cancel'|t('app') }}</a>
+		<a href="{{cpUrl('commerce-admin-orders/orders/address?orderNumber='~order.number) }}" class="btn" style="margin-right:7px">{{ 'Cancel'|t('app') }}</a>
 
 		<input type="submit" class="btn submit" value="{{ 'Continue'|t('app') }}">
 
@@ -16,7 +16,7 @@
 
 <input type="hidden" name="action" value="commerce-admin-orders/orders/save-address">
 <input type="hidden" name="orderNumber" value="{{ order.number }}">
-{{ redirectInput('/admin/commerce-admin-orders/orders/address?orderNumber={number}') }}
+{{ redirectInput(cpUrl('commerce-admin-orders/orders/address?orderNumber={number}')) }}
 
 <div class="flex" style="align-items: flex-start;">
 	<div class="flex-grow">

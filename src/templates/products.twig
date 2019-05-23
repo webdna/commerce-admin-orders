@@ -9,7 +9,7 @@
 
 {% block actionButton %}
 	{% if fullPageForm %}
-		<a href="/admin/commerce-admin-orders/orders/address?orderNumber={{ order.number }}" class="btn submit {{ order.lineItems|length ? "" : 'disabled' }}">{{ 'Continue'|t('app') }}</a>
+		<a href="{{cpUrl('commerce-admin-orders/orders/address?orderNumber='~order.number)}}" class="btn submit {{ order.lineItems|length ? "" : 'disabled' }}">{{ 'Continue'|t('app') }}</a>
 	{% endif %}
 {% endblock %}
 
@@ -187,7 +187,7 @@
 	<br>
 	<input type="hidden" name="action" value="commerce/cart/update-cart">
 	<input type="hidden" name="orderNumber" value="{{ order.number }}">
-	{{ redirectInput('/admin/commerce-admin-orders/orders/products?orderNumber='~order.number) }}
+	{{ redirectInput(cpUrl('commerce-admin-orders/orders/products?orderNumber='~order.number)) }}
 
 	<div class="flex {{ order.lineItems|length > 0 ? '' : 'hidden' }}" id="cartControls">
 		

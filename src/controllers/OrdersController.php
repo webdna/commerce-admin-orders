@@ -18,6 +18,7 @@ use craft\commerce\elements\Order;
 use craft\commerce\Plugin as Commerce;
 use craft\commerce\models\Customer;
 use craft\commerce\models\Address;
+use craft\helpers\UrlHelper;
 
 use craft\elements\User;
 
@@ -312,7 +313,7 @@ class OrdersController extends Controller
 
 		}
 
-		return $this->redirect('/admin/commerce/orders/'.$orderId);
+		return $this->redirect(UrlHelper::cpUrl('commerce/orders/'.$orderId));
 		
 	}
 
