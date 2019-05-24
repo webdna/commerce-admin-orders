@@ -5,7 +5,7 @@
 	'products': {url:'#productsTab', label:'Products', elementType:'kuriousagency\\commerce\\adminorders\\elements\\Variant'},
 } %}
 
-{% set bundles = craft.app.plugins.isPluginInstalled('bundles') and craft.app.plugins.isPluginEnabled('bundles') %}
+{% set bundles = craft.app.plugins.isPluginInstalled('commerce-bundles') and craft.app.plugins.isPluginEnabled('commerce-bundles') %}
 {% if bundles %}
 {% set tabs = tabs|merge({'bundles': {url:'#bundlesTab', label:'Bundles', elementType:'kuriousagency\\commerce\\adminorders\\elements\\Bundle'}}) %}
 {% endif %}

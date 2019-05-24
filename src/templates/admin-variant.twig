@@ -1,4 +1,3 @@
-
 {% set fullPageForm = false %}
 {% import "_includes/forms" as forms %}
 
@@ -6,36 +5,34 @@
 	'products': {url:'#productsTab', label:'Products', elementType:'kuriousagency\\commerce\\adminorders\\elements\\Variant'},
 } %}
 
-{% set bundles = craft.app.plugins.isPluginInstalled('bundles') and craft.app.plugins.isPluginEnabled('bundles') %}
+{% set bundles = craft.app.plugins.isPluginInstalled('commerce-bundles') and craft.app.plugins.isPluginEnabled('commerce-bundles') %}
 {% if bundles %}
-{% set tabs = tabs|merge({'bundles': {url:'#bundlesTab', label:'Bundles', elementType:'kuriousagency\\commerce\\adminorders\\elements\\Bundle'}}) %}
+	{% set tabs = tabs|merge({'bundles': {url:'#bundlesTab', label:'Bundles', elementType:'kuriousagency\\commerce\\adminorders\\elements\\Bundle'}}) %}
 {% endif %}
 
 {% block content %}
-<div id="adminOrders" class="pane">
+	<div id="adminOrders" class="pane">
+		{% if showTabs is defined and showTabs %}
+			{% include "_includes/tabs" %}
+		{% endif %}
 
-{% if showTabs is defined and showTabs %}
-{% include "_includes/tabs" %}
-{% endif %}
-
-
-{% for tab in tabs %}
-	<div id="{{ tab.url|replace('#','') }}" class="tab {{ not loop.first ? 'hidden' }}">
-		{# <h2>{{ tab.label }}</h2> #}
-		<div class="sidebar hidden">
-			<nav>
-				{% include "_elements/sources" with {
-					sources: craft.app.elementIndexes.getSources(tab.elementType, 'index')
-				} %}
-			</nav>
-		</div>
-		<div class="products elementindex {{ showTabs is defined and showTabs ? 'inline' }}" data-type="{{ tab.elementType }}">
-			{% include "_elements/indexcontainer" with {
-				showSiteMenu: false,
-				elementType: tab.elementType,
-			} %}
-		</div>
+		{% for tab in tabs %}
+			<div id="{{ tab.url|replace('#','') }}" class="tab {{ not loop.first ? 'hidden' }}">
+				{# <h2>{{ tab.label }}</h2> #}
+				<div class="sidebar hidden">
+					<nav>
+						{% include "_elements/sources" with {
+							sources: craft.app.elementIndexes.getSources(tab.elementType, 'index')
+						} %}
+					</nav>
+				</div>
+				<div class="products elementindex {{ showTabs is defined and showTabs ? 'inline' }}" data-type="{{ tab.elementType }}">
+					{% include "_elements/indexcontainer" with {
+						showSiteMenu: false,
+						elementType: tab.elementType,
+					} %}
+				</div>
+			</div>
+		{% endfor %}
 	</div>
-	{% endfor %}
-</div>
 {% endblock %}

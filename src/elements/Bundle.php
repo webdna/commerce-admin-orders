@@ -3,7 +3,7 @@
 namespace kuriousagency\commerce\adminorders\elements;
 
 use Craft;
-use kuriousagency\bundles\elements\Bundle as CommerceBundle;
+use kuriousagency\commerce\bundles\elements\Bundle as CommerceBundle;
 
 class Bundle extends CommerceBundle
 {
