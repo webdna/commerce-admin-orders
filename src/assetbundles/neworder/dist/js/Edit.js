@@ -181,6 +181,12 @@ $(document).ready(function() {
 						$.each($('.tableRowInfo'), function() {
 							new Craft.Commerce.TableRowAdditionalInfoIcon(this);
 						});
+
+						if ($orderDetails.find('.infoRow').length > 0) {
+							$('#header .submit').removeClass('disabled');
+						} else {
+							$('#header .submit').addClass('disabled');
+						}
 					}
 				});
 			}
