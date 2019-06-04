@@ -12,7 +12,7 @@ namespace kuriousagency\commerce\adminorders;
 
 use kuriousagency\commerce\adminorders\services\Orders as OrdersService;
 use kuriousagency\commerce\adminorders\services\Users as UsersService;
-use kuriousagency\commerce\adminorders\assetbundles\ordersnew\OrdersNewAsset;
+use kuriousagency\commerce\adminorders\assetbundles\neworder\NewOrder;
 
 use Craft;
 use craft\base\Plugin;
@@ -79,7 +79,7 @@ class AdminOrders extends Plugin
                 function (TemplateEvent $event) {
 					if (Craft::$app->user->checkPermission('accessPlugin-commerce-admin-orders')) {
 						try {
-							Craft::$app->getView()->registerAssetBundle(OrdersNewAsset::class);
+							Craft::$app->getView()->registerAssetBundle(NewOrder::class);
 						} catch (InvalidConfigException $e) {
 							Craft::error(
 								'Error registering AssetBundle - '.$e->getMessage(),
@@ -108,6 +108,19 @@ class AdminOrders extends Plugin
 			$event->permissions['Admin Orders'] = [
 				'accessPlugin-commerce-admin-orders' => ['label' => 'Admin Orders'],
 			];
+		});
+
+		Craft::$app->view->hook('cp.commerce.order.edit.main-pane', function(array &$context) {
+			$view = Craft::$app->getView();
+			$order = $context['order'];
+
+			if ($order->isCompleted) {
+				return '';
+			}
+			
+			$content = $view->renderTemplate('commerce-admin-orders/partials/controls', ['order'=>$order, 'showCurrency' => false]);
+			$content .= $view->renderTemplate('commerce-admin-orders/admin-variant', ['order'=>$order, 'showTabs'=>true]);
+        	return $content;
 		});
 
         Event::on(
