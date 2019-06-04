@@ -445,18 +445,19 @@ class OrdersController extends Controller
 
 		if ($purchasableId = $request->getParam('purchasableId')) {
 
-			if($number = $request->getParam('number')) {
+			if($number = $request->getParam('orderNumber')) {
 				$cart = Commerce::getInstance()->getOrders()->getOrderByNumber($number);
 			} elseif($orderId = $request->getParam('orderId')) {
 				$cart = Commerce::getInstance()->getOrders()->getOrderById($orderId);
 			}
-
+			//Craft::dd($purchasableId);
             $note = '';
             $options = [];
 			$qty = (int)$request->getParam('adminOrderQty', 1);
 
 			$lineItem = Commerce::getInstance()->getLineItems()->resolveLineItem($cart->id, $purchasableId, $options);
 
+			
             // New line items already have a qty of one.
             if ($lineItem->id) {
                 $lineItem->qty += $qty;
@@ -487,6 +488,28 @@ class OrdersController extends Controller
 		return $this->asJson([
 			'success' => true,
 			'html' => $this->getView()->renderTemplate('commerce-admin-orders/admin-variant')
+		]);
+
+	}
+
+	public function actionGetControls()
+	{
+		$request = Craft::$app->getRequest();
+		$number = $request->getParam('orderNumber');
+		$id = $request->getParam('orderId');
+		if (!$number && !$id) {
+			return $this->asJson(['success'=>false,'message'=>'nor id or number']);
+		}
+		if ($number) {
+			$order = Commerce::getInstance()->getOrders()->getOrderByNumber($number);
+		}
+		if ($id) {
+			$order = Commerce::getInstance()->getOrders()->getOrderById($id);
+		}
+		
+		return $this->asJson([
+			'success' => true,
+			'html' => $this->getView()->renderTemplate('commerce-admin-orders/partials/controls', ['order'=>$order])
 		]);
 
 	}

@@ -3,12 +3,13 @@
 namespace kuriousagency\commerce\adminorders\elements;
 
 use Craft;
-use craft\commerce\elements\Variant;
+use kuriousagency\commerce\bundles\elements\Bundle as CommerceBundle;
 
-class AdminVariant extends Variant
+class Bundle extends CommerceBundle
 {
 
 	public $qty;
+	public $stock;
 
 	/**
     * @inheritdoc
@@ -24,7 +25,11 @@ class AdminVariant extends Variant
 
 	}
 	
-	
+	protected static function defineActions(string $source = null): array
+    {
+		$actions = [];
+		return $actions;
+	}
 	
 	/**
      * @inheritdoc
@@ -49,23 +54,23 @@ class AdminVariant extends Variant
 		switch ($attribute) {
 			case 'qty':
 				{
-					if($this->stock > 0 || $this->hasUnlimitedStock ) {
+					//if($this->stock > 0 || $this->hasUnlimitedStock ) {
 						$html = '<div class="qty"><input type="text" name="adminOrderQty['.$this->id.']" class="text adminOrderQty" value="">';
 						$html .= ' <button class="btn submit atc" data-id="'.$this->id.'">Add</button></div>';
 						
-					} else {
-						$html = "OOS";
-					}
+					//} else {
+					//	$html = "OOS";
+					//}
 					return $html;
 				}
 
 			case 'stock':
 				{
-					if($this->hasUnlimitedStock) {
+					//if($this->hasUnlimitedStock) {
 						$stock = "Unlimited ";
-					} else {
-						$stock = $this->stock;
-					}
+					//} else {
+						//$stock = $this->stock;
+					//}
 
 					return $stock;
 					

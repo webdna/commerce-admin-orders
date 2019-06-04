@@ -1,0 +1,20 @@
+	<div id="cartControls" class="flex ">
+		<input type="hidden" name="orderNumber" value="{{ order.number }}">
+
+		<div class="flex-grow"></div>
+		<input type="text" name="couponCode" class="text" value="{{ order.couponCode }}" placeholder="Coupon Code">
+		{% if showCurrency is defined and showCurrency %}
+		{% set currencies = craft.commerce.paymentCurrencies.getAllPaymentCurrencies() %}
+		{% if currencies|length > 1 %}
+		<div class="select">
+		<select name="paymentCurrency">
+		{% for currency in currencies %}
+			<option value="{{ currency.iso }}" {% if order.paymentCurrency == currency.iso %}selected{% endif %}>{{ currency.name }}</option> 
+		{% endfor %}
+		<select>
+		</div>
+		{% endif %}
+		{% endif %}
+		<input type="submit" class="btn submit" value="{{ 'Update'|t('app') }}">
+		
+	</div>
