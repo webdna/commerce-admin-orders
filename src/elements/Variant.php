@@ -10,6 +10,11 @@ class Variant extends CommerceVariant
 
 	public $qty;
 
+	public function getCpEditUrl(): string
+	{
+		return '';
+	}
+
 	/**
     * @inheritdoc
     */

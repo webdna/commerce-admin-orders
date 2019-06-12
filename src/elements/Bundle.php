@@ -11,6 +11,11 @@ class Bundle extends CommerceBundle
 	public $qty;
 	public $stock;
 
+	public function getCpEditUrl(): string
+	{
+		return '';
+	}
+
 	/**
     * @inheritdoc
     */
