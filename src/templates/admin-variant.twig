@@ -10,6 +10,11 @@
 	{% set tabs = tabs|merge({'bundles': {url:'#bundlesTab', label:'Bundles', elementType:'kuriousagency\\commerce\\adminorders\\elements\\Bundle'}}) %}
 {% endif %}
 
+{% set digital = craft.app.plugins.isPluginInstalled('digital-products') and craft.app.plugins.isPluginEnabled('digital-products') %}
+{% if digital %}
+{% set tabs = tabs|merge({'digital': {url:'#digitalTab', label:'Digital Products', elementType:'kuriousagency\\commerce\\adminorders\\elements\\Digital'}}) %}
+{% endif %}
+
 {% block content %}
 	<div id="adminOrders" class="pane">
 		{% if showTabs is defined and showTabs %}
