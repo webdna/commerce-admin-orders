@@ -326,20 +326,40 @@ class OrdersController extends Controller
 		$shippingAddress = Craft::$app->getRequest()->getParam('shipping');
 		$billingAddress = Craft::$app->getRequest()->getParam('billing');
 
+		$address = new Address();
+
+		if ($shippingAddress) {
+			$address = new Address($shippingAddress);
+			$address->validate();
+			if ($address->zipCode == '') {
+				$address->addError('zipCode', Craft::t('commerce', 'Zip Code cannot be blank.'));
+			}
+			if ($address->address1 == '') {
+				$address->addError('address1', Craft::t('commerce', 'Address Line 1 cannot be blank.'));
+			}
+			if ($address->city == '') {
+				$address->addError('city', Craft::t('commerce', 'City cannot be blank.'));
+			}
+		}
+		if ($billingAddress) {
+			$address = new Address($billingAddress);
+			$address->validate();
+			if ($address->zipCode == '') {
+				$address->addError('zipCode', Craft::t('commerce', 'Zip Code cannot be blank.'));
+			}
+			if ($address->address1 == '') {
+				$address->addError('address1', Craft::t('commerce', 'Address Line 1 cannot be blank.'));
+			}
+			if ($address->city == '') {
+				$address->addError('city', Craft::t('commerce', 'City cannot be blank.'));
+			}
+		}
+
 		if ($type) {
 			return $this->renderTemplate('commerce-admin-orders/address-new', [
 				'order' => $order,
 				'type' => $type,
-				'model' => new Address(),
-			]);
-		}
-		if ($shippingAddress) {
-			$order->validate();
-			Craft::dd($order->shippingAddress->getErrors());
-			return $this->renderTemplate('commerce-admin-orders/address-new', [
-				'order' => $order,
-				'type' => 'shipping',
-				'model' => $order->shippingAddress,
+				'model' => $address,
 			]);
 		}
 	}
@@ -351,10 +371,18 @@ class OrdersController extends Controller
 
 		$shippingAddress = Craft::$app->getRequest()->getParam('shipping');
 		$billingAddress = Craft::$app->getRequest()->getParam('billing');
-		
+
 		if ($shippingAddress) {
-			$order->setShippingAddress($shippingAddress);
-	
+			$address = new Address($shippingAddress);
+			if (!$address->validate()) {
+				
+				Craft::$app->getUrlManager()->setRouteParams([
+					'order' => $order,
+					'model' => $address,
+				]);
+				return null;
+			}
+			$order->setShippingAddress($address);
 			if (!$order->validate() || !Craft::$app->getElements()->saveElement($order, false)) {
 				Craft::$app->getUrlManager()->setRouteParams([
 					'order' => $order,
@@ -364,6 +392,15 @@ class OrdersController extends Controller
 			}
 		}
 		if ($billingAddress) {
+			$address = new Address($billingAddress);
+			if (!$address->validate()) {
+				
+				Craft::$app->getUrlManager()->setRouteParams([
+					'order' => $order,
+					'model' => $address,
+				]);
+				return null;
+			}
 			$order->setBillingAddress($billingAddress);
 
 			if (!$order->validate() || !Craft::$app->getElements()->saveElement($order, false)) {
