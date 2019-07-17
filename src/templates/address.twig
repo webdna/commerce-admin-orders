@@ -8,7 +8,7 @@
 
 <input type="hidden" name="action" value="commerce-admin-orders/orders/update-address">
 <input type="hidden" name="orderNumber" value="{{ order.number }}">
-{{ redirectInput(cpUrl('commerce-admin-orders/orders/address?orderNumber={number}')) }}
+{{ redirectInput(cpUrl()~'/commerce-admin-orders/orders/address?orderNumber={number}') }}
 
 {% set addresses = order.customer.addresses %}
 
