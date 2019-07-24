@@ -60,6 +60,21 @@ body.fixed-header #main-container #main #header {
 #adminOrders #cartPane {
 	margin-top: 15px;
 }
+
+#main #cartPane .custom-price {
+	margin-top: 10px;
+}
+
+#main #cartPane .custom-price .label {
+	font-weight: bold;
+	display: inline-block;
+}
+
+#main #cartPane .custom-price input.adminOrderPrice {
+	display: block;
+	margin-top: 5px;
+}
+
 #cartControls {
 	margin-top: 15px;
 }

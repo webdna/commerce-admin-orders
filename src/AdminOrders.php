@@ -26,6 +26,9 @@ use craft\web\View;
 use craft\events\TemplateEvent;
 use craft\events\RegisterUserPermissionsEvent;
 use craft\services\UserPermissions;
+use craft\commerce\events\LineItemEvent;
+use craft\commerce\services\LineItems;
+use craft\commerce\Plugin as Commerce;
 
 use yii\base\Event;
 
@@ -66,6 +69,8 @@ class AdminOrders extends Plugin
     {
         parent::init();
 		self::$plugin = $this;
+
+        $this->updateLineItemPrice();
 		
 		$this->setComponents([
 			'orders' => OrdersService::class,
@@ -145,4 +150,23 @@ class AdminOrders extends Plugin
     // Protected Methods
     // =========================================================================
 
+    protected function updateLineItemPrice()
+    {
+        return Event::on(LineItems::class, LineItems::EVENT_BEFORE_SAVE_LINE_ITEM, function(LineItemEvent $event) {
+            $request = Craft::$app->getRequest();
+            $lineItem = $event->lineItem;
+            $lineItemId = $lineItem->id;
+
+            $customPriceStatus = $request->getParam("lineItems.{$lineItemId}.adminOrderPriceStatus");
+            $customPrice = floor($request->getParam("lineItems.{$lineItemId}.adminOrderPrice"));
+
+            if(empty($customPriceStatus)) {
+                return false;
+            }
+
+            $lineItem->salePrice = $customPrice;
+
+            return $lineItem;
+        });
+    }
 }
