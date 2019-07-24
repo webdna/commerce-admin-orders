@@ -158,7 +158,7 @@ class AdminOrders extends Plugin
             $lineItemId = $lineItem->id;
 
             $customPriceStatus = $request->getParam("lineItems.{$lineItemId}.adminOrderPriceStatus");
-            $customPrice = floor($request->getParam("lineItems.{$lineItemId}.adminOrderPrice"));
+            $customPrice = floatval($request->getParam("lineItems.{$lineItemId}.adminOrderPrice"));
 
             if(empty($customPriceStatus)) {
                 return false;
