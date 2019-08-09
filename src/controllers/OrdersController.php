@@ -105,6 +105,11 @@ class OrdersController extends Controller
 	{
 		$number = Craft::$app->getRequest()->getParam('orderNumber');
 		$order = Commerce::getInstance()->getOrders()->getOrderByNumber($number);
+		
+		// If there isn't a current order we need to create a fresh element
+		if (!$order) {
+		    $order = new Order();
+        	}
 
 		$userId = Craft::$app->getRequest()->getBodyParam('userId')[0];
 		$email = Craft::$app->getRequest()->getBodyParam('email');
