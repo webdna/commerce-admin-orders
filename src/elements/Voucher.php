@@ -29,7 +29,11 @@ class Voucher extends CommerceVoucher
 
 	}
 	
-	
+	protected static function defineActions(string $source = null): array
+    {
+		$actions = [];
+		return $actions;
+	}
 	
 	/**
      * @inheritdoc

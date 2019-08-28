@@ -91,7 +91,7 @@ body.fixed-header #main-container #main #header {
 	padding-top: 24px;
 }
 #main-container #main #main-content #content-container #adminOrders .elementindex.inline .elements {
-	/* padding-top: 60px !important; */
+	padding-top: 60px !important;
 }
 
 #main-container #main #main-content #content-container #adminOrders #tabs {
