@@ -3,21 +3,16 @@
 namespace kuriousagency\commerce\adminorders\elements;
 
 use Craft;
-use craft\commerce\elements\Variant as CommerceVariant;
+use verbb\giftvoucher\elements\Voucher as CommerceVoucher;
 
-class Variant extends CommerceVariant
+class Voucher extends CommerceVoucher
 {
 
 	public $qty;
 
-	public static function displayName(): string
+	public static function refHandle()
 	{
-		return 'Product';
-	}
-
-	public function getCpEditUrl(): string
-	{
-		return '';
+		return 'voucher';
 	}
 
 	/**
@@ -47,7 +42,6 @@ class Variant extends CommerceVariant
         // $attributes[] = 'product';
         $attributes[] = 'sku';
         $attributes[] = 'price';
-        $attributes[] = 'stock';
         $attributes[] = 'qty';
 
         return $attributes;
@@ -59,26 +53,10 @@ class Variant extends CommerceVariant
 		switch ($attribute) {
 			case 'qty':
 				{
-					if($this->stock > 0 || $this->hasUnlimitedStock ) {
-						$html = '<div class="qty"><input type="text" name="adminOrderQty['.$this->id.']" class="text adminOrderQty" value="">';
-						$html .= ' <button class="btn submit atc" data-id="'.$this->id.'">Add</button></div>';
-						
-					} else {
-						$html = "OOS";
-					}
+					$html = '<div class="qty"><input type="text" name="adminOrderQty['.$this->id.']" class="text adminOrderQty" value="">';
+					$html .= ' <button class="btn submit atc" data-id="'.$this->id.'">Add</button></div>';
+
 					return $html;
-				}
-
-			case 'stock':
-				{
-					if($this->hasUnlimitedStock) {
-						$stock = "Unlimited ";
-					} else {
-						$stock = $this->stock;
-					}
-
-					return $stock;
-					
 				}
 		
 			default:

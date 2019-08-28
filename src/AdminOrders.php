@@ -12,6 +12,7 @@ namespace kuriousagency\commerce\adminorders;
 
 use kuriousagency\commerce\adminorders\services\Orders as OrdersService;
 use kuriousagency\commerce\adminorders\services\Users as UsersService;
+use kuriousagency\commerce\adminorders\services\Purchasables as PurchasablesService;
 use kuriousagency\commerce\adminorders\assetbundles\neworder\NewOrder;
 
 use Craft;
@@ -70,6 +71,7 @@ class AdminOrders extends Plugin
 		$this->setComponents([
 			'orders' => OrdersService::class,
 			'users' => UsersService::class,
+			'purchasables' => PurchasablesService::class,
 		]);
 
 		if (Craft::$app->getRequest()->getIsCpRequest()) {
@@ -119,7 +121,7 @@ class AdminOrders extends Plugin
 			}
 			
 			$content = $view->renderTemplate('commerce-admin-orders/partials/controls', ['order'=>$order, 'showCurrency' => false]);
-			$content .= $view->renderTemplate('commerce-admin-orders/admin-variant', ['order'=>$order, 'showTabs'=>true]);
+			$content .= $view->renderTemplate('commerce-admin-orders/admin-variant', ['order'=>$order, 'showTabs'=>true, 'purchasableTypes'=>$this->purchasables->getAllTypes()]);
         	return $content;
 		});
 

@@ -1,7 +1,7 @@
 {% set fullPageForm = false %}
 {% import "_includes/forms" as forms %}
 
-{% set tabs = {
+{# {% set tabs = {
 	'products': {url:'#productsTab', label:'Products', elementType:'kuriousagency\\commerce\\adminorders\\elements\\Variant'},
 } %}
 
@@ -13,7 +13,9 @@
 {% set digital = craft.app.plugins.isPluginInstalled('digital-products') and craft.app.plugins.isPluginEnabled('digital-products') %}
 {% if digital %}
 {% set tabs = tabs|merge({'digital': {url:'#digitalTab', label:'Digital Products', elementType:'kuriousagency\\commerce\\adminorders\\elements\\Digital'}}) %}
-{% endif %}
+{% endif %} #}
+
+{% set tabs = purchasableTypes %}
 
 {% block content %}
 	<div id="adminOrders" class="pane">
