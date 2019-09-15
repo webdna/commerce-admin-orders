@@ -24,6 +24,7 @@ class Voucher extends CommerceVoucher
 		$attributes = parent::defineTableAttributes();
 
 		$attributes['qty'] = Craft::t('commerce', 'Quantity');
+		$attributes['stock'] = Craft::t('commerce', 'Stock');
 
 		return $attributes;
 

@@ -29,6 +29,7 @@ class Variant extends CommerceVariant
 		$attributes = parent::defineTableAttributes();
 
 		$attributes['qty'] = Craft::t('commerce', 'Quantity');
+		$attributes['stock'] = Craft::t('commerce', 'Stock');
 
 		return $attributes;
 
@@ -72,7 +73,7 @@ class Variant extends CommerceVariant
 			case 'stock':
 				{
 					if($this->hasUnlimitedStock) {
-						$stock = "Unlimited ";
+						$stock = "∞";
 					} else {
 						$stock = $this->stock;
 					}

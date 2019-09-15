@@ -30,6 +30,7 @@ class Bundle extends CommerceBundle
 		$attributes = parent::defineTableAttributes();
 
 		$attributes['qty'] = Craft::t('commerce', 'Quantity');
+		$attributes['stock'] = Craft::t('commerce', 'Stock');
 
 		return $attributes;
 
@@ -64,25 +65,25 @@ class Bundle extends CommerceBundle
 		switch ($attribute) {
 			case 'qty':
 				{
-					//if($this->stock > 0 || $this->hasUnlimitedStock ) {
+					if($this->hasStock()) {
 						$html = '<div class="qty"><input type="text" name="adminOrderQty['.$this->id.']" class="text adminOrderQty" value="">';
 						$html .= ' <button class="btn submit atc" data-id="'.$this->id.'">Add</button></div>';
 						
-					//} else {
-					//	$html = "OOS";
-					//}
+					} else {
+						$html = "OOS";
+					}
 					return $html;
 				}
 
 			case 'stock':
 				{
 					//if($this->hasUnlimitedStock) {
-						$stock = "Unlimited ";
+						$stock = "∞";
 					//} else {
 						//$stock = $this->stock;
 					//}
 
-					return $stock;
+					return '';
 					
 				}
 		

@@ -24,6 +24,7 @@ class Ticket extends CommerceTicket
 		$attributes = parent::defineTableAttributes();
 
 		$attributes['qty'] = Craft::t('commerce', 'Quantity');
+		$attributes['stock'] = Craft::t('commerce', 'Stock');
 
 		return $attributes;
 
@@ -54,25 +55,20 @@ class Ticket extends CommerceTicket
 		switch ($attribute) {
 			case 'qty':
 				{
-					if($this->stock > 0 || $this->hasUnlimitedStock ) {
+					if(($this->quantity != null && $this->quantity > 0) || ($this->event->capacity != null && $this->event->capacity > 0)){
 						$html = '<div class="qty"><input type="text" name="adminOrderQty['.$this->id.']" class="text adminOrderQty" value="">';
 						$html .= ' <button class="btn submit atc" data-id="'.$this->id.'">Add</button></div>';
 						
 					} else {
 						$html = "OOS";
 					}
+					//Craft::dd($this);
 					return $html;
 				}
 
 			case 'stock':
 				{
-					if($this->hasUnlimitedStock) {
-						$stock = "Unlimited ";
-					} else {
-						$stock = $this->stock;
-					}
-
-					return $stock;
+					return $this->quantity ?: $this->event->capacity ?: '∞';
 					
 				}
 		
