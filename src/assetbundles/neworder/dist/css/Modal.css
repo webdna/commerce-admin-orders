@@ -20,8 +20,8 @@
 	align-items: start;
 	justify-content: space-between;
 }
-#main-container #main #header,
-#main-container #main #main-content {
+.commerceadminorders #main-container #main #header,
+.commerceadminorders #main-container #main #main-content {
 	width: auto;
 }
 
