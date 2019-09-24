@@ -110,8 +110,8 @@ class OrdersController extends Controller
 		
 		// If there isn't a current order we need to create a fresh element
 		if (!$order) {
-		    $order = new Order();
-        	}
+			$order = new Order();
+		}
 
 		$userId = Craft::$app->getRequest()->getBodyParam('userId')[0];
 		$email = Craft::$app->getRequest()->getBodyParam('email');
@@ -450,13 +450,20 @@ class OrdersController extends Controller
 		$this->requireAcceptsJson();
 		$request = Craft::$app->getRequest();
 
+		if($number = $request->getParam('orderNumber')) {
+			$cart = Commerce::getInstance()->getOrders()->getOrderByNumber($number);
+		} elseif($orderId = $request->getParam('orderId')) {
+			$cart = Commerce::getInstance()->getOrders()->getOrderById($orderId);
+		}
+
+		if (!$cart) {
+			return $this->asErrorJson([
+				'message' => 'Cart not defined',
+			]);
+		}
+		
 		if ($purchasableId = $request->getParam('purchasableId')) {
 
-			if($number = $request->getParam('orderNumber')) {
-				$cart = Commerce::getInstance()->getOrders()->getOrderByNumber($number);
-			} elseif($orderId = $request->getParam('orderId')) {
-				$cart = Commerce::getInstance()->getOrders()->getOrderById($orderId);
-			}
 			//Craft::dd($purchasableId);
             $note = '';
             $options = [];
@@ -569,7 +576,9 @@ class OrdersController extends Controller
 
 		Craft::$app->getElements()->saveElement($clone, false);
 		Commerce::getInstance()->getCarts()->forgetCart();
-		Craft::$app->getElements()->deleteElement($order);
+		if ($order->id) {
+			Craft::$app->getElements()->deleteElement($order);
+		}
 
 		return $clone;
 	}

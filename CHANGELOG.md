@@ -4,11 +4,16 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/) and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## 2.5.2 - unreleased
+## 2.5.2 - 2019-09-24
 
 ### Fixed
 
 -   css namespace modal to fix issue #12
+
+### Changed
+
+-   Create empty order object if no order exists.
+-   On Add to cart check if \$cart is found by either Number or Id.
 
 ## 2.5.1 - 2019-09-15
 
