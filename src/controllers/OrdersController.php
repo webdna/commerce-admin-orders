@@ -485,8 +485,6 @@ class OrdersController extends Controller
 		}
 
 		Craft::$app->getElements()->saveElement($cart, false);
-		// save again so lineitems have ids so adjustment can be correctly shown against them
-		Craft::$app->getElements()->saveElement($cart, false);
 		
 		return $this->asJson([
 			'success' => true,
