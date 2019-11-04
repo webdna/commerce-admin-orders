@@ -14,6 +14,7 @@ use kuriousagency\commerce\adminorders\services\Orders as OrdersService;
 use kuriousagency\commerce\adminorders\services\Users as UsersService;
 use kuriousagency\commerce\adminorders\services\Purchasables as PurchasablesService;
 use kuriousagency\commerce\adminorders\assetbundles\neworder\NewOrder;
+use kuriousagency\commerce\adminorders\models\Settings;
 
 use Craft;
 use craft\base\Plugin;
@@ -145,6 +146,27 @@ class AdminOrders extends Plugin
     }
 
     // Protected Methods
-    // =========================================================================
+	// =========================================================================
+	/**
+     * @inheritdoc
+     */
+    protected function createSettingsModel()
+    {
+		return new Settings();
+		
+    }
+
+    /**
+     * @inheritdoc
+     */
+    protected function settingsHtml(): string
+    {
+        return Craft::$app->view->renderTemplate(
+            'commerce-admin-orders/settings',
+            [
+				'settings' => $this->getSettings(),
+            ]
+        );
+    }
 
 }

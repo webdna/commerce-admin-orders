@@ -20,6 +20,19 @@
 
 <div class="flex" style="align-items: flex-start;">
 	<div class="flex-grow">
+		{% if settings.googleApiKey %}
+			{{ forms.textField({
+			id: 'addressLookup',
+			name: 'addressLookup',
+			label: 'Address Lookup',
+			placeholder: 'Please start typing your address...',
+		}) }}
+		{% endif %}
+	</div>
+</div>
+
+<div class="flex" style="align-items: flex-start;">
+	<div class="flex-grow">
 		{{ forms.textField({
 			id: 'firstname',
 			name: type~'[firstName]',
@@ -89,13 +102,13 @@
 		 {{ forms.selectField({
             label: 'State'|t('commerce'),
             id: 'stateValue',
-            name: 'stateValue',
+            name: type~'[stateValue]',
             value: model.stateValue,
             errors: model.getErrors('stateValue'),
             class: 'selectize fullwidth'
         }) }}
 		{{ forms.textField({
-			id: 'zipcode',
+			id: 'zipCode',
 			name: type~'[zipCode]',
 			label: 'Zip Code',
 			required: true,
@@ -114,12 +127,30 @@
 	</div>
 </div>
 
+{% if settings.googleApiKey %}
+	<script src='https://maps.googleapis.com/maps/api/js?key={{ settings.googleApiKey }}&libraries=places'></script>
+{% endif %}
+
+{% set states = craft.commerce.states.allStates %}
+
  {% js %}
-        window.states = {{ craft.commerce.states.allStates|values|json_encode|raw }};
+		var $states = $('#stateValue-field').find('select').selectize({
+			valueField: 'id',
+			create: true,
+			items: ['{{ model.stateValue }}'],
+			options: {{ states|json_encode|raw }},
+			labelField: 'name',
+			searchField: ['name'],
+			dropdownParent: 'body',
+			inputClass: 'selectize-input text',
+			allowEmptyOption: false
+		});
+
+        {# window.states = {{ craft.commerce.states.allStates|values|json_encode|raw }};
 
         window.states.push({'name': '{{ model.stateValue }}', 'id': '{{ model.stateValue }}'});
 
-        $('#stateValue-field').find('select').selectize({
+        var $states = $('#stateValue-field').find('select').selectize({
             valueField: 'id',
             create: true,
             items: ['{{ model.stateValue }}'],
@@ -129,7 +160,103 @@
             dropdownParent: 'body',
             inputClass: 'selectize-input text',
             allowEmptyOption: false
-        });
+        }); #}
+
+		{# var $select = $('#stateValue-field').selectize(), #}
+
+		{% if settings.googleApiKey %}
+			if($('#addressLookup')[0]) {
+
+				var autocomplete,
+					$addressLookup = $('#addressLookup');
+
+				autocomplete = new google.maps.places.Autocomplete($addressLookup[0], { types: ['geocode', 'establishment'] });
+				autocomplete.setFields(['address_component']);
+				autocomplete.addListener('place_changed', function() {
+					var place = autocomplete.getPlace();
+					console.log(place);
+
+					var address = {
+						address1: '',
+						address2: '',
+						city: '',
+						stateName: '',
+						zipCode: ''
+					};
+					var business = false;
+
+					for (var i = 0; i < place.address_components.length; i++) {
+
+						var addressType = place.address_components[i].types[0];
+
+						if (addressType == 'subpremise') {
+							address.address1 = place.address_components[i].long_name;
+						}
+						if (addressType == 'premise') {
+							business = true;
+							address.address1 += ' ' + place.address_components[i].long_name;
+						}
+
+						if (addressType == 'street_number') {
+							if (business) {
+								address.address2 = place.address_components[i].long_name;
+							} else {
+								address.address1 = place.address_components[i].long_name;
+							}
+						}
+						if (addressType == 'route') {
+							if (business) {
+								address.address2 += ' ' + place.address_components[i].long_name;
+							} else {
+								address.address1 += ' ' + place.address_components[i].long_name;
+							}
+						}
+
+						if (addressType == 'locality') {
+							if (!business) {
+								address.address2 = place.address_components[i].long_name;
+							}
+						}
+
+						if (addressType == 'postal_town') {
+							address.city = place.address_components[i].long_name;
+						}
+						if (addressType == 'administrative_area_level_2') {
+							var	selectize = $states[0].selectize;
+
+							if(selectize.search(place.address_components[i].long_name).items[0]) {
+								selectize.setValue(selectize.search(place.address_components[i].long_name).items[0].id);
+							} else {
+								{# add new state if not in dropdown #}
+								selectize.addOption({
+									id:place.address_components[i].long_name,
+									name:place.address_components[i].long_name
+								});
+								selectize.refreshOptions();
+								selectize.addItem(place.address_components[i].long_name)
+							}
+						}
+						if (addressType == 'postal_code') {
+							address.zipCode = place.address_components[i].long_name;
+						}
+						if (addressType == 'country') {
+							address.country = place.address_components[i].long_name;
+						}
+					}
+
+					for (var property in address) {
+						$('#' + property).val(address[property]);
+					}
+
+					//country
+					$('#country option').each(function(i) {
+						if (this.text == address.country) {
+							$('#country')[0].selectedIndex = i;
+						}
+					});
+				});
+			}
+		{% endif %}
     {% endjs %}
 
 {% endblock %}

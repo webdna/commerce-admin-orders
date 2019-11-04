@@ -135,8 +135,6 @@ class OrdersController extends Controller
 						'title',
 						'firstName',
 						'lastName',
-						'countryId',
-						'stateId',
 						'address1',
 						'address2',
 						'city',
@@ -146,7 +144,8 @@ class OrdersController extends Controller
 						'businessName',
 						'businessTaxId',
 						'businessId',
-						'stateName'
+						'countryId',
+						'stateValue',
 					]
 					));
 					$customerOrderShippingAddress->id = null;
@@ -160,8 +159,6 @@ class OrdersController extends Controller
 						'title',
 						'firstName',
 						'lastName',
-						'countryId',
-						'stateId',
 						'address1',
 						'address2',
 						'city',
@@ -171,7 +168,8 @@ class OrdersController extends Controller
 						'businessName',
 						'businessTaxId',
 						'businessId',
-						'stateName'
+						'countryId',
+						'stateValue'
 					]
 					));
 
@@ -338,6 +336,7 @@ class OrdersController extends Controller
 				'order' => $order,
 				'type' => $type,
 				'model' => new Address(),
+				'settings' => AdminOrders::$plugin->getSettings()
 			]);
 		}
 		if ($shippingAddress) {
