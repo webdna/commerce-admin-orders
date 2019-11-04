@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/) and this project adheres to [Semantic Versioning](http://semver.org/).
 
+
+## 2.5.5 - unreleased
+
+### Added
+
+-   Added support for Google's autocomplete address
+
 ## 2.5.4 - 2019-10-30
 
 ### Fixed
