@@ -4,12 +4,15 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/) and this project adheres to [Semantic Versioning](http://semver.org/).
 
-
-## 2.5.5 - unreleased
+## 2.5.5 - 2019-12-02
 
 ### Added
 
 -   Added support for Google's autocomplete address
+
+### Fixed
+
+-   Support for verbb tickets fix
 
 ## 2.5.4 - 2019-10-30
 

@@ -469,7 +469,6 @@ class OrdersController extends Controller
 			$qty = (int)$request->getParam('adminOrderQty', 1);
 
 			$lineItem = Commerce::getInstance()->getLineItems()->resolveLineItem($cart->id, $purchasableId, $options);
-
 			
             // New line items already have a qty of one.
             if ($lineItem->id) {
@@ -482,6 +481,8 @@ class OrdersController extends Controller
 
 			$cart->addLineItem($lineItem);
 		}
+
+		
 
 		Craft::$app->getElements()->saveElement($cart, false);
 		
