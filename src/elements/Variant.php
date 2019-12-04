@@ -4,6 +4,10 @@ namespace kuriousagency\commerce\adminorders\elements;
 
 use Craft;
 use craft\commerce\elements\Variant as CommerceVariant;
+use craft\commerce\elements\Product;
+use craft\base\Element;
+use kuriousagency\commerce\adminorders\elements\db\VariantQuery;
+use craft\elements\db\ElementQueryInterface;
 
 class Variant extends CommerceVariant
 {
@@ -19,6 +23,11 @@ class Variant extends CommerceVariant
 	{
 		return '';
 	}
+
+	public static function find(): ElementQueryInterface
+    {
+        return new VariantQuery(static::class);
+    }
 
 	/**
     * @inheritdoc
@@ -60,6 +69,9 @@ class Variant extends CommerceVariant
 		switch ($attribute) {
 			case 'qty':
 				{
+					if (!$this->isAvailable) {
+						return '';
+					}
 					if($this->stock > 0 || $this->hasUnlimitedStock ) {
 						$html = '<div class="qty"><input type="text" name="adminOrderQty['.$this->id.']" class="text adminOrderQty" value="">';
 						$html .= ' <button class="btn submit atc" data-id="'.$this->id.'">Add</button></div>';

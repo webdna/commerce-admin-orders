@@ -9,6 +9,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 ### Added
 
 -   Added estimated shipping (pre commerce 2.2)
+-   Only show enabled products for each site.
 
 ## 2.5.5 - 2019-12-02
 
