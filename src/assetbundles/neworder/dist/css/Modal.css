@@ -137,3 +137,16 @@ body.fixed-header #main-container #main #header {
 	position: absolute !important;
 	top: 20px !important;
 }
+
+.commerceadminorders .ui-datepicker-calendar td span.ui-state-default {
+	display: block;
+	width: 26px;
+	line-height: 26px;
+	text-align: center;
+	color: #29323d;
+}
+.commerceadminorders .ui-datepicker-calendar td.ui-datepicker-unselectable span,
+.commerceadminorders .ui-datepicker-calendar td.ui-state-disabled span {
+	color: lightgrey;
+	cursor: not-allowed;
+}

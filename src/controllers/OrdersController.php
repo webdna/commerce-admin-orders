@@ -103,6 +103,20 @@ class OrdersController extends Controller
 		return $this->renderTemplate('commerce-admin-orders/address', $variables);
 	}
 
+	public function actionSummary()
+	{
+		$number = Craft::$app->getRequest()->getParam('orderNumber');
+		$order = Commerce::getInstance()->getOrders()->getOrderByNumber($number);
+
+		$variables = [
+			'order' => $order,
+		];
+
+		return $this->renderTemplate('commerce-admin-orders/summary', $variables);
+	}
+
+
+
 	public function actionUpdateUser()
 	{
 		$number = Craft::$app->getRequest()->getParam('orderNumber');
@@ -135,6 +149,8 @@ class OrdersController extends Controller
 						'title',
 						'firstName',
 						'lastName',
+						'countryId',
+						'stateId',
 						'address1',
 						'address2',
 						'city',
@@ -144,8 +160,7 @@ class OrdersController extends Controller
 						'businessName',
 						'businessTaxId',
 						'businessId',
-						'countryId',
-						'stateValue',
+						'stateName'
 					]
 					));
 					$customerOrderShippingAddress->id = null;
@@ -159,6 +174,8 @@ class OrdersController extends Controller
 						'title',
 						'firstName',
 						'lastName',
+						'countryId',
+						'stateId',
 						'address1',
 						'address2',
 						'city',
@@ -168,8 +185,7 @@ class OrdersController extends Controller
 						'businessName',
 						'businessTaxId',
 						'businessId',
-						'countryId',
-						'stateValue'
+						'stateName'
 					]
 					));
 
@@ -222,6 +238,8 @@ class OrdersController extends Controller
 			'order' => $order,
 		];
 
+		//Craft::dd($order);
+
 		Craft::$app->getUrlManager()->setRouteParams([
             'order' => $order
         ]);
@@ -262,13 +280,13 @@ class OrdersController extends Controller
 		if ($shippingAddressSelect > 0) {
 			$shippingAddress = Commerce::getInstance()->getAddresses()->getAddressByIdAndCustomerId($shippingAddressSelect, $order->customerId);
 			$order->setShippingAddress($shippingAddress);
-			Craft::$app->getElements()->saveElement($order, false);
+			//Craft::$app->getElements()->saveElement($order, false);
 		}
 
 		if ($billingAddressSelect > 0) {
 			$billingAddress = Commerce::getInstance()->getAddresses()->getAddressByIdAndCustomerId($billingAddressSelect, $order->customerId);
 			$order->setBillingAddress($billingAddress);
-			Craft::$app->getElements()->saveElement($order, false);
+			//Craft::$app->getElements()->saveElement($order, false);
 		}
 
 		//redirect if value = 0 => new address
@@ -283,10 +301,12 @@ class OrdersController extends Controller
 		// Set Shipping method on cart.
 		if ($shippingMethodHandle) {
 			$order->shippingMethodHandle = $shippingMethodHandle;
-			Craft::$app->getElements()->saveElement($order, false);
+			//Craft::$app->getElements()->saveElement($order, false);
 		}
-		
 
+		$order->setFieldValuesFromRequest('fields');
+		
+		Craft::$app->getElements()->saveElement($order, false);
 
 		return $this->redirectToPostedUrl($order);
 	}
@@ -332,16 +352,19 @@ class OrdersController extends Controller
 		$billingAddress = Craft::$app->getRequest()->getParam('billing');
 
 		if ($type) {
+			$model = new Address();
+			if ($type == 'shipping') {
+				$model = (!$order->shippingAddressId && $order->estimatedShippingAddressId) ? $order->estimatedShippingAddress : $model;
+			}
 			return $this->renderTemplate('commerce-admin-orders/address-new', [
 				'order' => $order,
 				'type' => $type,
-				'model' => new Address(),
-				'settings' => AdminOrders::$plugin->getSettings()
+				'model' => $model,
 			]);
 		}
 		if ($shippingAddress) {
 			$order->validate();
-			Craft::dd($order->shippingAddress->getErrors());
+			//Craft::dd($order->shippingAddress->getErrors());
 			return $this->renderTemplate('commerce-admin-orders/address-new', [
 				'order' => $order,
 				'type' => 'shipping',
@@ -469,6 +492,7 @@ class OrdersController extends Controller
 			$qty = (int)$request->getParam('adminOrderQty', 1);
 
 			$lineItem = Commerce::getInstance()->getLineItems()->resolveLineItem($cart->id, $purchasableId, $options);
+
 			
             // New line items already have a qty of one.
             if ($lineItem->id) {
@@ -482,8 +506,8 @@ class OrdersController extends Controller
 			$cart->addLineItem($lineItem);
 		}
 
-		
-
+		Craft::$app->getElements()->saveElement($cart, false);
+		// save again so lineitems have ids so adjustment can be correctly shown against them
 		Craft::$app->getElements()->saveElement($cart, false);
 		
 		return $this->asJson([

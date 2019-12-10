@@ -1,0 +1,226 @@
+{% extends "commerce-admin-orders/_layouts/modal" %}
+{% import "_includes/forms" as forms %}
+
+{% set continue = cpUrl('commerce/orders/'~order.id) %}
+
+{% block content %}
+
+
+<input type="hidden" name="action" value="commerce-admin-orders/orders/register-user">
+<input type="hidden" name="orderNumber" value="{{ order.number }}">
+{{ redirectInput(cpUrl()~'/commerce-admin-orders/orders/address?orderNumber={number}') }}
+
+	<div class="" id="summary">
+
+	<div class="pane">
+			<h3>Summary</h3>
+				<div class="order-details">
+					<table id="" class="data fullwidth collapsible">
+						<thead>
+						<tr>
+							<th scope="col">{{ 'Item'|t('commerce') }}</th>
+							<th scope="col">{{ 'Note'|t('commerce') }}</span></th>
+							<th scope="col">{{ 'Price'|t('commerce') }}</span></th>
+							<th scope="col">{{ 'Quantity'|t('commerce') }}</th>
+							<th scope="col"></th>
+							<th scope="col"></th>
+						</tr>
+						</thead>
+						<tbody>
+
+						{% for lineItem in order.lineItems %}
+
+							{% set info = [
+								{ label: "Description", value: lineItem.description },
+								{ label: "Tax Category", value: lineItem.taxCategory.name },
+								{ label: "Shipping Category", value: lineItem.shippingCategory.name },
+								{ label: "Price", value: lineItem.price|currency(order.currency) },
+								{ label: "Sale Amount", value: lineItem.saleAmount|currency(order.currency) },
+								{ label: "Sale Price", value: lineItem.salePrice|currency(order.currency) },
+								{ label: "Quantity", value: lineItem.qty },
+								{ label: "Sub-total", value: lineItem.subtotal|currency(order.currency) },
+								{ label: "Total (with adjustments)", value: lineItem.total|currency(order.currency) },
+							] %}
+
+							<tr class="infoRow" data-id="{{ lineItem.id }}" data-info="{{ info|json_encode }}">
+								<td data-title="{{ 'Item'|t('commerce') }}">
+									{% if lineItem.purchasable %}
+										{% if lineItem.purchasable.cpEditUrl %}
+											{{ lineItem.description }}
+										{% else %}
+											<span class="description">{{ lineItem.description }}</span>
+										{% endif %}
+									{% else %}
+										<span class="description">{{ lineItem.description }}</span>
+									{% endif %}
+									<br><span class="code">{{ lineItem.sku }}</span>
+									{% if lineItem.options|length %}
+										<a class="fieldtoggle first last"
+										data-target="info-{{ lineItem.id }}">{{ "Options"|t('commerce') }}</a>
+										<span id="info-{{ lineItem.id }}"
+											class="hidden">
+										{% for key, option in lineItem.options %}
+											{{ key|t('commerce') }}: {% if option is iterable %}
+											<code>{{ option|json_encode|raw }}</code>{% else %}{{ option }}{% endif %}
+										<br>
+										{% endfor %}
+											</span>
+									{% endif %}
+								</td>
+								<td data-title="{{ 'Note'|t('commerce') }}">
+									{% if lineItem.note %}{{ lineItem.note|nl2br }}{% endif %}
+								</td>
+								<td data-title="{{ 'Price'|t('commerce') }}">
+									{{ lineItem.salePrice|currency(order.currency) }}
+								</td>
+								<td data-title="{{ 'Qty'|t('commerce') }}">
+									{{ lineItem.qty }}
+								</td>
+								<td></td>
+								<td data-title="{{ 'Sub-total'|t('commerce') }}">
+									<span class="right">{{ lineItem.subtotal|currency(order.currency) }}</span>
+								</td>
+							</tr>
+							{% for adjustment in lineItem.adjustments %}
+								<tr>
+									<td></td>
+									<td>
+										<strong>{{ adjustment.type|title|t('commerce') }} {{ "Adjustment"|t('commerce') }}</strong><br>{{ adjustment.name|title }}
+										<span class="info"><strong>{{ adjustment.type|title|t('commerce') }} {{ "Adjustment"|t('commerce') }}</strong><br> {{ adjustment.description }}</span>
+									</td>
+									<td></td>
+									<td></td>
+									<td></td>
+									<td>
+										<span class="right">{{ adjustment.amount|currency(order.currency) }}</span>
+									</td>
+								</tr>
+							{% endfor %}
+						{% endfor %}
+						<tr>
+							<td></td>
+							<td></td>
+							<td></td>
+							<td></td>
+							<td><strong>{{ "Items Total (with adjustments)" }}</strong></td>
+							<td>
+								<span class="right">{{ order.itemTotal|currency(order.currency) }}</span>
+							</td>
+						</tr>
+
+						{% for adjustment in order.orderAdjustments %}
+							<tr>
+								<td>
+									<strong>{{ adjustment.type|title|t('commerce') }} {{ "Adjustment"|t('commerce') }}</strong><br>{{ adjustment.name|title }}
+									<span class="info"><strong>{{ adjustment.type|title|t('commerce') }} {{ "Adjustment"|t('commerce') }}</strong><br> {{ adjustment.description }}</span>
+								</td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td>
+									<span class="right">{{ adjustment.amount|currency(order.currency) }}</span>
+								</td>
+							</tr>
+						{% endfor %}
+						<tr>
+							<td></td>
+							<td>
+								{% if order.isPaid and order.totalPrice > 0 %}
+									<div class="paidLogo">
+										<span>{{ 'PAID'|t('commerce') }}</div>
+								{% endif %}
+							</td>
+							<td></td>
+							<td></td>
+							<td><h2>{{ "Total Price"|t('commerce') }}</h2></td>
+							<td>
+								<h2 class="right">{{ order.totalPrice|currency(order.currency) }}</h2>
+							</td>
+						</tr>
+						</tbody>
+					</table>
+				</div>
+		</div>
+		
+		<div class="">
+			
+			{% if order.customer.userId is null and craft.users().email(order.email).one() is null %}
+				<div class="pane">
+					<h3>Create User Account</h3>
+					
+					{{ forms.textField({
+						id: 'firstname',
+						name: 'firstName',
+						label: 'Firstname',
+						required: true,
+						value: order.shippingAddress.firstName ?? null,
+					}) }}
+
+					{{ forms.textField({
+						id: 'lastname',
+						name: 'lastName',
+						label: 'Lastname',
+						required: true,
+						value: order.shippingAddress.lastName ?? null,
+					}) }}
+
+					{{ forms.checkboxField({
+						id: 'register-user',
+						fieldLabel: 'Please tick to confirm you would like to create a user account for ' ~ order.email,
+						name: 'registerUser',
+					}) }}
+
+					{{ forms.hidden({
+						name: "email",
+						value: order.email
+					}) }}
+
+					{{ forms.hidden({
+						name: "orderId",
+						value: order.id
+					}) }}
+
+				</div>
+			{% endif %}
+
+		</div>
+		
+		
+
+	</div>
+
+
+
+{% js %}
+	var $form = $('#main-form'),
+		$headerBtn = $form.find('#header .submit');
+
+	$form.on('click','#header .submit',function(e) {
+		if($(this).hasClass('disabled')) {
+			e.preventDefault();
+		}
+	})
+
+	$('select').on('change', function(e) {
+		$headerBtn.addClass('disabled');
+		$(this).parents('form').submit();
+	});
+	
+	$headerBtn.on('click', function(e){
+		e.preventDefault();
+	
+		if($('#register-user').prop('checked')) {
+			$(this).parents('form').attr('target','_parent');
+			$(this).parents('form').submit();
+		} else {
+			window.parent.document.location = $(this).attr('href')+'#transactionsTab';
+		}
+		
+	})
+
+
+{% endjs %}
+{% endblock %}
+
+{% do view.registerAssetBundle("craft\\commerce\\web\\assets\\commercecp\\CommerceCpAsset") %}

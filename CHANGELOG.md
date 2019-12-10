@@ -4,11 +4,13 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/) and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## 2.5.6 - unreleased
+## 2.6.0 - unreleased
 
 ### Added
 
--   Added estimated shipping (pre commerce 2.2)
+-   shipping options hook
+-   shipping extras hook
+-   Added estimated shipping
 -   Only show enabled products for each site.
 
 ## 2.5.5 - 2019-12-02

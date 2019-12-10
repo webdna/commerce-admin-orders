@@ -103,6 +103,7 @@ class AdminOrders extends Plugin
 				$event->rules['commerce-admin-orders/orders/user'] = 'commerce-admin-orders/orders/user';
 				$event->rules['commerce-admin-orders/orders/address'] = 'commerce-admin-orders/orders/address';
 				$event->rules['commerce-admin-orders/orders/address/new'] = 'commerce-admin-orders/orders/new-address';
+				$event->rules['commerce-admin-orders/orders/summary'] = 'commerce-admin-orders/orders/summary';
 				$event->rules['commerce-admin-orders/orders/save'] = 'commerce-admin-orders/orders/save-order';
             }
 		);

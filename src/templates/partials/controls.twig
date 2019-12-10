@@ -5,17 +5,17 @@
 		<input type="hidden" name="orderId" value="{{ order.id }}">
 
 		<div class="flex-grow">
-			<input type="text" class="text" name="shippingAddress[zipCode]" value="" placeholder="Zipcode">
+		{% if order.estimatedShippingAddressId is defined %}
+			<input type="text" class="text" name="estimatedShippingAddress[zipCode]" value="{{ order.estimatedShippingAddress.zipCode ?? '' }}" placeholder="Zipcode">
 			<div class="select">
-				<select name="shippingAddress[countryId]">
+				<select name="estimatedShippingAddress[countryId]">
 				{% for value, country in craft.commerce.countries.allCountriesAsList %}
-					<option value="{{ value }}">{{ country }}</option>
+					<option value="{{ value }}" {{ value == (order.estimatedShippingAddress.countryId ?? null) ? 'selected' }}>{{ country }}</option>
 				{% endfor %}
 				</select>
 			</div>
-			<input type="hidden" name="shippingAddress[firstName]" value="-">
-			<input type="hidden" name="shippingAddress[lastName]" value="-">
 			<input type="submit" class="btn submit" value="{{ 'Update'|t('app') }}">
+		{% endif %}
 		</div>
 		<input type="text" name="couponCode" class="text" value="{{ order.couponCode }}" placeholder="Coupon Code">
 		{% if showCurrency is defined and showCurrency %}
