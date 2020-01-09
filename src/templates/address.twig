@@ -110,10 +110,13 @@
 		</div>
 		
 		<div class="flex-grow">
+			{% set options %}{% hook 'cp.commerce.admin-orders.shipping-options' %}{% endset %}
+			{% if options != '' %}
 			<div class="pane">
 				<h3>Shipping Options</h3>
-				{% hook 'cp.commerce.admin-orders.shipping-options' %}
+				{{ options }}
 			</div>
+			{% endif %}
 			
 			{% hook 'cp.commerce.admin-orders.shipping-extras' %}
 		</div>
