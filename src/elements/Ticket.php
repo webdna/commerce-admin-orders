@@ -3,6 +3,7 @@
 namespace kuriousagency\commerce\adminorders\elements;
 
 use Craft;
+use craft\commerce\Plugin as Commerce;
 use verbb\events\elements\Ticket as CommerceTicket;
 
 class Ticket extends CommerceTicket
@@ -68,8 +69,15 @@ class Ticket extends CommerceTicket
 
 			case 'stock':
 				{
-					return $this->quantity ?: $this->event->capacity ?: '∞';
+					return $this->availableQuantity() > 1000 ? ‘1000+’ : $this->availableQuantity();
 					
+				}
+
+			case 'price':
+				{
+					$code = $code = Commerce::getInstance()->getPaymentCurrencies()->getPrimaryPaymentCurrencyIso();
+	
+					return Craft::$app->getLocale()->getFormatter()->asCurrency($this->$attribute, strtoupper($code));
 				}
 		
 			default:

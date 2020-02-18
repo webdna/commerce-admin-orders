@@ -4,6 +4,14 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/) and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 2.6.2 - Unrealased
+
+### Changed
+
+-   Craft 3.4 compatability updates
+-   Updated purchasable pricing format
+-   Updated requirements to Craft 3.4
+
 ## 2.6.1 - 2020-01-09
 
 ### Added

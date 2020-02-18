@@ -3,6 +3,7 @@
 namespace kuriousagency\commerce\adminorders\elements;
 
 use Craft;
+use craft\commerce\Plugin as Commerce;
 use craft\commerce\elements\Variant as CommerceVariant;
 use craft\commerce\elements\Product;
 use craft\base\Element;
@@ -92,6 +93,13 @@ class Variant extends CommerceVariant
 
 					return $stock;
 					
+				}
+			
+			case 'price':
+				{
+					$code = Commerce::getInstance()->getPaymentCurrencies()->getPrimaryPaymentCurrencyIso();
+	
+					return Craft::$app->getLocale()->getFormatter()->asCurrency($this->$attribute, strtoupper($code));
 				}
 		
 			default:

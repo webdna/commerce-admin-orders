@@ -80,26 +80,34 @@
                 {%- endif %}
 
                 {# main-header #}
-                <header id="header">
-                    {% block header %}
-                        {% block pageTitle %}
-                            {% if title is defined and title|length %}
-                                <h1>{{ title }}</h1>
-                            {% endif %}
+                <div id="header-container">
+                    <header id="header">
+                        {% block header %}
+                            <div id="page-title" class="flex flex-nowrap">
+                                {% block pageTitle %}
+                                    {% if title is defined and title|length %}
+                                        <h1>{{ title }}</h1>
+                                    {% endif %}
+                                {% endblock %}
+                            </div>
+                            {# {% block contextMenu %}{% endblock %} #}
+                            {# <div class="flex-grow"></div> #}
+                            <div id="action-button" class="flex">
+                            {% block actionButton %}
+                                
+                                    {% if fullPageForm %}
+                                        {% if continue is defined %}
+                                            <a href="{{ continue }}" class="btn submit">{{ 'Continue'|t('app') }}</a>
+                                        {% else %}
+                                            <input type="submit" class="btn submit" value="{{ 'Continue'|t('app') }}">
+                                        {% endif %}
+                                    {% endif %}
+                               
+                            {% endblock %}
+                             </div>
                         {% endblock %}
-                        {% block contextMenu %}{% endblock %}
-                        <div class="flex-grow"></div>
-                        {% block actionButton %}
-                            {% if fullPageForm %}
-								{% if continue is defined %}
-								<a href="{{ continue }}" class="btn submit">{{ 'Continue'|t('app') }}</a>
-								{% else %}
-								<input type="submit" class="btn submit" value="{{ 'Continue'|t('app') }}">
-								{% endif %}
-                            {% endif %}
-                        {% endblock %}
-                    {% endblock %}
-                </header>
+                    </header>
+                </div>
 
                 {# main-content #}
                 <div id="main-content" class="{% if sidebar %}has-sidebar{% endif %} {% if details %}has-details{% endif %}">

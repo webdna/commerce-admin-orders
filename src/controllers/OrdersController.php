@@ -350,6 +350,7 @@ class OrdersController extends Controller
 		$type = Craft::$app->getRequest()->getParam('type');
 		$shippingAddress = Craft::$app->getRequest()->getParam('shipping');
 		$billingAddress = Craft::$app->getRequest()->getParam('billing');
+		$settings = AdminOrders::$plugin->getSettings();
 
 		if ($type) {
 			$model = new Address();
@@ -360,6 +361,7 @@ class OrdersController extends Controller
 				'order' => $order,
 				'type' => $type,
 				'model' => $model,
+				'settings' => $settings,
 			]);
 		}
 		if ($shippingAddress) {
@@ -369,6 +371,7 @@ class OrdersController extends Controller
 				'order' => $order,
 				'type' => 'shipping',
 				'model' => $order->shippingAddress,
+				'settings' => $settings,
 			]);
 		}
 	}

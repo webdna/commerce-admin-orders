@@ -3,6 +3,7 @@
 namespace kuriousagency\commerce\adminorders\elements;
 
 use Craft;
+use craft\commerce\Plugin as Commerce;
 use kuriousagency\commerce\bundles\elements\Bundle as CommerceBundle;
 
 class Bundle extends CommerceBundle
@@ -83,8 +84,15 @@ class Bundle extends CommerceBundle
 						//$stock = $this->stock;
 					//}
 
-					return '';
+					return $this->getStock() > 1000 ? ‘1000+’ : $this->getStock();
 					
+				}
+
+			case 'price':
+				{
+					$code = $code = Commerce::getInstance()->getPaymentCurrencies()->getPrimaryPaymentCurrencyIso();
+	
+					return Craft::$app->getLocale()->getFormatter()->asCurrency($this->$attribute, strtoupper($code));
 				}
 		
 			default:

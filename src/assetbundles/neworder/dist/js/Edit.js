@@ -14,7 +14,7 @@ var adminOrderTabs = Garnish.Base.extend({
 	$selectedTab: null,
 
 	init: function($parent) {
-		console.log('here');
+
 		this.$selectedTab = null;
 
 		var $tabs = $parent.find('#tabs > ul > li');
@@ -128,8 +128,11 @@ $(document).ready(function() {
 			var $tab = $(this),
 				type = $tab.find('.elementindex').data('type');
 
+				$tab.find('.elementindex .elements').css('padding-top',0);
+				$tab.parents().closest('li').css('max-width','');
+
 			Craft.elementIndex = Craft.createElementIndex(type, $tab, {
-				context: 'index',
+				context: '',
 				storageKey: 'elementindex.' + type,
 				criteria: Craft.defaultIndexCriteria
 			});
