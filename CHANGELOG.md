@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/) and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 2.6.4 - 2020-02-21
+
+### Fixed
+
+-   Fixed a bug where products weren't displaying for some custom purchasables
+
 ## 2.6.3 - 2020-02-19
 
 -   Changelog update

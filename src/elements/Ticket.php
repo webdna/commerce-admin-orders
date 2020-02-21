@@ -69,7 +69,7 @@ class Ticket extends CommerceTicket
 
 			case 'stock':
 				{
-					return $this->availableQuantity() > 1000 ? ‘1000+’ : $this->availableQuantity();
+					return $this->availableQuantity() > 1000 ? '1000+' : $this->availableQuantity();
 					
 				}
 

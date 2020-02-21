@@ -84,7 +84,7 @@ class Bundle extends CommerceBundle
 						//$stock = $this->stock;
 					//}
 
-					return $this->getStock() > 1000 ? ‘1000+’ : $this->getStock();
+					return $this->getStock() > 1000 ? '1000+' : $this->getStock();
 					
 				}
 
