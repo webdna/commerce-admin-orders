@@ -2,7 +2,7 @@
 	"name": "kuriousagency/commerce-admin-orders",
 	"description": "Create a new commerce order from the admin",
 	"type": "craft-plugin",
-	"version": "2.6.5",
+	"version": "2.6.6",
 	"keywords": [
 		"craft",
 		"cms",
@@ -22,7 +22,7 @@
 		}
 	],
 	"require": {
-		"craftcms/cms": "^3.4",
+		"craftcms/cms": "^3.3",
 		"craftcms/commerce": "^2.0.0-beta.6"
 	},
 	"autoload": {

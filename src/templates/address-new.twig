@@ -20,7 +20,7 @@
 
 <div class="flex" style="align-items: flex-start;">
 	<div class="flex-grow">
-		{% if settings.googleApiKey is defined %}
+		{% if settings.googleApiKey ?? false %}
 			{{ forms.textField({
 			id: 'addressLookup',
 			name: 'addressLookup',
@@ -127,7 +127,7 @@
 	</div>
 </div>
 
-{% if settings.googleApiKey if defined %}
+{% if settings.googleApiKey ?? false %}
 	<script src='https://maps.googleapis.com/maps/api/js?key={{ settings.googleApiKey }}&libraries=places'></script>
 {% endif %}
 
@@ -164,7 +164,7 @@
 
 		{# var $select = $('#stateValue-field').selectize(), #}
 
-		{% if settings.googleApiKey is defined %}
+		{% if settings.googleApiKey ?? false %}
 			if($('#addressLookup')[0]) {
 
 				var autocomplete,
