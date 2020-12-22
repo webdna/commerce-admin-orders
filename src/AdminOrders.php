@@ -114,18 +114,18 @@ class AdminOrders extends Plugin
 			];
 		});
 
-		Craft::$app->view->hook('cp.commerce.order.edit.main-pane', function(array &$context) {
-			$view = Craft::$app->getView();
-			$order = $context['order'];
+		// Craft::$app->view->hook('cp.commerce.order.edit.main-pane', function(array &$context) {
+		// 	$view = Craft::$app->getView();
+		// 	$order = $context['order'];
 
-			if ($order->isCompleted) {
-				return '';
-			}
+		// 	if ($order->isCompleted) {
+		// 		return '';
+		// 	}
 			
-			$content = $view->renderTemplate('commerce-admin-orders/partials/controls', ['order'=>$order, 'showCurrency' => false]);
-			$content .= $view->renderTemplate('commerce-admin-orders/admin-variant', ['order'=>$order, 'showTabs'=>true, 'purchasableTypes'=>$this->purchasables->getAllTypes()]);
-        	return $content;
-		});
+		// 	$content = $view->renderTemplate('commerce-admin-orders/partials/controls', ['order'=>$order, 'showCurrency' => false]);
+		// 	$content .= $view->renderTemplate('commerce-admin-orders/admin-variant', ['order'=>$order, 'showTabs'=>true, 'purchasableTypes'=>$this->purchasables->getAllTypes()]);
+        // 	return $content;
+		// });
 
         Event::on(
             Plugins::class,

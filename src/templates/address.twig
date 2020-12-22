@@ -94,13 +94,13 @@
 	<div class="flex" id="summary">
 		
 		<div class="flex-grow">
-			{% if order.availableShippingMethods|length %}
+			{% if order.getAvailableShippingMethodOptions()|length %}
 				<div class="pane">
 					<h3>Shipping Method</h3>
 					<div class="select">
 						<select name="shippingMethodHandle" id="shippingMethod">
 							<option value="" disabled  {% if order.shippingMethodHandle is empty %} {% endif %}>Please select a shippng method</option>
-							{% for handle, method in order.availableShippingMethods	 %}
+							{% for handle, method in order.getAvailableShippingMethodOptions()	 %}
 								<option value="{{ handle }}" {{ handle == order.shippingMethodHandle ? "selected" : loop.first ? "selected" : '' }}>{{ method.name}} {{ method.priceForOrder(order) ? method.priceForOrder(order)|currency(order.currency) : 'Free' }}</option>
 							{% endfor %}
 						</select>

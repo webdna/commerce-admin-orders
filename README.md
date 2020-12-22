@@ -4,7 +4,7 @@ Commerce Admin Orders is a Craft 3 plugin that allows control panel users to cre
 
 ## Requirements
 
-This plugin requires Craft CMS 3.0.0-beta.23 or later.
+This plugin requires Craft CMS 3.5 and Craft Commerce 3.
 
 ## Installation
 
@@ -69,7 +69,7 @@ For Guest Checkouts, a "Create User Account" option is given. If this option is 
 
 Finally, a payment can be processed for the order by clicking "Make Payment" and selecting a payment method.
 
-### Updating An Order
+### Updating An Order (up to version 2.6.6)
 
 Incomplete orders now have extra options to add/remove products, update quantities or add a coupon code.
 

@@ -49,10 +49,13 @@ class OrdersController extends Controller
 		Commerce::getInstance()->getCarts()->forgetCart();
 		Commerce::getInstance()->getCustomers()->forgetCustomer();
 		$order = Commerce::getInstance()->getCarts()->getCart(true);
+		$order->origin = Order::ORIGIN_CP;
+		Craft::$app->getElements()->saveElement($order);
+
 		$variables = [
 			'order' => $order,
 			'cart' => $cart
-		];
+		];	
 		
 		return $this->renderTemplate('commerce-admin-orders/user', $variables);
 	}
@@ -125,6 +128,7 @@ class OrdersController extends Controller
 		// If there isn't a current order we need to create a fresh element
 		if (!$order) {
 			$order = new Order();
+			$order->origin = Order::ORIGIN_CP;
 		}
 
 		$userId = Craft::$app->getRequest()->getBodyParam('userId')[0];
@@ -584,6 +588,7 @@ class OrdersController extends Controller
 		$clone->couponCode = $order->couponCode;
 		$clone->gatewayId = $order->gatewayId;
 		$clone->customerId = $order->customerId;
+		$clone->origin = $order->origin;
 		$clone->setEmail($email);
 
 		if($previousGuestCustomer) {

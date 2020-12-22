@@ -4,6 +4,14 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/) and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 2.7.0 - 2020-12-22
+
+### Changed
+
+-	Updated to support Craft 3.5 and Commerce 3
+-   Removed the edit order feature as Commerce 3's standard order editing can now be used.
+-   Updated requirements to Craft CMS 3.5 and Commerce 3.2.0
+
 ## 2.6.6 - 2020-03-31
 
 ### Fixed

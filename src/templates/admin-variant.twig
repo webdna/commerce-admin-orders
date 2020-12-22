@@ -25,11 +25,11 @@
 
 		{% for tab in tabs %}
 			<div id="{{ tab.url|replace('#','') }}" class="tab {{ not loop.first ? 'hidden' }}">
-				{# <h2>{{ tab.label }}</h2> #}
 				<div class="sidebar hidden">
 					<nav>
 						{% include "_elements/sources" with {
-							sources: craft.app.elementIndexes.getSources(tab.elementType, 'index')
+							sources: craft.app.elementIndexes.getSources(tab.elementType, 'index'),
+							elementType: tab.elementType
 						} %}
 					</nav>
 				</div>
