@@ -35,7 +35,7 @@ class Users extends Component
 		
 			$rows = (new Query())
 			->select([
-				'orders.id',
+				'MAX(orders.id) AS id',
 				'orders.email',
 				'addresses.firstName',
 				'addresses.lastName',

@@ -131,7 +131,7 @@ class OrdersController extends Controller
 			$order->origin = Order::ORIGIN_CP;
 		}
 
-		$userId = Craft::$app->getRequest()->getBodyParam('userId')[0];
+		$userId = Craft::$app->getRequest()->getBodyParam('userId') ? Craft::$app->getRequest()->getBodyParam('userId')[0] : null;
 		$email = Craft::$app->getRequest()->getBodyParam('email');
 
 		$previousGuestCustomer = false;
