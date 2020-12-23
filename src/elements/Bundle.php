@@ -67,7 +67,7 @@ class Bundle extends CommerceBundle
 			case 'qty':
 				{
 					if($this->hasStock()) {
-						$html = '<div class="qty"><input type="text" name="adminOrderQty['.$this->id.']" class="text adminOrderQty" value="">';
+						$html = '<div class="qty"><input type="text" name="adminOrderQty['.$this->id.']" class="text adminOrderQty" value="1">';
 						$html .= ' <button class="btn submit atc" data-id="'.$this->id.'">Add</button></div>';
 						
 					} else {

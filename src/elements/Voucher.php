@@ -59,7 +59,7 @@ class Voucher extends CommerceVoucher
 		switch ($attribute) {
 			case 'qty':
 				{
-					$html = '<div class="qty"><input type="text" name="adminOrderQty['.$this->id.']" class="text adminOrderQty" value="">';
+					$html = '<div class="qty"><input type="text" name="adminOrderQty['.$this->id.']" class="text adminOrderQty" value="1">';
 					$html .= ' <button class="btn submit atc" data-id="'.$this->id.'">Add</button></div>';
 
 					return $html;
