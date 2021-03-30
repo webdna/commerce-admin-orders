@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/) and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 2.7.2 - 2021-03-30
+
+### Fixed
+
+-	Fixed a bug where the Orders sort menu triggered the new order modal ([#29](https://github.com/KuriousAgency/commerce-admin-orders/issues/29)).
+
 ## 2.7.1 - 2020-12-23
 
 ### Changed

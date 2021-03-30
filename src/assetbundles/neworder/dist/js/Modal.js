@@ -17,7 +17,7 @@ if (typeof Craft.Commerce === typeof undefined) {
 Craft.Commerce.OrderCreate = Garnish.Base.extend({
 	init: function(settings) {
 		this.setSettings(settings);
-		this.$newOrder = $('#header .btn');
+		this.$newOrder = $('#header .btn.add');
 
 		var modal = null;
 
