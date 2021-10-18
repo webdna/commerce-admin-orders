@@ -9,7 +9,7 @@
 			<input type="text" class="text" name="estimatedShippingAddress[zipCode]" value="{{ order.estimatedShippingAddress.zipCode ?? '' }}" placeholder="Zipcode">
 			<div class="select">
 				<select name="estimatedShippingAddress[countryId]">
-				{% for value, country in craft.commerce.countries.allCountriesAsList %}
+				{% for value, country in craft.commerce.countries.getAllEnabledCountriesAsList() %}
 					<option value="{{ value }}" {{ value == (order.estimatedShippingAddress.countryId ?? null) ? 'selected' }}>{{ country }}</option>
 				{% endfor %}
 				</select>

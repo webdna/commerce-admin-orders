@@ -4,6 +4,16 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/) and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 2.7.3 - 2021-10-18
+
+### Fixed
+
+-   Fixed an issue where products were no longer loading due to an update in the way Craft now queries elements - ([#31](https://github.com/KuriousAgency/commerce-admin-orders/issues/31)).
+
+### Updated
+
+-	Country and state dropdowns now only show enabled options ([#30](https://github.com/KuriousAgency/commerce-admin-orders/issues/30)).
+
 ## 2.7.2 - 2021-03-30
 
 ### Fixed

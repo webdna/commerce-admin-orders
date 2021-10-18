@@ -2,9 +2,14 @@
 
 namespace kuriousagency\commerce\adminorders\elements;
 
-use Craft;
+use kuriousagency\commerce\adminorders\elements\db\ProductQuery;
+
 use craft\commerce\Plugin as Commerce;
+
 use craft\digitalproducts\elements\Product as CommerceProduct;
+
+use Craft;
+use craft\elements\db\ElementQueryInterface;
 
 class Product extends CommerceProduct
 {
@@ -15,6 +20,11 @@ class Product extends CommerceProduct
 	{
 		return 'digital';
 	}
+
+	public static function find(): ElementQueryInterface
+    {
+        return new ProductQuery(static::class);
+    }
 
 	/**
     * @inheritdoc

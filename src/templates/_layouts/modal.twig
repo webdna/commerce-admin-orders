@@ -116,17 +116,26 @@
 
                         {# content-container #}
                         <div id="content-container">
-                            {% block tabs %}
-                                {% if tabs is defined and tabs %}
-                                    {% include "_includes/tabs" %}
-                                {% endif %}
-                            {% endblock %}
+                            <div id="content" class="content-pane">
+                                <header id="content-header" class="pane-header">
+                                    {% block tabs %}
+                                        {% if tabs is defined and tabs %}
+                                            {% include "_includes/tabs" with {
+                                                containerAttributes: {
+                                                    id: 'tabs',
+                                                },
+                                            } %}
+                                        {% endif %}
+                                    {% endblock %}
+                                </header>
+                           
 
-                            <div id="content">
-								{% block content %}
+                                <div id="content">
+                                    {% block content %}
 
-								{% endblock %}
-                            </div>
+                                    {% endblock %}
+                                </div>
+                             </div>
                         </div>
 
                         

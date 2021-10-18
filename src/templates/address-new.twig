@@ -120,7 +120,7 @@
 			name: type~'[countryId]',
 			label: 'Country',
 			required: true,
-			options: craft.commerce.countries.allCountriesAsList,
+			options: craft.commerce.countries.getAllEnabledCountriesAsList(),
 			value: model.country ?? null,
 			errors: model.getErrors('country'),
 		}) }}
@@ -131,7 +131,7 @@
 	<script src='https://maps.googleapis.com/maps/api/js?key={{ settings.googleApiKey }}&libraries=places'></script>
 {% endif %}
 
-{% set states = craft.commerce.states.allStates %}
+{% set states = craft.commerce.states.getAllEnabledStates() %}
 
  {% js %}
 		var $states = $('#stateValue-field').find('select').selectize({

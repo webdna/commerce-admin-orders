@@ -2,9 +2,13 @@
 
 namespace kuriousagency\commerce\adminorders\elements;
 
-use Craft;
-use craft\commerce\Plugin as Commerce;
+use kuriousagency\commerce\adminorders\elements\db\VoucherQuery;
+
 use verbb\giftvoucher\elements\Voucher as CommerceVoucher;
+use craft\commerce\Plugin as Commerce;
+
+use Craft;
+use craft\elements\db\ElementQueryInterface;
 
 class Voucher extends CommerceVoucher
 {
@@ -15,6 +19,11 @@ class Voucher extends CommerceVoucher
 	{
 		return 'voucher';
 	}
+
+	public static function find(): ElementQueryInterface
+    {
+        return new VoucherQuery(static::class);
+    }
 
 	/**
     * @inheritdoc
