@@ -2,13 +2,9 @@
 
 namespace kuriousagency\commerce\adminorders\elements;
 
-use kuriousagency\commerce\adminorders\elements\db\TicketQuery;
-
-use verbb\events\elements\Ticket as CommerceTicket;
-
 use Craft;
-use craft\elements\db\ElementQueryInterface;
 use craft\commerce\Plugin as Commerce;
+use verbb\events\elements\Ticket as CommerceTicket;
 
 class Ticket extends CommerceTicket
 {
@@ -19,11 +15,6 @@ class Ticket extends CommerceTicket
 	{
 		return '';
 	}
-
-	public static function find(): ElementQueryInterface
-    {
-        return new TicketQuery(static::class);
-    }
 
 	/**
     * @inheritdoc

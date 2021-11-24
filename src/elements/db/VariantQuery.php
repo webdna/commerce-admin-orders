@@ -33,18 +33,10 @@ class VariantQuery extends CommerceVariantQuery
         
 
 		$this->_applyHasProductParam();
-        
 		
 		//Craft::dd($this->siteId);
 
         return parent::beforePrepare();
-    }
-
-    protected function afterPrepare(): bool
-    {
-        $this->subQuery->orWhere(['elements.type'=>'craft\\commerce\\elements\\Variant']);
-
-        return parent::afterPrepare();
     }
 
     /**

@@ -2,15 +2,9 @@
 
 namespace kuriousagency\commerce\adminorders\elements;
 
-
-use kuriousagency\commerce\adminorders\elements\db\BundleQuery;
-use kuriousagency\commerce\bundles\elements\Bundle as CommerceBundle;
-
-use craft\commerce\Plugin as Commerce;
-
 use Craft;
-use craft\elements\db\ElementQueryInterface;
-
+use craft\commerce\Plugin as Commerce;
+use kuriousagency\commerce\bundles\elements\Bundle as CommerceBundle;
 
 class Bundle extends CommerceBundle
 {
@@ -27,11 +21,6 @@ class Bundle extends CommerceBundle
 	{
 		return '';
 	}
-
-	public static function find(): ElementQueryInterface
-    {
-        return new BundleQuery(static::class);
-    }
 
 	/**
     * @inheritdoc
