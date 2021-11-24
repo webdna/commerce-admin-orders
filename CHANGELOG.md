@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/) and this project adheres to [Semantic Versioning](http://semver.org/).
 
+### Updated
+
+## 2.7.4 - 2021-11-24
+
+- Reverted previous element query update as the element query change by Craft has been reverted - (https://github.com/craftcms/cms/discussions/9806)
+
 ## 2.7.3 - 2021-10-18
 
 ### Fixed
