@@ -59,6 +59,11 @@
 				</td>
 				<td data-title="{{ 'Price'|t('commerce') }}">
 					{{ lineItem.salePrice|currency(order.currency) }}
+					<div class="custom-price">
+						<div class="label">{{ 'Custom price'|t }}</div>
+						<input class="adminOrderPriceStatus" type="checkbox" name="lineItems[{{ lineItem.id }}][adminOrderPriceStatus]" />
+						<input class="adminOrderPrice" type="text" name="lineItems[{{ lineItem.id }}][adminOrderPrice]" min="0" value="{{ lineItem.salePrice|currency(order.currency) }}" style="width:100px">
+					</div>
 				</td>
 				<td data-title="{{ 'Qty'|t('commerce') }}">
 					<input type="number" name="lineItems[{{ lineItem.id }}][qty]" min="0" style="width:50px" value="{{ lineItem.qty }}" >
