@@ -2,7 +2,7 @@
 	"name": "kuriousagency/commerce-admin-orders",
 	"description": "Create a new commerce order from the admin",
 	"type": "craft-plugin",
-	"version": "2.7.4",
+	"version": "2.7.5",
 	"keywords": [
 		"craft",
 		"cms",
@@ -11,14 +11,14 @@
 		"commerce admin orders"
 	],
 	"support": {
-		"docs": "https://github.com/KuriousAgency/commerce-admin-orders/blob/master/README.md",
-		"issues": "https://github.com/KuriousAgency/commerce-admin-orders/issues"
+		"docs": "https://github.com/webdna/commerce-admin-orders/blob/master/README.md",
+		"issues": "https://github.com/webdna/commerce-admin-orders/issues"
 	},
 	"license": "proprietary",
 	"authors": [
 		{
-			"name": "Kurious Agency",
-			"homepage": "https://kurious.agency"
+			"name": "WebDNA",
+			"homepage": "https://webdna.co.uk"
 		}
 	],
 	"require": {
@@ -35,7 +35,7 @@
 		"handle": "commerce-admin-orders",
 		"hasCpSettings": true,
 		"hasCpSection": false,
-		"changelogUrl": "https://raw.githubusercontent.com/KuriousAgency/commerce-admin-orders/master/CHANGELOG.md",
+		"changelogUrl": "https://raw.githubusercontent.com/webdna/commerce-admin-orders/master/CHANGELOG.md",
 		"components": {
 			"orders": "kuriousagency\\commerce\\adminorders\\services\\Orders"
 		},

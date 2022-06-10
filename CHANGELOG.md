@@ -4,7 +4,10 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/) and this project adheres to [Semantic Versioning](http://semver.org/).
 
-### Updated
+## 2.7.5 - 2022-06-10
+### Changed
+-	Change of ownership
+
 
 ## 2.7.4 - 2021-11-24
 
@@ -14,17 +17,17 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 ### Fixed
 
--   Fixed an issue where products were no longer loading due to an update in the way Craft now queries elements - ([#31](https://github.com/KuriousAgency/commerce-admin-orders/issues/31)).
+-   Fixed an issue where products were no longer loading due to an update in the way Craft now queries elements - ([#31](https://github.com/webdna/commerce-admin-orders/issues/31)).
 
 ### Updated
 
--	Country and state dropdowns now only show enabled options ([#30](https://github.com/KuriousAgency/commerce-admin-orders/issues/30)).
+-	Country and state dropdowns now only show enabled options ([#30](https://github.com/webdna/commerce-admin-orders/issues/30)).
 
 ## 2.7.2 - 2021-03-30
 
 ### Fixed
 
--	Fixed a bug where the Orders sort menu triggered the new order modal ([#29](https://github.com/KuriousAgency/commerce-admin-orders/issues/29)).
+-	Fixed a bug where the Orders sort menu triggered the new order modal ([#29](https://github.com/webdna/commerce-admin-orders/issues/29)).
 
 ## 2.7.1 - 2020-12-23
 
