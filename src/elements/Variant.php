@@ -1,55 +1,46 @@
 <?php
 
-namespace kuriousagency\commerce\adminorders\elements;
+namespace webdna\commerce\adminorders\elements;
 
 use Craft;
 use craft\commerce\Plugin as Commerce;
 use craft\commerce\elements\Variant as CommerceVariant;
 use craft\commerce\elements\Product;
 use craft\base\Element;
-use kuriousagency\commerce\adminorders\elements\db\VariantQuery;
-use craft\elements\db\ElementQueryInterface;
+use webdna\commerce\adminorders\elements\db\VariantQuery;
 
 class Variant extends CommerceVariant
 {
 
-	public $qty;
+    public int $qty;
 
-	public static function displayName(): string
-	{
-		return 'Product';
-	}
+    public static function displayName(): string
+    {
+        return 'Product';
+    }
 
-	public function getCpEditUrl(): string
-	{
-		return '';
-	}
+    public function getCpEditUrl(): string
+    {
+        return '';
+    }
 
-	public static function find(): ElementQueryInterface
+    public static function find(): VariantQuery
     {
         return new VariantQuery(static::class);
     }
 
-	/**
-    * @inheritdoc
-    */
     protected static function defineTableAttributes(): array
     {
 
-		$attributes = parent::defineTableAttributes();
+        $attributes = parent::defineTableAttributes();
 
-		$attributes['qty'] = Craft::t('commerce', 'Quantity');
-		$attributes['stock'] = Craft::t('commerce', 'Stock');
+        $attributes['qty'] = Craft::t('commerce', 'Quantity');
+        $attributes['stock'] = Craft::t('commerce', 'Stock');
 
-		return $attributes;
+        return $attributes;
 
-	}
-	
-	
-	
-	/**
-     * @inheritdoc
-     */
+    }
+
     protected static function defineDefaultTableAttributes(string $source): array
     {
         $attributes = [];
@@ -62,55 +53,50 @@ class Variant extends CommerceVariant
         $attributes[] = 'qty';
 
         return $attributes;
-	}
-	
-	protected function tableAttributeHtml(string $attribute): string
+    }
+
+    protected function tableAttributeHtml(string $attribute): string
     {
+        switch ($attribute) {
+            case 'qty':
+                {
+                    if (!$this->isAvailable) {
+                        return '';
+                    }
+                    if($this->stock > 0 || $this->hasUnlimitedStock ) {
+                        $html = '<div class="qty"><input type="number" name="adminOrderQty['.$this->id.']" class="text adminOrderQty" value="1">';
+                        $html .= ' <button class="btn submit atc" data-id="'.$this->id.'">Add</button></div>';
 
-		switch ($attribute) {
-			case 'qty':
-				{
-					if (!$this->isAvailable) {
-						return '';
-					}
-					if($this->stock > 0 || $this->hasUnlimitedStock ) {
-						$html = '<div class="qty"><input type="text" name="adminOrderQty['.$this->id.']" class="text adminOrderQty" value="1">';
-						$html .= ' <button class="btn submit atc" data-id="'.$this->id.'">Add</button></div>';
-						
-					} else {
-						$html = "OOS";
-					}
-					return $html;
-				}
+                    } else {
+                        $html = "OOS";
+                    }
+                    return $html;
+                }
 
-			case 'stock':
-				{
-					if($this->hasUnlimitedStock) {
-						$stock = "∞";
-					} else {
-						$stock = $this->stock;
-					}
+            case 'stock':
+                {
+                    if($this->hasUnlimitedStock) {
+                        $stock = "∞";
+                    } else {
+                        $stock = $this->stock;
+                    }
 
-					return $stock;
-					
-				}
-			
-			case 'price':
-				{
-					$code = Commerce::getInstance()->getPaymentCurrencies()->getPrimaryPaymentCurrencyIso();
-	
-					return Craft::$app->getLocale()->getFormatter()->asCurrency($this->$attribute, strtoupper($code));
-				}
-		
-			default:
-			{
-				return parent::tableAttributeHtml($attribute);
-			}
+                    return $stock;
+
+                }
+
+            case 'price':
+                {
+                    $code = Commerce::getInstance()->getPaymentCurrencies()->getPrimaryPaymentCurrencyIso();
+
+                    return Craft::$app->getLocale()->getFormatter()->asCurrency($this->$attribute, strtoupper($code));
+                }
+
+            default:
+            {
+                return parent::tableAttributeHtml($attribute);
+            }
         }
-
-	}
-
+    }
 
 }
-
-?>

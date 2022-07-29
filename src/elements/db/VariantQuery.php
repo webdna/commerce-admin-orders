@@ -5,7 +5,7 @@
  * @license https://craftcms.github.io/license/
  */
 
-namespace kuriousagency\commerce\adminorders\elements\db;
+namespace webdna\commerce\adminorders\elements\db;
 
 use Craft;
 use craft\base\Element;
@@ -16,25 +16,17 @@ use craft\elements\db\ElementQuery;
 use craft\helpers\Db;
 use yii\db\Connection;
 use craft\commerce\elements\db\VariantQuery as CommerceVariantQuery;
+use craft\commerce\elements\db\ProductQuery;
 
 
 class VariantQuery extends CommerceVariantQuery
 {
-    
-
     // Protected Methods
     // =========================================================================
 
-    /**
-     * @inheritdoc
-     */
     protected function beforePrepare(): bool
     {
-        
-
-		$this->_applyHasProductParam();
-		
-		//Craft::dd($this->siteId);
+        $this->_applyHasProductParam();
 
         return parent::beforePrepare();
     }
@@ -42,7 +34,7 @@ class VariantQuery extends CommerceVariantQuery
     /**
      * Applies the hasVariant query condition
      */
-    private function _applyHasProductParam()
+    private function _applyHasProductParam(): void
     {
         //if ($this->hasProduct) {
             if ($this->hasProduct instanceof ProductQuery) {
@@ -52,8 +44,8 @@ class VariantQuery extends CommerceVariantQuery
                 $productQuery = Craft::configure($query, []);
             }
 
-			$productQuery->siteId = $this->siteId;
-			$productQuery->status = 'enabled';
+            $productQuery->siteId = $this->siteId;
+            $productQuery->status = 'enabled';
             $productQuery->limit = null;
             $productQuery->select('commerce_products.id');
             $productIds = $productQuery->column();

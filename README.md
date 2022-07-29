@@ -1,10 +1,10 @@
-# Commerce Admin Orders plugin for Craft CMS 3.x
+# Commerce Admin Orders plugin for Craft CMS 4.x
 
-Commerce Admin Orders is a Craft 3 plugin that allows control panel users to create and update orders.
+Commerce Admin Orders is a Craft 4 plugin that allows control panel users to create and update orders.
 
 ## Requirements
 
-This plugin requires Craft CMS 3.5 and Craft Commerce 3.
+This plugin requires Craft CMS 4 and Craft Commerce 4.
 
 ## Installation
 
@@ -16,7 +16,7 @@ To install the plugin, follow these instructions.
 
 2.  Then tell Composer to load the plugin:
 
-        composer require kuriousagency/commerce-admin-orders
+        composer require webdna/commerce-admin-orders
 
 3.  In the Control Panel, go to Settings → Plugins and click the "Install" button for Commerce Admin Orders.
 
@@ -83,4 +83,4 @@ To update the quantity of a product, change the line item quantity and click the
 
 Products can be removed by either clicking the X on right of the line item or by entering a quantity of 0 and clicking the Update button.
 
-Brought to you by [Kurious Agency](https://kurious.agency)
+Brought to you by [webdna](https://webdna.co.uk)

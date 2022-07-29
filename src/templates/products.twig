@@ -2,17 +2,17 @@
 {% import "_includes/forms" as forms %}
 
 {# {% set tabs = {
-	'products': {url:'#productsTab', label:'Products', elementType:'kuriousagency\\commerce\\adminorders\\elements\\Variant'},
+	'products': {url:'#productsTab', label:'Products', elementType:'webdna\\commerce\\adminorders\\elements\\Variant'},
 } %}
 
 {% set bundles = craft.app.plugins.isPluginInstalled('commerce-bundles') and craft.app.plugins.isPluginEnabled('commerce-bundles') %}
 {% if bundles %}
-{% set tabs = tabs|merge({'bundles': {url:'#bundlesTab', label:'Bundles', elementType:'kuriousagency\\commerce\\adminorders\\elements\\Bundle'}}) %}
+{% set tabs = tabs|merge({'bundles': {url:'#bundlesTab', label:'Bundles', elementType:'webdna\\commerce\\adminorders\\elements\\Bundle'}}) %}
 {% endif %}
 
 {% set digital = craft.app.plugins.isPluginInstalled('digital-products') and craft.app.plugins.isPluginEnabled('digital-products') %}
 {% if digital %}
-{% set tabs = tabs|merge({'digital': {url:'#digitalTab', label:'Digital Products', elementType:'kuriousagency\\commerce\\adminorders\\elements\\Digital'}}) %}
+{% set tabs = tabs|merge({'digital': {url:'#digitalTab', label:'Digital Products', elementType:'webdna\\commerce\\adminorders\\elements\\Digital'}}) %}
 {% endif %} #}
 
 {% set tabs = purchasableTypes %}
@@ -39,9 +39,9 @@
 		</div>
 	</div>
 
-	
+
 	<input type="hidden" name="action" value="commerce/cart/update-cart">
-	
+
 	{{ redirectInput(cpUrl('commerce-admin-orders/orders/products?orderNumber='~order.number)) }}
 
 	{% include "commerce-admin-orders/partials/controls" with {showCurrency:true} %}
@@ -51,7 +51,7 @@
 		var $form = $('#main-form'),
 			$atcBtn = $form.find('.atc'),
 			$headerBtn = $form.find('#header .submit');
-			
+
 		$.each($('.tableRowInfo'), function () {
 			new Craft.Commerce.TableRowAdditionalInfoIcon(this);
 		});
@@ -64,8 +64,8 @@
 
 
 	{% endjs %}
-	
+
 
 {% endblock %}
 
-{% do view.registerAssetBundle("kuriousagency\\commerce\\adminorders\\assetbundles\\neworder\\NewOrder") %}
+{% do view.registerAssetBundle("webdna\\commerce\\adminorders\\assetbundles\\neworder\\NewOrder") %}

@@ -6,7 +6,6 @@
 	{% set fullPageForm = true %}
 {% endif %}
 
-
 {% set sidebar = (sidebar ?? block('sidebar') ?? '')|trim %}
 {% set details = (details ?? block('details') ?? '')|trim %}
 {% set crumbs = crumbs ?? null %}
@@ -22,131 +21,127 @@
 
 <div id="main-container">
 
-            {# alerts #}
-            {% if craft.cp.areAlertsCached() %}
-                {% set alerts = craft.cp.getAlerts() %}
-                {% if alerts %}
-                    <ul id="alerts">
-                        {% for alert in craft.cp.getAlerts() %}
-                            <li>{{ alert|raw }}</li>
-                        {% endfor %}
-                    </ul>
-                {% endif %}
-            {% else %}
-                {% js %}
-                Craft.cp.fetchAlerts();
-                {% endjs %}
-            {% endif %}
+    {# alerts #}
+    {% if craft.cp.areAlertsCached() %}
+        {% set alerts = craft.cp.getAlerts() %}
+        {% if alerts %}
+            <ul id="alerts">
+                {% for alert in craft.cp.getAlerts() %}
+                    <li>{{ alert|raw }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+    {% else %}
+        {% js %}
+            Craft.cp.fetchAlerts();
+        {% endjs %}
+    {% endif %}
 
-            {# notifications #}
-            <div id="notifications-wrapper">
-                <div id="notifications">
-                    {% for type in ['notice', 'error'] %}
-                        {% set message = craft.app.session.getFlash(type) %}
-                        {% if message and (cart is defined and cart is not null and cart.errors|length == 0) %}
-                            <div class="notification {{ type }}">{{ message }}</div>
-                        {% endif %}
+    {# notifications #}
+    <div id="notifications-wrapper">
+        <div id="notifications">
+            {% for type in ['notice', 'error'] %}
+                {% set message = craft.app.session.getFlash(type) %}
+                {% if message and (cart is defined and cart is not null and cart.errors|length == 0) %}
+                    <div class="notification {{ type }}">{{ message }}</div>
+                {% endif %}
+            {% endfor %}
+            {% if cart is defined and cart is not null and cart.errors|length %}
+                {% for attribute, errors in cart.errors %}
+                    {% for key, error in errors %}
+                        <div class="notification error">{{ error }}</div>
                     {% endfor %}
-					{% if cart is defined and cart is not null and cart.errors|length %}
-						{% for attribute, errors in cart.errors %}
-							{% for key, error in errors %}
-								<div class="notification error">{{ error }}</div>
-							{% endfor %}
-						{% endfor %}
-					{% endif %}
-                </div>
-            </div>
+                {% endfor %}
+            {% endif %}
+        </div>
+    </div>
 
-            {# crumbs #}
-            <div id="crumbs"{% if not crumbs %} class="empty"{% endif %}>
-                
-                {% if crumbs %}
-                    <nav>
-                        <ul>
-                            {% for crumb in crumbs %}
-                                <li><a href="{{ crumb.url }}">{{ crumb.label }}</a></li>
-                            {% endfor %}
-                        </ul>
-                    </nav>
-                {% endif %}
-            </div>
+    {# crumbs #}
+    <div id="crumbs"{% if not crumbs %} class="empty"{% endif %}>
+        {% if crumbs %}
+            <nav>
+                <ul>
+                    {% for crumb in crumbs %}
+                        <li><a href="{{ crumb.url }}">{{ crumb.label }}</a></li>
+                    {% endfor %}
+                </ul>
+            </nav>
+        {% endif %}
+    </div>
 
-            {# main #}
-            <main id="main" role="main">
+    {# main #}
+    <main id="main" role="main">
 
-                {% if fullPageForm -%}
-                    <form {% block mainFormAttributes %}id="main-form" method="post" accept-charset="UTF-8" data-saveshortcut{% if saveShortcutRedirect is defined %} data-saveshortcut-redirect="{{ saveShortcutRedirect|hash }}"{% endif %} {# data-confirm-unload #} novalidate{% endblock %}>
-                        {{- csrfInput() }}
-                {%- endif %}
+        {% if fullPageForm -%}
+            <form {% block mainFormAttributes %}id="main-form" method="post" accept-charset="UTF-8" data-saveshortcut{% if saveShortcutRedirect is defined %} data-saveshortcut-redirect="{{ saveShortcutRedirect|hash }}"{% endif %} {# data-confirm-unload #} novalidate{% endblock %}>
+                {{- csrfInput() }}
+        {%- endif %}
 
-                {# main-header #}
-                <div id="header-container">
-                    <header id="header" class="full-width">
-                        {% block header %}
-                            <div id="page-title" class="flex flex-nowrap">
-                                {% block pageTitle %}
-                                    {% if title is defined and title|length %}
-                                        <h1>{{ title }}</h1>
-                                    {% endif %}
-                                {% endblock %}
-                            </div>
-                            {# {% block contextMenu %}{% endblock %} #}
-                            {# <div class="flex-grow"></div> #}
-                            <div id="action-button" class="flex">
-                            {% block actionButton %}
-                                
-                                    {% if fullPageForm %}
-                                        {% if continue is defined %}
-                                            <a href="{{ continue }}" class="btn submit">{{ 'Continue'|t('app') }}</a>
-                                        {% else %}
-                                            <input type="submit" class="btn submit" value="{{ 'Continue'|t('app') }}">
-                                        {% endif %}
-                                    {% endif %}
-                               
-                            {% endblock %}
-                             </div>
+        {# main-header #}
+        <div id="header-container">
+            <header id="header" class="full-width">
+                {% block header %}
+                    <div id="page-title" class="flex flex-nowrap">
+                        {% block pageTitle %}
+                            {% if title is defined and title|length %}
+                                <h1>{{ title }}</h1>
+                            {% endif %}
                         {% endblock %}
-                    </header>
-                </div>
+                    </div>
+                    {# {% block contextMenu %}{% endblock %} #}
+                    {# <div class="flex-grow"></div> #}
+                    <div id="action-button" class="flex">
+                    {% block actionButton %}
 
-                {# main-content #}
-                <div id="main-content" class="{% if sidebar %}has-sidebar{% endif %} {% if details %}has-details{% endif %}">
-                    {% block main %}
-	
+                            {% if fullPageForm %}
+                                {% if continue is defined %}
+                                    <a href="{{ continue }}" class="btn submit">{{ 'Continue'|t('app') }}</a>
+                                {% else %}
+                                    <input type="submit" class="btn submit" value="{{ 'Continue'|t('app') }}">
+                                {% endif %}
+                            {% endif %}
 
-                        {# content-container #}
-                        <div id="content-container">
-                            <div id="content" class="content-pane">
-                                <header id="content-header" class="pane-header">
-                                    {% block tabs %}
-                                        {% if tabs is defined and tabs %}
-                                            {% include "_includes/tabs" with {
-                                                containerAttributes: {
-                                                    id: 'tabs',
-                                                },
-                                            } %}
-                                        {% endif %}
-                                    {% endblock %}
-                                </header>
-                           
-
-                                <div id="content">
-                                    {% block content %}
-
-                                    {% endblock %}
-                                </div>
-                             </div>
-                        </div>
-
-                        
                     {% endblock %}
+                        </div>
+                {% endblock %}
+            </header>
+        </div>
+
+        {# main-content #}
+        <div id="main-content" class="{% if sidebar %}has-sidebar{% endif %} {% if details %}has-details{% endif %}">
+            {% block main %}
+
+                {# content-container #}
+                <div id="content-container">
+                    <div id="content" class="content-pane">
+                        <header id="content-header" class="pane-header">
+                            {% block tabs %}
+                                {% if tabs is defined and tabs %}
+                                    {% include "_includes/tabs" with {
+                                        containerAttributes: {
+                                            id: 'tabs',
+                                        },
+                                    } %}
+                                {% endif %}
+                            {% endblock %}
+                        </header>
+
+                        <div id="content">
+                            {% block content %}
+
+                            {% endblock %}
+                        </div>
+                        </div>
                 </div>
 
-                {% if fullPageForm -%}
-                    </form><!-- #main-form -->
-                {%- endif %}
-            </main><!-- #main -->
-        </div><!-- #main-container -->
+            {% endblock %}
+        </div>
+
+        {% if fullPageForm -%}
+            </form><!-- #main-form -->
+        {%- endif %}
+    </main><!-- #main -->
+</div><!-- #main-container -->
 
 
 {% endblock %}

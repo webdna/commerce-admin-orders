@@ -13,156 +13,133 @@
 
 {% block content %}
 
+	<input type="hidden" name="action" value="commerce-admin-orders/orders/save-address">
+	<input type="hidden" name="orderNumber" value="{{ order.number }}">
+	{{ redirectInput(cpUrl()~'/commerce-admin-orders/orders/address?orderNumber={number}') }}
 
-<input type="hidden" name="action" value="commerce-admin-orders/orders/save-address">
-<input type="hidden" name="orderNumber" value="{{ order.number }}">
-{{ redirectInput(cpUrl()~'/commerce-admin-orders/orders/address?orderNumber={number}') }}
+	<div class="flex" style="align-items: flex-start;">
+		<div class="flex-grow">
+			{% if settings.googleApiKey ?? false %}
+				{{ forms.textField({
+				id: 'addressLookup',
+				name: 'addressLookup',
+				label: 'Address Lookup',
+				placeholder: 'Please start typing your address...',
+			}) }}
+			{% endif %}
+		</div>
+	</div>
 
-<div class="flex" style="align-items: flex-start;">
-	<div class="flex-grow">
-		{% if settings.googleApiKey ?? false %}
+	<div class="flex" style="align-items: flex-start;">
+		<div class="flex-grow">
 			{{ forms.textField({
-			id: 'addressLookup',
-			name: 'addressLookup',
-			label: 'Address Lookup',
-			placeholder: 'Please start typing your address...',
-		}) }}
-		{% endif %}
+				id: 'firstname',
+				name: type~'[firstName]',
+				label: 'Firstname',
+				required: true,
+				value: model.firstName ?? null,
+				errors: model.getErrors('firstName'),
+			}) }}
+			{{ forms.textField({
+				id: 'lastname',
+				name: type~'[lastName]',
+				label: 'Lastname',
+				required: true,
+				value: model.lastName ?? null,
+				errors: model.getErrors('lastName'),
+			}) }}
+			{{ forms.textField({
+				id: 'organization',
+				name: type~'[organization]',
+				label: 'Organization Name',
+				required: false,
+				value: model.organization ?? null,
+				errors: model.getErrors('organization'),
+			}) }}
+			{{ forms.textField({
+				id: 'organizationTaxId',
+				name: type~'[organizationTaxId]',
+				label: 'Organization Tax Number',
+				required: false,
+				value: model.organizationTaxId ?? null,
+				errors: model.getErrors('organizationTaxId'),
+			}) }}
+			{% if model['phone'] is defined %}
+				{{ forms.textField({
+					id: 'phone',
+					name: type~'[phone]',
+					label: 'Phone',
+					required: false,
+					value: model.phone ?? null,
+					errors: model.getErrors('phone'),
+				}) }}
+			{% endif %}
+		</div>
+		<div class="flex-grow">
+			{{ forms.textField({
+				id: 'addressLine1',
+				name: type~'[addressLine1]',
+				label: 'Address Line 1',
+				required: true,
+				value: model.addressLine1 ?? null,
+				errors: model.getErrors('addressLine1'),
+			}) }}
+			{{ forms.textField({
+				id: 'addressLine2',
+				name: type~'[addressLine2]',
+				label: 'Address Line 2',
+				required: false,
+				value: model.addressLine2 ?? null,
+				errors: model.getErrors('addressLine2'),
+			}) }}
+			{{ forms.textField({
+				id: 'locality',
+				name: type~'[locality]',
+				label: 'Locality',
+				required: true,
+				value: model.locality ?? null,
+				errors: model.getErrors('locality'),
+			}) }}
+			{% set stateOptions = [] %}
+			{% set states = craft.commerce.store.getStore().getAdministrativeAreasListByCountryCode() %}
+			{% for item in states %}
+				{% set stateOptions = stateOptions|merge(item) %}
+			{% endfor %}
+			{{ forms.selectField({
+				label: 'State'|t('commerce'),
+				id: 'administrativeArea',
+				name: type~'[administrativeArea]',
+				options: stateOptions,
+				value: model.administrativeArea,
+				errors: model.getErrors('administrativeArea'),
+			}) }}
+			{{ forms.textField({
+				id: 'postalCode',
+				name: type~'[postalCode]',
+				label: 'Postal Code',
+				required: true,
+				value: model.postalCode ?? null,
+				errors: model.getErrors('postalCode'),
+			}) }}
+			{{ forms.selectField({
+				id: 'countryCode',
+				name: type~'[countryCode]',
+				label: 'Country',
+				required: true,
+				options: craft.commerce.getStore().store.getCountriesList(),
+				value: model.countryCode ?? null,
+				errors: model.getErrors('countryCode'),
+			}) }}
+		</div>
 	</div>
-</div>
 
-<div class="flex" style="align-items: flex-start;">
-	<div class="flex-grow">
-		{{ forms.textField({
-			id: 'firstname',
-			name: type~'[firstName]',
-			label: 'Firstname',
-			required: true,
-			value: model.firstName ?? null,
-			errors: model.getErrors('firstName'),
-		}) }}
-		{{ forms.textField({
-			id: 'lastname',
-			name: type~'[lastName]',
-			label: 'Lastname',
-			required: true,
-			value: model.lastName ?? null,
-			errors: model.getErrors('lastName'),
-		}) }}
-		{{ forms.textField({
-			id: 'business',
-			name: type~'[businessName]',
-			label: 'Business Name',
-			required: false,
-			value: model.businessName ?? null,
-			errors: model.getErrors('businessName'),
-		}) }}
-		{{ forms.textField({
-			id: 'businessTaxId',
-			name: type~'[businessTaxId]',
-			label: 'Business Tax Number',
-			required: false,
-			value: model.businessTaxId ?? null,
-			errors: model.getErrors('businessTaxId'),
-		}) }}
-		{{ forms.textField({
-			id: 'phone',
-			name: type~'[phone]',
-			label: 'Phone',
-			required: false,
-			value: model.phone ?? null,
-			errors: model.getErrors('phone'),
-		}) }}
-	</div>
-	<div class="flex-grow">
-		{{ forms.textField({
-			id: 'address1',
-			name: type~'[address1]',
-			label: 'Address Line 1',
-			required: true,
-			value: model.address1 ?? null,
-			errors: model.getErrors('address1'),
-		}) }}
-		{{ forms.textField({
-			id: 'address2',
-			name: type~'[address2]',
-			label: 'Address Line 2',
-			required: false,
-			value: model.address2 ?? null,
-			errors: model.getErrors('address2'),
-		}) }}
-		{{ forms.textField({
-			id: 'city',
-			name: type~'[city]',
-			label: 'City',
-			required: true,
-			value: model.city ?? null,
-			errors: model.getErrors('city'),
-		}) }}
-		 {{ forms.selectField({
-            label: 'State'|t('commerce'),
-            id: 'stateValue',
-            name: type~'[stateValue]',
-            value: model.stateValue,
-            errors: model.getErrors('stateValue'),
-            class: 'selectize fullwidth'
-        }) }}
-		{{ forms.textField({
-			id: 'zipCode',
-			name: type~'[zipCode]',
-			label: 'Zip Code',
-			required: true,
-			value: model.zipCode ?? null,
-			errors: model.getErrors('zipCode'),
-		}) }}
-		{{ forms.selectField({
-			id: 'country',
-			name: type~'[countryId]',
-			label: 'Country',
-			required: true,
-			options: craft.commerce.countries.getAllEnabledCountriesAsList(),
-			value: model.country ?? null,
-			errors: model.getErrors('country'),
-		}) }}
-	</div>
-</div>
+	{% if settings.googleApiKey ?? false %}
+		<script src='https://maps.googleapis.com/maps/api/js?key={{ settings.googleApiKey }}&libraries=places'></script>
+	{% endif %}
 
-{% if settings.googleApiKey ?? false %}
-	<script src='https://maps.googleapis.com/maps/api/js?key={{ settings.googleApiKey }}&libraries=places'></script>
-{% endif %}
+	{% set states = craft.commerce.store.getStore().getAdministrativeAreasListByCountryCode() %}
 
-{% set states = craft.commerce.states.getAllEnabledStates() %}
-
- {% js %}
-		var $states = $('#stateValue-field').find('select').selectize({
-			valueField: 'id',
-			create: true,
-			items: ['{{ model.stateValue }}'],
-			options: {{ states|json_encode|raw }},
-			labelField: 'name',
-			searchField: ['name'],
-			dropdownParent: 'body',
-			inputClass: 'selectize-input text',
-			allowEmptyOption: false
-		});
-
-        {# window.states = {{ craft.commerce.states.allStates|values|json_encode|raw }};
-
-        window.states.push({'name': '{{ model.stateValue }}', 'id': '{{ model.stateValue }}'});
-
-        var $states = $('#stateValue-field').find('select').selectize({
-            valueField: 'id',
-            create: true,
-            items: ['{{ model.stateValue }}'],
-            options: window.states,
-            labelField: 'name',
-            searchField: ['name'],
-            dropdownParent: 'body',
-            inputClass: 'selectize-input text',
-            allowEmptyOption: false
-        }); #}
-
-		{# var $select = $('#stateValue-field').selectize(), #}
+	{% js %}
 
 		{% if settings.googleApiKey ?? false %}
 			if($('#addressLookup')[0]) {
@@ -257,7 +234,7 @@
 				});
 			}
 		{% endif %}
-    {% endjs %}
+	{% endjs %}
 
 {% endblock %}
 

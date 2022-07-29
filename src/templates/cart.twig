@@ -61,7 +61,7 @@
 					{{ lineItem.salePrice|currency(order.currency) }}
 				</td>
 				<td data-title="{{ 'Qty'|t('commerce') }}">
-					<input type="number" name="lineItems[{{ lineItem.id }}][qty]" min="0" style="width:50px" value="{{ lineItem.qty }}" >
+					<input type="number" name="lineItems[{{ lineItem.id }}][qty]" min="0" style="width:70px" value="{{ lineItem.qty }}" class="text">
 				</td>
 				<td></td>
 				<td data-title="{{ 'Sub-total'|t('commerce') }}">

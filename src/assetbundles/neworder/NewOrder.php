@@ -4,18 +4,18 @@
  *
  * Create a new commerce order from the admin
  *
- * @link      https://kurious.agency
- * @copyright Copyright (c) 2018 Kurious Agency
+ * @link      https://webdna.co.uk
+ * @copyright Copyright (c) 2018 webdna
  */
 
-namespace kuriousagency\commerce\adminorders\assetbundles\neworder;
+namespace webdna\commerce\adminorders\assetbundles\neworder;
 
 use Craft;
 use craft\web\AssetBundle;
 use craft\web\assets\cp\CpAsset;
 
 /**
- * @author    Kurious Agency
+ * @author    webdna
  * @package   CommerceAdminOrders
  * @since     1.0.0
  */
@@ -27,22 +27,22 @@ class NewOrder extends AssetBundle
     /**
      * @inheritdoc
      */
-    public function init()
+    public function init(): void
     {
-        $this->sourcePath = "@kuriousagency/commerce/adminorders/assetbundles/neworder/dist";
+        $this->sourcePath = "@webdna/commerce/adminorders/assetbundles/neworder/dist";
 
         $this->depends = [
             CpAsset::class,
         ];
 
         $this->js = [
-			'js/Modal.js',
-			'js/Edit.js',
+            'js/Modal.js',
+            'js/Edit.js',
         ];
 
         $this->css = [
-			'css/Modal.css',
-			//'css/Edit.css',
+            'css/Modal.css',
+            //'css/Edit.css',
         ];
 
         parent::init();

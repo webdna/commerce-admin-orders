@@ -4,12 +4,12 @@
  *
  * Create a new commerce order from the admin
  *
- * @link      https://kurious.agency
- * @copyright Copyright (c) 2018 Kurious Agency
+ * @link      https://webdna.co.uk
+ * @copyright Copyright (c) 2018 webdna
  */
 
 /**
- * @author    Kurious Agency
+ * @author    webdna
  * @package   CommerceAdminOrders
  * @since     1.0.0
  */

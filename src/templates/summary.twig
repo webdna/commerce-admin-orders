@@ -142,13 +142,13 @@
 					</table>
 				</div>
 		</div>
-		
+
 		<div class="">
-			
-			{% if order.customer.userId is null and craft.users().email(order.email).one() is null %}
+
+			{% if order.customer.id is null and craft.users().email(order.email).one() is null %}
 				<div class="pane">
 					<h3>Create User Account</h3>
-					
+
 					{{ forms.textField({
 						id: 'firstname',
 						name: 'firstName',
@@ -185,8 +185,8 @@
 			{% endif %}
 
 		</div>
-		
-		
+
+
 
 	</div>
 
@@ -206,17 +206,17 @@
 		$headerBtn.addClass('disabled');
 		$(this).parents('form').submit();
 	});
-	
+
 	$headerBtn.on('click', function(e){
 		e.preventDefault();
-	
+
 		if($('#register-user').prop('checked')) {
 			$(this).parents('form').attr('target','_parent');
 			$(this).parents('form').submit();
 		} else {
 			window.parent.document.location = $(this).attr('href')+'#transactionsTab';
 		}
-		
+
 	})
 
 

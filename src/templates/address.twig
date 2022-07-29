@@ -10,7 +10,7 @@
 <input type="hidden" name="orderNumber" value="{{ order.number }}">
 {{ redirectInput(cpUrl()~'/commerce-admin-orders/orders/address?orderNumber={number}') }}
 
-{% set addresses = order.customer.addresses %}
+{% set addresses = order.customer.getAddresses() %}
 
 {# shipping address #}
 {# pick from list #}
@@ -19,19 +19,19 @@
 
 	<div id="shippingPane" class="pane flex-grow">
 
-		<h3>Shipping Address</h3> 
+		<h3>Shipping Address</h3>
 
 		<p class="light">
 		{% if order.shippingAddress %}
 			{{ order.shippingAddress.firstName }} {{ order.shippingAddress.lastName }}<br>
-			{{ order.shippingAddress.businessName ? (order.shippingAddress.businessName~'<br>')|raw }}
-			{{ order.shippingAddress.businessTaxId ? (order.shippingAddress.businessTaxId~'<br>')|raw }}
-			{{ order.shippingAddress.address1 }}<br>
-			{{ order.shippingAddress.address2 ? (order.shippingAddress.address2~'<br>')|raw }}
-			{{ order.shippingAddress.city }}<br>
-			{{ order.shippingAddress.zipCode }}<br>
-			{{ order.shippingAddress.state ? (order.shippingAddress.state~'<br>')|raw }}
-			{{ order.shippingAddress.country }}
+			{{ order.shippingAddress.organization ? (order.shippingAddress.organization~'<br>')|raw }}
+			{{ order.shippingAddress.organizationTaxId ? (order.shippingAddress.organizationTaxId~'<br>')|raw }}
+			{{ order.shippingAddress.addressLine1 }}<br>
+			{{ order.shippingAddress.addressLine2 ? (order.shippingAddress.address2~'<br>')|raw }}
+			{{ order.shippingAddress.locality }}<br>
+			{{ order.shippingAddress.postalCode }}<br>
+			{{ order.shippingAddress.administrativeArea ? (order.shippingAddress.administrativeArea~'<br>')|raw }}
+			{{ order.shippingAddress.countryCode }}
 		{% else %}
 			No address selected
 		{% endif %}
@@ -43,18 +43,18 @@
 				<select name="shippingAddressSelect">
 					<option value="" disabled selected>Select Existing or Add New Address</option>
 					{% for address in addresses %}
-						<option value="{{ address.id }}">{{ address.firstName }} {{ address.lastName }}, {{ address.address1 }}, {{ address.zipCode }}</option> 
+						<option value="{{ address.id }}">{{ address.firstName }} {{ address.lastName }}, {{ address.address1 }}, {{ address.zipCode }}</option>
 					{% endfor %}
 					<option value="0">Add New Address</option>
 				<select>
 			</div>
 			{# <a href="/commerce-admin-orders/orders/address/new?type=shipping&amp;orderNumber={{ order.number }}" class="submit btn">Add New Address</a> #}
         </div>
-    
+
 	</div>
 
 	<div id="billingPane" class="pane flex-grow" style="margin-bottom: 14px!important; margin-top: 0;">
-		
+
 		<h3>Billing Address</h3>
 
 				<p class="light">
@@ -72,7 +72,7 @@
 					No address selected
 				{% endif %}
 				</p>
-		
+
 
 			<div class="footer">
 				{# <a class="btn" id="make-payment" data-order-id="901">Make Payment</a> #}
@@ -80,19 +80,19 @@
 				<select name="billingAddressSelect">
 					<option value="" disabled selected>Select Existing or Add New Address</option>
 				{% for address in addresses %}
-					<option value="{{ address.id }}">{{ address.firstName }} {{ address.lastName }}, {{ address.address1 }}, {{ address.zipCode }}</option> 
+					<option value="{{ address.id }}">{{ address.firstName }} {{ address.lastName }}, {{ address.address1 }}, {{ address.zipCode }}</option>
 				{% endfor %}
 					<option value="0">Add New Address</option>
 				<select>
 				</div>
 			</div>
-		
+
 	</div>
 </div>
 
 {% if order.shippingAddress %}
 	<div class="flex" id="summary">
-		
+
 		<div class="flex-grow">
 			{% if order.getAvailableShippingMethodOptions()|length %}
 				<div class="pane">
@@ -108,7 +108,7 @@
 				</div>
 			{% endif %}
 		</div>
-		
+
 		<div class="flex-grow">
 			{% set options %}{% hook 'cp.commerce.admin-orders.shipping-options' %}{% endset %}
 			{% if options != '' %}
@@ -117,7 +117,7 @@
 				{{ options }}
 			</div>
 			{% endif %}
-			
+
 			{% hook 'cp.commerce.admin-orders.shipping-extras' %}
 		</div>
 
@@ -139,13 +139,13 @@
 		$headerBtn.addClass('disabled');
 		$(this).parents('form').submit();
 	});
-	
+
 	$headerBtn.on('click', function(e){
 		e.preventDefault();
 
 		$(this).parents('form').find('[name="redirect"]').val($(this).attr('href'));
 		$(this).parents('form').submit();
-		
+
 	})
 
 {% endjs %}

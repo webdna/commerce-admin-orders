@@ -2,17 +2,17 @@
 {% import "_includes/forms" as forms %}
 
 {# {% set tabs = {
-	'products': {url:'#productsTab', label:'Products', elementType:'kuriousagency\\commerce\\adminorders\\elements\\Variant'},
+	'products': {url:'#productsTab', label:'Products', elementType:'webdna\\commerce\\adminorders\\elements\\Variant'},
 } %}
 
 {% set bundles = craft.app.plugins.isPluginInstalled('commerce-bundles') and craft.app.plugins.isPluginEnabled('commerce-bundles') %}
 {% if bundles %}
-	{% set tabs = tabs|merge({'bundles': {url:'#bundlesTab', label:'Bundles', elementType:'kuriousagency\\commerce\\adminorders\\elements\\Bundle'}}) %}
+	{% set tabs = tabs|merge({'bundles': {url:'#bundlesTab', label:'Bundles', elementType:'webdna\\commerce\\adminorders\\elements\\Bundle'}}) %}
 {% endif %}
 
 {% set digital = craft.app.plugins.isPluginInstalled('digital-products') and craft.app.plugins.isPluginEnabled('digital-products') %}
 {% if digital %}
-{% set tabs = tabs|merge({'digital': {url:'#digitalTab', label:'Digital Products', elementType:'kuriousagency\\commerce\\adminorders\\elements\\Digital'}}) %}
+{% set tabs = tabs|merge({'digital': {url:'#digitalTab', label:'Digital Products', elementType:'webdna\\commerce\\adminorders\\elements\\Digital'}}) %}
 {% endif %} #}
 
 {% set tabs = purchasableTypes %}
@@ -28,7 +28,7 @@
 				<div class="sidebar hidden">
 					<nav>
 						{% include "_elements/sources" with {
-							sources: craft.app.elementIndexes.getSources(tab.elementType, 'index'),
+							sources: craft.app.getElementSources().getSources(tab.elementType, 'index'),
 							elementType: tab.elementType
 						} %}
 					</nav>

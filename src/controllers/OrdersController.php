@@ -4,26 +4,27 @@
  *
  * Create a new commerce order from the admin
  *
- * @link      https://kurious.agency
- * @copyright Copyright (c) 2018 Kurious Agency
+ * @link      https://webdna.co.uk
+ * @copyright Copyright (c) 2018 webdna
  */
 
-namespace kuriousagency\commerce\adminorders\controllers;
+namespace webdna\commerce\adminorders\controllers;
 
-use kuriousagency\commerce\adminorders\AdminOrders;
+use webdna\commerce\adminorders\AdminOrders;
 
 use Craft;
 use craft\web\Controller;
 use craft\commerce\elements\Order;
 use craft\commerce\Plugin as Commerce;
 use craft\commerce\models\Customer;
-use craft\commerce\models\Address;
+use craft\elements\Address;
 use craft\helpers\UrlHelper;
 
 use craft\elements\User;
+use yii\web\Response;
 
 /**
- * @author    Kurious Agency
+ * @author    webdna
  * @package   CommerceAdminOrders
  * @since     1.0.0
  */
@@ -34,473 +35,431 @@ class OrdersController extends Controller
     // =========================================================================
 
     /**
-     * @var    bool|array Allows anonymous access to this controller's actions.
+     * @var bool|array|int Allows anonymous access to this controller's actions.
      *         The actions must be in 'kebab-case'
      * @access protected
      */
-    protected $allowAnonymous = [];
+    protected bool|array|int $allowAnonymous = [];
 
     // Public Methods
-	// =========================================================================
+    // =========================================================================
 
-	public function actionNewOrder($cart=null)
-	{
-		
-		Commerce::getInstance()->getCarts()->forgetCart();
-		Commerce::getInstance()->getCustomers()->forgetCustomer();
-		$order = Commerce::getInstance()->getCarts()->getCart(true);
-		$order->origin = Order::ORIGIN_CP;
-		Craft::$app->getElements()->saveElement($order);
+    public function actionNewOrder(Order $cart=null): Response
+    {
 
-		$variables = [
-			'order' => $order,
-			'cart' => $cart
-		];	
-		
-		return $this->renderTemplate('commerce-admin-orders/user', $variables);
-	}
-	
-	public function actionProducts($cart=null)
-	{
+        Commerce::getInstance()->getCarts()->forgetCart();
+        //Commerce::getInstance()->getCustomers()->forgetCustomer();
+        $order = Commerce::getInstance()->getCarts()->getCart(true);
+        $order->origin = Order::ORIGIN_CP;
+        Craft::$app->getElements()->saveElement($order);
 
-		$number = Craft::$app->getRequest()->getParam('orderNumber');
+        $variables = [
+            'order' => $order,
+            'cart' => $cart
+        ];
 
-		$order = Commerce::getInstance()->getOrders()->getOrderByNumber($number);
-		if ($order->currency != $order->paymentCurrency) {
-			$order->currency = $order->paymentCurrency;
-			Craft::$app->getElements()->saveElement($order, false);
-			$order = Commerce::getInstance()->getOrders()->getOrderByNumber($number);
-		}
+        return $this->renderTemplate('commerce-admin-orders/user', $variables);
+    }
 
-		$variables = [
-			'order' => $order,
-			'cart' => $cart,
-			'purchasableTypes' => AdminOrders::$plugin->purchasables->getAllTypes(),
-		];
-		//Craft::dd($variables);
+    public function actionProducts($cart=null): Response
+    {
 
-		return $this->renderTemplate('commerce-admin-orders/products', $variables);
-	}
+        $number = Craft::$app->getRequest()->getParam('orderNumber');
 
-	public function actionUser()
-	{
-		$number = Craft::$app->getRequest()->getBodyParam('orderNumber');
-		$order = Commerce::getInstance()->getOrders()->getOrderByNumber($number);
+        $order = Commerce::getInstance()->getOrders()->getOrderByNumber($number);
+        if ($order->currency != $order->paymentCurrency) {
+            $order->currency = $order->paymentCurrency;
+            Craft::$app->getElements()->saveElement($order, false);
+            $order = Commerce::getInstance()->getOrders()->getOrderByNumber($number);
+        }
 
-		$variables = [
-			'order' => $order,
-		];
+        $variables = [
+            'order' => $order,
+            'cart' => $cart,
+            'purchasableTypes' => AdminOrders::$plugin->purchasables->getAllTypes(),
+        ];
+        //Craft::dd($variables);
 
-		return $this->renderTemplate('commerce-admin-orders/user', $variables);
-	}
+        return $this->renderTemplate('commerce-admin-orders/products', $variables);
+    }
 
-	public function actionAddress()
-	{
-		$number = Craft::$app->getRequest()->getParam('orderNumber');
-		$order = Commerce::getInstance()->getOrders()->getOrderByNumber($number);
+    public function actionUser(): Response
+    {
+        $number = Craft::$app->getRequest()->getBodyParam('orderNumber');
+        $order = Commerce::getInstance()->getOrders()->getOrderByNumber($number);
 
-		$variables = [
-			'order' => $order,
-		];
+        $variables = [
+            'order' => $order,
+        ];
 
-		return $this->renderTemplate('commerce-admin-orders/address', $variables);
-	}
+        return $this->renderTemplate('commerce-admin-orders/user', $variables);
+    }
 
-	public function actionSummary()
-	{
-		$number = Craft::$app->getRequest()->getParam('orderNumber');
-		$order = Commerce::getInstance()->getOrders()->getOrderByNumber($number);
+    public function actionAddress(): Response
+    {
+        $number = Craft::$app->getRequest()->getParam('orderNumber');
+        $order = Commerce::getInstance()->getOrders()->getOrderByNumber($number);
 
-		$variables = [
-			'order' => $order,
-		];
+        $variables = [
+            'order' => $order,
+        ];
 
-		return $this->renderTemplate('commerce-admin-orders/summary', $variables);
-	}
+        return $this->renderTemplate('commerce-admin-orders/address', $variables);
+    }
 
+    public function actionSummary(): Response
+    {
+        $number = Craft::$app->getRequest()->getParam('orderNumber');
+        $order = Commerce::getInstance()->getOrders()->getOrderByNumber($number);
 
+        $variables = [
+            'order' => $order,
+        ];
 
-	public function actionUpdateUser()
-	{
-		$number = Craft::$app->getRequest()->getParam('orderNumber');
-		$order = Commerce::getInstance()->getOrders()->getOrderByNumber($number);
-		
-		// If there isn't a current order we need to create a fresh element
-		if (!$order) {
-			$order = new Order();
-			$order->origin = Order::ORIGIN_CP;
-		}
+        return $this->renderTemplate('commerce-admin-orders/summary', $variables);
+    }
 
-		$userId = Craft::$app->getRequest()->getBodyParam('userId') ? Craft::$app->getRequest()->getBodyParam('userId')[0] : null;
-		$email = Craft::$app->getRequest()->getBodyParam('email');
+    public function actionUpdateUser(): Response
+    {
+        $number = Craft::$app->getRequest()->getParam('orderNumber');
+        $order = Commerce::getInstance()->getOrders()->getOrderByNumber($number);
 
-		$previousGuestCustomer = false;
+        // If there isn't a current order we need to create a fresh element
+        if (!$order) {
+            $order = new Order();
+            $order->origin = Order::ORIGIN_CP;
+        }
 
-		if(Craft::$app->getRequest()->getBodyParam('orderId')) {
-			$orderId = Craft::$app->getRequest()->getBodyParam('orderId');
-			$customerOrder = Commerce::getInstance()->getOrders()->getOrderById($orderId);
+        $userId = Craft::$app->getRequest()->getBodyParam('userId') ? Craft::$app->getRequest()->getBodyParam('userId')[0] : null;
+        $email = Craft::$app->getRequest()->getBodyParam('email');
 
-			if($customerOrder) {
-				$customer = Commerce::getInstance()->getCustomers()->getCustomerById($customerOrder->customerId);
-				if($customer->userId) {
-					$userId = $customer->userId;
-				} else {
-					$email = $customerOrder->email;
-					
-					$customerOrderShippingAddress = new Address($customerOrder->shippingAddress->toArray([
-						'id',
-						'attention',
-						'title',
-						'firstName',
-						'lastName',
-						'countryId',
-						'stateId',
-						'address1',
-						'address2',
-						'city',
-						'zipCode',
-						'phone',
-						'alternativePhone',
-						'businessName',
-						'businessTaxId',
-						'businessId',
-						'stateName'
-					]
-					));
-					$customerOrderShippingAddress->id = null;
-					if (Commerce::getInstance()->getAddresses()->saveAddress($customerOrderShippingAddress, false)) {
-						$order->setShippingAddress($customerOrderShippingAddress);
-					}
+        $isPreviousGuestCustomer = false;
 
-					$customerOrderBillingAddress = new Address($customerOrder->billingAddress->toArray([
-						'id',
-						'attention',
-						'title',
-						'firstName',
-						'lastName',
-						'countryId',
-						'stateId',
-						'address1',
-						'address2',
-						'city',
-						'zipCode',
-						'phone',
-						'alternativePhone',
-						'businessName',
-						'businessTaxId',
-						'businessId',
-						'stateName'
-					]
-					));
+        if (Craft::$app->getRequest()->getBodyParam('orderId')) {
+            $orderId = Craft::$app->getRequest()->getBodyParam('orderId');
+            $customerOrder = Commerce::getInstance()->getOrders()->getOrderById($orderId);
 
-					$customerOrderBillingAddress->id = null;
-					if (Commerce::getInstance()->getAddresses()->saveAddress($customerOrderBillingAddress, false)) {
-						$previousGuestCustomer = true;
-						$order->setBillingAddress($customerOrderBillingAddress);
-					}
-				}
-			}
+            if ($customerOrder) {
+                $customer = Craft::$app->users->getUserById($customerOrder->customerId);
+                if ($customer->userId) {
+                    $userId = $customer->userId;
+                } else {
+                    $email = $customerOrder->email;
 
-		}
+                    $customerOrderShippingAddress = new Address($customerOrder->shippingAddress->toArray([
+                        'id',
+                        'attention',
+                        'title',
+                        'firstName',
+                        'lastName',
+                        'countryId',
+                        'stateId',
+                        'address1',
+                        'address2',
+                        'city',
+                        'zipCode',
+                        'phone',
+                        'alternativePhone',
+                        'businessName',
+                        'businessTaxId',
+                        'businessId',
+                        'stateName'
+                    ]
+                    ));
+                    $customerOrderShippingAddress->id = null;
+                    if (Commerce::getInstance()->getAddresses()->saveAddress($customerOrderShippingAddress, false)) {
+                        $order->setShippingAddress($customerOrderShippingAddress);
+                    }
 
-		// user checkout
-		if ($userId) {
-			
-			$user = Craft::$app->users->getUserById($userId);
-			$customer = Commerce::getInstance()->getCustomers()->getCustomerByUserId($user->id);
+                    $customerOrderBillingAddress = new Address($customerOrder->billingAddress->toArray([
+                        'id',
+                        'attention',
+                        'title',
+                        'firstName',
+                        'lastName',
+                        'countryId',
+                        'stateId',
+                        'address1',
+                        'address2',
+                        'city',
+                        'zipCode',
+                        'phone',
+                        'alternativePhone',
+                        'businessName',
+                        'businessTaxId',
+                        'businessId',
+                        'stateName'
+                    ]
+                    ));
 
-			if($customer) {
+                    $customerOrderBillingAddress->id = null;
+                    if (Commerce::getInstance()->getAddresses()->saveAddress($customerOrderBillingAddress, false)) {
+                        $isPreviousGuestCustomer = true;
+                        $order->setBillingAddress($customerOrderBillingAddress);
+                    }
+                }
+            }
 
-				if ($email = $customer->getEmail()) {
-					$order->setEmail($email);
-				}
-				if($customer->primaryBillingAddressId){
-					$createNewAddress = false;
-				}
+        }
 
-			} else {
-				$customer = new Customer();
-				$customer->setUser($user);
-				$email = $user->email;
-				$order->setEmail($user->email);
+        // user checkout
+        if ($userId) {
 
-				Commerce::getInstance()->getCustomers()->saveCustomer($customer);
-			} 
-		// guest checkout
-		} else {
+            $user = Craft::$app->users->getUserById($userId);
+            $order->setCustomer($user);
 
-			$customer = new Customer();
-			Commerce::getInstance()->getCustomers()->saveCustomer($customer);
-			$order->setEmail($email);
+            if ($user->primaryBillingAddressId){
+                $createNewAddress = false;
+            }
 
-		}
+        // guest checkout
+        } else {
+            $order->setEmail($email);
+        }
 
-		$order->customerId = $customer->id;
-		$order = $this->_cloneOrder($order,$email,$previousGuestCustomer);
+        $order->setCustomer($user);
+        $order = $this->_cloneOrder($order, $email, $isPreviousGuestCustomer);
 
-		$variables = [
-			'order' => $order,
-		];
+        $variables = [
+            'order' => $order,
+        ];
 
-		//Craft::dd($order);
-
-		Craft::$app->getUrlManager()->setRouteParams([
+        Craft::$app->getUrlManager()->setRouteParams([
             'order' => $order
         ]);
 
-		return $this->redirectToPostedUrl($order);
-	}
+        return $this->redirectToPostedUrl($order);
+    }
 
-	public function actionGetUsersByZipCode()
-	{
-		$users = [];
-		
-		$zipCode = Craft::$app->getRequest()->getParam('zipCode');
-		$order['number'] = Craft::$app->getRequest()->getParam('orderNumber');
+    public function actionGetUsersByZipCode(): Response
+    {
+        $users = [];
 
-		if($zipCode) {
-			$users = AdminOrders::getInstance()->users->findUsersByZipCode($zipCode);
-		}
+        $zipCode = Craft::$app->getRequest()->getParam('zipCode');
+        $order['number'] = Craft::$app->getRequest()->getParam('orderNumber');
 
-		$variables = [
-			'zipCode' => $zipCode,
-			'order' => $order,
-			'users' => $users,
-		];
-		return $this->renderTemplate('commerce-admin-orders/user', $variables);
+        if ($zipCode) {
+            $users = AdminOrders::getInstance()->users->findUsersByZipCode($zipCode);
+        }
 
-	}
+        $variables = [
+            'zipCode' => $zipCode,
+            'order' => $order,
+            'users' => $users,
+        ];
+        return $this->renderTemplate('commerce-admin-orders/user', $variables);
 
-	public function actionUpdateAddress()
-	{
-		$number = Craft::$app->getRequest()->getParam('orderNumber');
-		$order = Commerce::getInstance()->getOrders()->getOrderByNumber($number);
+    }
 
-		$shippingAddressSelect = Craft::$app->getRequest()->getBodyParam('shippingAddressSelect');
-		$billingAddressSelect = Craft::$app->getRequest()->getBodyParam('billingAddressSelect');
-		$shippingMethod = Craft::$app->getRequest()->getBodyParam('shippingMethod');
-		$shippingMethodHandle = Craft::$app->getRequest()->getParam('shippingMethodHandle');
+    public function actionUpdateAddress(): Response
+    {
+        $number = Craft::$app->getRequest()->getParam('orderNumber');
+        $order = Commerce::getInstance()->getOrders()->getOrderByNumber($number);
 
-		if ($shippingAddressSelect > 0) {
-			$shippingAddress = Commerce::getInstance()->getAddresses()->getAddressByIdAndCustomerId($shippingAddressSelect, $order->customerId);
-			$order->setShippingAddress($shippingAddress);
-			//Craft::$app->getElements()->saveElement($order, false);
-		}
+        $shippingAddressSelect = Craft::$app->getRequest()->getBodyParam('shippingAddressSelect');
+        $billingAddressSelect = Craft::$app->getRequest()->getBodyParam('billingAddressSelect');
+        $shippingMethod = Craft::$app->getRequest()->getBodyParam('shippingMethod');
+        $shippingMethodHandle = Craft::$app->getRequest()->getParam('shippingMethodHandle');
 
-		if ($billingAddressSelect > 0) {
-			$billingAddress = Commerce::getInstance()->getAddresses()->getAddressByIdAndCustomerId($billingAddressSelect, $order->customerId);
-			$order->setBillingAddress($billingAddress);
-			//Craft::$app->getElements()->saveElement($order, false);
-		}
+        if ($shippingAddressSelect > 0) {
+            $shippingAddress = Commerce::getInstance()->getAddresses()->getAddressByIdAndCustomerId($shippingAddressSelect, $order->customerId);
+            $order->setShippingAddress($shippingAddress);
+            //Craft::$app->getElements()->saveElement($order, false);
+        }
 
-		//redirect if value = 0 => new address
-		if ($shippingAddressSelect === '0') {
-			return $this->redirect('commerce-admin-orders/orders/address/new?type=shipping&orderNumber='.$order->number);
-		}
+        if ($billingAddressSelect > 0) {
+            $billingAddress = Commerce::getInstance()->getAddresses()->getAddressByIdAndCustomerId($billingAddressSelect, $order->customerId);
+            $order->setBillingAddress($billingAddress);
+            //Craft::$app->getElements()->saveElement($order, false);
+        }
 
-		if ($billingAddressSelect === '0') {
-			return $this->redirect('commerce-admin-orders/orders/address/new?type=billing&orderNumber='.$order->number);
-		}
+        //redirect if value = 0 => new address
+        if ($shippingAddressSelect === '0') {
+            return $this->redirect('commerce-admin-orders/orders/address/new?type=shipping&orderNumber='.$order->number);
+        }
 
-		// Set Shipping method on cart.
-		if ($shippingMethodHandle) {
-			$order->shippingMethodHandle = $shippingMethodHandle;
-			//Craft::$app->getElements()->saveElement($order, false);
-		}
+        if ($billingAddressSelect === '0') {
+            return $this->redirect('commerce-admin-orders/orders/address/new?type=billing&orderNumber='.$order->number);
+        }
 
-		$order->setFieldValuesFromRequest('fields');
-		
-		Craft::$app->getElements()->saveElement($order, false);
+        // Set Shipping method on cart.
+        if ($shippingMethodHandle) {
+            $order->shippingMethodHandle = $shippingMethodHandle;
+            //Craft::$app->getElements()->saveElement($order, false);
+        }
 
-		return $this->redirectToPostedUrl($order);
-	}
+        $order->setFieldValuesFromRequest('fields');
 
-	public function actionRegisterUser()
-	{	
-		
-		$request = Craft::$app->getRequest();
-		$orderId = $request->getParam('orderId');
+        Craft::$app->getElements()->saveElement($order, false);
 
-		if($request->getParam('registerUser')) {
+        return $this->redirectToPostedUrl($order);
+    }
 
-			$email = $request->getParam('email');
-			
-			$user = Craft::$app->getUsers()->getUserByUsernameOrEmail($email);
+    public function actionRegisterUser(): Response
+    {
+        $request = Craft::$app->getRequest();
+        $orderId = $request->getParam('orderId');
 
-			if(!$user) {
-				$user = new User();
-				$user->pending = true;
-				$user->firstName = $request->getParam('firstName');
-				$user->lastName = $request->getParam('lastName');
-				$user->email = $request->getParam('email');
-				$user->username = $request->getParam('email');
+        if ($request->getParam('registerUser')) {
 
-				Craft::$app->getElements()->saveElement($user, false);
+            $email = $request->getParam('email');
 
-				Craft::$app->getUsers()->sendActivationEmail($user);
-			}
+            $user = Craft::$app->getUsers()->getUserByUsernameOrEmail($email);
 
-		}
+            if (!$user) {
+                $user = new User();
+                $user->pending = true;
+                $user->firstName = $request->getParam('firstName');
+                $user->lastName = $request->getParam('lastName');
+                $user->email = $request->getParam('email');
+                $user->username = $request->getParam('email');
 
-		return $this->redirect(UrlHelper::cpUrl('commerce/orders/'.$orderId));
-		
-	}
+                Craft::$app->getElements()->saveElement($user, false);
 
-	public function actionNewAddress()
-	{
-		$number = Craft::$app->getRequest()->getParam('orderNumber');
-		$order = Commerce::getInstance()->getOrders()->getOrderByNumber($number);
+                Craft::$app->getUsers()->sendActivationEmail($user);
+            }
 
-		$type = Craft::$app->getRequest()->getParam('type');
-		$shippingAddress = Craft::$app->getRequest()->getParam('shipping');
-		$billingAddress = Craft::$app->getRequest()->getParam('billing');
-		$settings = AdminOrders::$plugin->getSettings();
+        }
 
-		if ($type) {
-			$model = new Address();
-			if ($type == 'shipping') {
-				$model = (!$order->shippingAddressId && $order->estimatedShippingAddressId) ? $order->estimatedShippingAddress : $model;
-			}
-			return $this->renderTemplate('commerce-admin-orders/address-new', [
-				'order' => $order,
-				'type' => $type,
-				'model' => $model,
-				'settings' => $settings,
-			]);
-		}
-		if ($shippingAddress) {
-			$order->validate();
-			//Craft::dd($order->shippingAddress->getErrors());
-			return $this->renderTemplate('commerce-admin-orders/address-new', [
-				'order' => $order,
-				'type' => 'shipping',
-				'model' => $order->shippingAddress,
-				'settings' => $settings,
-			]);
-		}
-	}
+        return $this->redirect(UrlHelper::cpUrl('commerce/orders/'.$orderId));
+    }
 
-	public function actionSaveAddress()
-	{
-		$number = Craft::$app->getRequest()->getParam('orderNumber');
-		$order = Commerce::getInstance()->getOrders()->getOrderByNumber($number);
+    public function actionNewAddress(): Response
+    {
+        $number = Craft::$app->getRequest()->getParam('orderNumber');
+        $order = Commerce::getInstance()->getOrders()->getOrderByNumber($number);
 
-		$shippingAddress = Craft::$app->getRequest()->getParam('shipping');
-		$billingAddress = Craft::$app->getRequest()->getParam('billing');
-		
-		if ($shippingAddress) {
-			$order->setShippingAddress($shippingAddress);
-	
-			if (!$order->validate() || !Craft::$app->getElements()->saveElement($order, false)) {
-				Craft::$app->getUrlManager()->setRouteParams([
-					'order' => $order,
-					'model' => $order->shippingAddress,
-				]);
-				return null;
-			}
-		}
-		if ($billingAddress) {
-			$order->setBillingAddress($billingAddress);
+        $type = Craft::$app->getRequest()->getParam('type');
+        $shippingAddress = Craft::$app->getRequest()->getParam('shipping');
+        $billingAddress = Craft::$app->getRequest()->getParam('billing');
+        $settings = AdminOrders::$plugin->getSettings();
 
-			if (!$order->validate() || !Craft::$app->getElements()->saveElement($order, false)) {
-				Craft::$app->getUrlManager()->setRouteParams([
-					'order' => $order,
-					'model' => $order->billingAddress,
-				]);
-				return null;
-			}
-		}
+        if ($type) {
+            $model = new Address();
+            if ($type == 'shipping') {
+                $model = (!$order->shippingAddressId && $order->estimatedShippingAddressId) ? $order->estimatedShippingAddress : $model;
+            }
+            return $this->renderTemplate('commerce-admin-orders/address-new', [
+                'order' => $order,
+                'type' => $type,
+                'model' => $model,
+                'settings' => $settings,
+            ]);
+        }
+        if ($shippingAddress) {
+            $order->validate();
+            //Craft::dd($order->shippingAddress->getErrors());
+            return $this->renderTemplate('commerce-admin-orders/address-new', [
+                'order' => $order,
+                'type' => 'shipping',
+                'model' => $order->shippingAddress,
+                'settings' => $settings,
+            ]);
+        }
+    }
 
-		return $this->redirectToPostedUrl($order);
-	}
+    public function actionSaveAddress(): Response
+    {
+        $number = Craft::$app->getRequest()->getParam('orderNumber');
+        $order = Commerce::getInstance()->getOrders()->getOrderByNumber($number);
 
+        $shippingAddress = Craft::$app->getRequest()->getParam('shipping');
+        $billingAddress = Craft::$app->getRequest()->getParam('billing');
 
-	public function actionSaveOrder()
-	{
-		$this->requireAcceptsJson();
-		
-		$email = Craft::$app->getRequest()->getParam('email');
-		$userId = Craft::$app->getRequest()->getParam('userId');
-		$createNewAddress = true;
+        if ($shippingAddress) {
+            $order->setShippingAddress($shippingAddress);
 
-		$order = new Order();
-		$order->number = Commerce::getInstance()->getCarts()->generateCartNumber();
-		$order->lastIp = Craft::$app->getRequest()->userIP;
+            if (!$order->validate() || !Craft::$app->getElements()->saveElement($order, false)) {
+                Craft::$app->getUrlManager()->setRouteParams([
+                    'order' => $order,
+                    'model' => $order->shippingAddress,
+                ]);
+                return null;
+            }
+        }
+        if ($billingAddress) {
+            $order->setBillingAddress($billingAddress);
+
+            if (!$order->validate() || !Craft::$app->getElements()->saveElement($order, false)) {
+                Craft::$app->getUrlManager()->setRouteParams([
+                    'order' => $order,
+                    'model' => $order->billingAddress,
+                ]);
+                return null;
+            }
+        }
+
+        return $this->redirectToPostedUrl($order);
+    }
+
+    public function actionSaveOrder(): Response
+    {
+        $this->requireAcceptsJson();
+
+        $email = Craft::$app->getRequest()->getParam('email');
+        $userId = Craft::$app->getRequest()->getParam('userId');
+        $createNewAddress = true;
+
+        $order = new Order();
+        $order->number = Commerce::getInstance()->getCarts()->generateCartNumber();
+        $order->lastIp = Craft::$app->getRequest()->userIP;
         $order->orderLanguage = Craft::$app->language;
-		$order->currency = Commerce::getInstance()->getPaymentCurrencies()->getPrimaryPaymentCurrencyIso();
+        $order->currency = Commerce::getInstance()->getPaymentCurrencies()->getPrimaryPaymentCurrencyIso();
 
-		if($userId){
-			$user = Craft::$app->users->getUserById($userId);
-			$customer = Commerce::getInstance()->getCustomers()->getCustomerByUserId($user->id);
+        if ($userId){
+            $user = Craft::$app->users->getUserById($userId);
+            $order->setCustomer($user);
 
-			if($customer){
-				if ($email = $customer->getEmail()) {
-					$order->setEmail($email);
-				}
-				if($customer->primaryBillingAddressId){
-					$createNewAddress = false;
-				}
+            if ($user->primaryBillingAddressId){
+                $createNewAddress = false;
+            }
 
-			}else{
-				$customer = new Customer();
-				$customer->setUser($user);
+        } else {
+            $order->setEmail($email);
+        }
 
-				Commerce::getInstance()->getCustomers()->saveCustomer($customer);
-			}
-			
-		}else{
-			$customer = new Customer();
-			Commerce::getInstance()->getCustomers()->saveCustomer($customer);
-			$order->setEmail($email);
-		}
+        if ($createNewAddress){
+            $address = new Address();
+            $address->firstName = 'No address';
+            $order->setShippingAddress($address);
 
-		$order->customerId = $customer->id;
+            $address = new Address();
+            $address->firstName = 'No address';
+            $order->setBillingAddress($address);
+        }
 
-		if($createNewAddress){
-			$address = new Address();
-			$address->firstName = 'No address';
-			$order->setShippingAddress($address);
+        if (Craft::$app->getElements()->saveElement($order, false)){
+            return $this->asJson(['success' => true, 'orderId' => $order->id]);
+        }
 
-			$address = new Address();
-			$address->firstName = 'No address';
-			$order->setBillingAddress($address);
-		}
+        return $this->asFailure(Craft::t('commerce', 'Could not create a new order'));
+    }
 
-		if(Craft::$app->getElements()->saveElement($order, false)){
-			return $this->asJson(['success' => true, 'orderId' => $order->id]);
-		}
+    public function actionAddToCart(): Response
+    {
+        $this->requireAcceptsJson();
+        $request = Craft::$app->getRequest();
 
-		return $this->asErrorJson(Craft::t('commerce', 'Could not create a new order'));
-	}
+        if ($number = $request->getParam('orderNumber')) {
+            $cart = Commerce::getInstance()->getOrders()->getOrderByNumber($number);
+        } elseif ($orderId = $request->getParam('orderId')) {
+            $cart = Commerce::getInstance()->getOrders()->getOrderById($orderId);
+        }
 
-	public function actionAddToCart()
-	{
+        if (!$cart) {
+            return $this->asFailure('Cart not defined');
+        }
 
-		$this->requireAcceptsJson();
-		$request = Craft::$app->getRequest();
+        if ($purchasableId = $request->getParam('purchasableId')) {
 
-		if($number = $request->getParam('orderNumber')) {
-			$cart = Commerce::getInstance()->getOrders()->getOrderByNumber($number);
-		} elseif($orderId = $request->getParam('orderId')) {
-			$cart = Commerce::getInstance()->getOrders()->getOrderById($orderId);
-		}
-
-		if (!$cart) {
-			return $this->asErrorJson([
-				'message' => 'Cart not defined',
-			]);
-		}
-		
-		if ($purchasableId = $request->getParam('purchasableId')) {
-
-			//Craft::dd($purchasableId);
+            //Craft::dd($purchasableId);
             $note = '';
             $options = [];
-			$qty = (int)$request->getParam('adminOrderQty', 1);
+            $qty = (int)$request->getParam('adminOrderQty', 1);
 
-			$lineItem = Commerce::getInstance()->getLineItems()->resolveLineItem($cart->id, $purchasableId, $options);
+            $lineItem = Commerce::getInstance()->getLineItems()->resolveLineItem($cart, $purchasableId, $options);
 
-			
+
             // New line items already have a qty of one.
             if ($lineItem->id) {
                 $lineItem->qty += $qty;
@@ -510,106 +469,108 @@ class OrdersController extends Controller
 
             $lineItem->note = $note;
 
-			$cart->addLineItem($lineItem);
-		}
+            $cart->addLineItem($lineItem);
+        }
 
-		Craft::$app->getElements()->saveElement($cart, false);
-		// save again so lineitems have ids so adjustment can be correctly shown against them
-		Craft::$app->getElements()->saveElement($cart, false);
-		
-		return $this->asJson([
-			'success' => true,
-			'html' => $this->getView()->renderTemplate('commerce-admin-orders/cart', [
-				'order' => $cart
-			])
-		]);
-		
-	}
+        Craft::$app->getElements()->saveElement($cart, false);
+        // save again so lineitems have ids so adjustment can be correctly shown against them
+        Craft::$app->getElements()->saveElement($cart, false);
 
-	public function actionGetAdminVariants()
-	{
-		return $this->asJson([
-			'success' => true,
-			'html' => $this->getView()->renderTemplate('commerce-admin-orders/admin-variant')
-		]);
+        return $this->asJson([
+            'success' => true,
+            'html' => $this->getView()->renderTemplate('commerce-admin-orders/cart', [
+                'order' => $cart
+            ])
+        ]);
 
-	}
+    }
 
-	public function actionGetControls()
-	{
-		$request = Craft::$app->getRequest();
-		$number = $request->getParam('orderNumber');
-		$id = $request->getParam('orderId');
-		if (!$number && !$id) {
-			return $this->asJson(['success'=>false,'message'=>'nor id or number']);
-		}
-		if ($number) {
-			$order = Commerce::getInstance()->getOrders()->getOrderByNumber($number);
-		}
-		if ($id) {
-			$order = Commerce::getInstance()->getOrders()->getOrderById($id);
-		}
-		
-		return $this->asJson([
-			'success' => true,
-			'html' => $this->getView()->renderTemplate('commerce-admin-orders/partials/controls', ['order'=>$order])
-		]);
+    public function actionGetAdminVariants(): Response
+    {
+        return $this->asJson([
+            'success' => true,
+            'html' => $this->getView()->renderTemplate('commerce-admin-orders/admin-variant')
+        ]);
+    }
 
-	}
+    public function actionGetControls(): Response
+    {
+        $request = Craft::$app->getRequest();
+        $number = $request->getParam('orderNumber');
+        $id = $request->getParam('orderId');
+        if (!$number && !$id) {
+            return $this->asJson(['success'=>false,'message'=>'nor id or number']);
+        }
+        if ($number) {
+            $order = Commerce::getInstance()->getOrders()->getOrderByNumber($number);
+        }
+        if ($id) {
+            $order = Commerce::getInstance()->getOrders()->getOrderById($id);
+        }
 
-	public function actionGetOrderNumberById()
-	{
+        return $this->asJson([
+            'success' => true,
+            'html' => $this->getView()->renderTemplate('commerce-admin-orders/partials/controls', ['order'=>$order])
+        ]);
 
-		$id = Craft::$app->getRequest()->getParam('orderId');
-		
-		$order = Commerce::getInstance()->getOrders()->getOrderById($id);
+    }
 
-		if($order) {
+    public function actionGetOrderNumberById(): Response|false
+    {
+        $id = Craft::$app->getRequest()->getParam('orderId');
 
-			return $this->asJson([
-				'success' => true,
-				'orderNumber' => $order->number
-			]);
+        $order = Commerce::getInstance()->getOrders()->getOrderById($id);
 
-		}
+        if ($order) {
 
-		return false;
-	}
+            return $this->asJson([
+                'success' => true,
+                'orderNumber' => $order->number
+            ]);
 
-	private function _cloneOrder($order, $email, $previousGuestCustomer)
-	{
-		
-		$clone = new Order();
-		$clone->number = Commerce::getInstance()->getCarts()->generateCartNumber();
-		$clone->lastIp = Craft::$app->getRequest()->userIP;
+        }
+
+        return false;
+    }
+
+    private function _cloneOrder(Order $order, string $email, bool $isPreviousGuestCustomer): Order
+    {
+        $clone = new Order();
+        $clone->number = Commerce::getInstance()->getCarts()->generateCartNumber();
+        $clone->lastIp = Craft::$app->getRequest()->userIP;
         $clone->orderLanguage = Craft::$app->language;
-		$clone->currency = $order->paymentCurrency;
-		$clone->paymentCurrency = $order->paymentCurrency;
-		$clone->couponCode = $order->couponCode;
-		$clone->gatewayId = $order->gatewayId;
-		$clone->customerId = $order->customerId;
-		$clone->origin = $order->origin;
-		$clone->setEmail($email);
+        $clone->currency = $order->paymentCurrency;
+        $clone->paymentCurrency = $order->paymentCurrency;
+        $clone->couponCode = $order->couponCode;
+        $clone->gatewayId = $order->gatewayId;
+        $clone->origin = $order->origin;
+        if ($order->customer) {
+            $clone->setCustomer($order->customer);
+        }
+        else {
+            $clone->setEmail($email);
+        }
 
-		if($previousGuestCustomer) {
-			$clone->billingAddressId = $order->billingAddressId;
-			$clone->shippingAddressId = $order->shippingAddressId;
-		}
+        if ($isPreviousGuestCustomer) {
+            $clone->billingAddressId = $order->billingAddressId;
+            $clone->shippingAddressId = $order->shippingAddressId;
+        }
 
-		Craft::$app->getElements()->saveElement($clone, false);
+        Craft::$app->getElements()->saveElement($clone, false);
 
-		foreach($order->lineItems as $lineItem)
-		{
-			$item = Commerce::getInstance()->getLineItems()->createLineItem($clone->id, $lineItem->purchasableId, $lineItem->options, $lineItem->qty, $lineItem->note);
-			$clone->addLineItem($item);
-		}
+        foreach($order->lineItems as $lineItem)
+        {
+            $item = Commerce::getInstance()->getLineItems()->createLineItem($clone, $lineItem->purchasableId, $lineItem->options, $lineItem->qty, $lineItem->note);
+            $clone->addLineItem($item);
+        }
 
-		Craft::$app->getElements()->saveElement($clone, false);
-		Commerce::getInstance()->getCarts()->forgetCart();
-		if ($order->id) {
-			Craft::$app->getElements()->deleteElement($order);
-		}
+        Craft::$app->getElements()->saveElement($clone, false);
+        Commerce::getInstance()->getCarts()->forgetCart();
 
-		return $clone;
-	}
+        if ($order->id) {
+            Craft::$app->getElements()->deleteElement($order);
+        }
+
+        return $clone;
+    }
 }
